@@ -102,15 +102,13 @@ struct zclass
 	static void arrange_format_bbk(tsh& sh,rbuf<tword>& v,tfunc* ptfi=null)
 	{
 		for(int i=0;i<v.count();i++)
+		{
 			if(v[i].val==rppoptr(c_bbk_l)||
 				v[i].val==rppoptr(c_bbk_r))
 			{
 				if(v.get(i-1).pos==v[i].pos||
 					v.get(i+1).pos==v[i].pos)
 				{
-					if(rppconf(c_warning))
-						sh.error(v[i],
-						"！warning：{ } need occupy one line，otherwise can't debug");
 					v[i].pos.line++;
 					for(int j=i+1;j<v.count();j++)
 						v[j].pos.line+=2;
@@ -118,11 +116,13 @@ struct zclass
 						ptfi->last_pos.line+=2;
 				}
 			}
+		}
 	}
 
 	static void arrange_format_ctrl(tsh& sh,rbuf<tword>& v,tfunc* ptfi)
 	{
 		for(int i=1;i<v.count();i++)
+		{
 			if(v[i].val==sh.m_key[tkey::c_switch]||
 				v[i].val==sh.m_key[tkey::c_case]||
 				v[i].val==sh.m_key[tkey::c_for]||
@@ -139,6 +139,7 @@ struct zclass
 					ptfi->last_pos.line++;
 				}
 			}
+		}	
 	}
 
 	static rbool is_bbk_prev(tsh& sh,const rstr& s)
@@ -162,9 +163,7 @@ struct zclass
 				if(v.get(i-1).pos==v[i].pos||
 					v.get(i+1).pos==v[i].pos)
 				{
-					if(rppconf(c_warning))
-						sh.error(v[i],
-						"！warning：{ } need occupy one line，otherwise can't debug");
+					//！warning：{ } need occupy one line，otherwise can't debug
 					v[i].pos.line++;
 					for(int j=i+1;j<v.count();j++)
 						v[j].pos.line+=2;
@@ -278,43 +277,44 @@ struct zclass
 	{
 		for(int i=0;i<v.count();i++)
 		{
-			if(v[i].val==sh.m_key[tkey::c_class])
+			if(v[i].val!=rppkey(c_class))
 			{
-				int left=r_find_pos(v,tword(sh.m_optr[toptr::c_bbk_l]),i+1);
-				if(left>=v.count())
-				{
-					sh.error(v.get(i),"miss {");
-					return false;
-				}
-				tclass item;
-				rbuf<tword> name_w;
-				for(int j=i+1;j<left;j++)
-					name_w.push(v[j]);
-				if(name_w.empty())
-				{
-					sh.error(v.get(i),"miss class name");
-					return false;
-				}
-				proc_old_tl(sh,v,i,name_w);
-				int right=sh.find_symm_bbk(v,left);
-				if(right>=v.count())
-				{
-					sh.error(v.get(i),"miss {");
-					return false;
-				}
-				if(v.get(i-1).val==sh.m_key[tkey::c_friend])
-				{
-					v[i-1].clear();
-					item.is_friend=true;
-				}
-				for(int j=left+1;j<right;j++)
-					item.vword.push(v[j]);
-				for(int j=i;j<=right;j++)
-					v[j].clear();
-				if(!class_add(sh,item,name_w))
-					return false;
-				i=right;
+				continue;
 			}
+			int left=r_find_pos(v,tword(sh.m_optr[toptr::c_bbk_l]),i+1);
+			if(left>=v.count())
+			{
+				sh.error(v.get(i),"miss {");
+				return false;
+			}
+			tclass item;
+			rbuf<tword> name_w;
+			for(int j=i+1;j<left;j++)
+				name_w.push(v[j]);
+			if(name_w.empty())
+			{
+				sh.error(v.get(i),"miss class name");
+				return false;
+			}
+			proc_old_tl(sh,v,i,name_w);
+			int right=sh.find_symm_bbk(v,left);
+			if(right>=v.count())
+			{
+				sh.error(v.get(i),"miss {");
+				return false;
+			}
+			if(v.get(i-1).val==sh.m_key[tkey::c_friend])
+			{
+				v[i-1].clear();
+				item.is_friend=true;
+			}
+			for(int j=left+1;j<right;j++)
+				item.vword.push(v[j]);
+			for(int j=i;j<=right;j++)
+				v[j].clear();
+			if(!class_add(sh,item,name_w))
+				return false;
+			i=right;
 		}
 		zpre::arrange(v);
 		return true;

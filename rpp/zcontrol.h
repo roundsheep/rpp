@@ -355,6 +355,7 @@ struct zcontrol
 	{
 		rbuf<tword> vtag;
 		for(int i=0;i<tfi.vsent.count();i++)
+		{
 			if(tfi.vsent[i].vword.get(1).val==sh.m_optr[toptr::c_colon]&&
 				tfi.vsent[i].vword.get(0).is_name())
 			{
@@ -365,6 +366,7 @@ struct zcontrol
 				tfi.vsent[i].vword[1].clear();
 				zpre::arrange(tfi.vsent[i].vword);
 			}
+		}
 		for(int i=0;i<tfi.vsent.count();i++)
 			for(int j=0;j<tfi.vsent[i].vword.count();j++)
 				tag_replace(tfi.vsent[i].vword[j],vtag);
@@ -481,6 +483,7 @@ struct zcontrol
 	{
 		int start=0;
 		for(int i=0;i<v.count();++i)
+		{
 			if(v[i].val==sh.m_optr[toptr::c_semi])
 			{
 				tsent sent;
@@ -505,12 +508,14 @@ struct zcontrol
 				start=i;
 				--i;
 			}
+		}
 		return true;
 	}
 
 	static rbool proc_bbk(tsh& sh,rbuf<tword>& v)
 	{
 		for(int i=0;i<v.count();i++)
+		{
 			if(v[i].val==sh.m_optr[toptr::c_bbk_l])
 			{
 				int left=i;
@@ -525,6 +530,7 @@ struct zcontrol
 				v[right].multi.push(sh.m_optr[toptr::c_semi]);
 				v[right].multi.push(rstr("nop"));
 			}
+		}
 		zpre::arrange(v);
 		return true;
 	}
@@ -564,6 +570,7 @@ struct zcontrol
 	static rbool proc_if(tsh& sh,rbuf<tword>& v)
 	{
 		for(int i=0;i<v.count();i++)
+		{
 			if(v[i].val==sh.m_key[tkey::c_if])
 			{
 				int cond_end;
@@ -605,6 +612,7 @@ struct zcontrol
 				v[right].multi.push(sh.m_optr[toptr::c_semi]);
 				v[right].multi.push(rstr("nop"));
 			}
+		}
 		return true;
 	}
 
@@ -708,6 +716,7 @@ struct zcontrol
 	{
 		int j;
 		for(j=i-1;j>=0;--j)
+		{
 			if(v[j].val==sh.m_key[tkey::c_for])
 			{
 				int left=get_condition_end(sh,v,j);
@@ -721,12 +730,14 @@ struct zcontrol
 				if(i>left&&i<right)
 					break;
 			}
+		}
 		return j;
 	}
 
 	static rbool proc_continue(tsh& sh,rbuf<tword>& v)
 	{
 		for(int i=0;i<v.count();i++)
+		{
 			if(v[i].val==sh.m_key[tkey::c_continue]||
 				v[i].val==sh.m_key[tkey::c_continued])
 			{
@@ -773,14 +784,16 @@ struct zcontrol
 					insert_jmp_asm(v[i],v[left]);
 					v[i].val.clear();
 				}
-				
+
 			}
+		}
 		return true;
 	}
 
 	static rbool proc_break(tsh& sh,rbuf<tword>& v)
 	{
 		for(int i=0;i<v.count();i++)
+		{
 			if(v[i].val==sh.m_key[tkey::c_break])
 			{
 				int j=find_jump_out(sh,v,i);
@@ -799,6 +812,7 @@ struct zcontrol
 				insert_jmp_asm(v[i],v[right+1]);
 				v[i].val.clear();
 			}
+		}
 		return true;
 	}
 
@@ -870,6 +884,7 @@ struct zcontrol
 	static rbool replace_for_to(tsh& sh,rbuf<tword>& v)
 	{
 		for(int i=0;i<v.count();i++)
+		{
 			if(v[i].val==sh.m_key[tkey::c_for])
 			{
 				rbuf<tword> vcond;
@@ -936,6 +951,7 @@ struct zcontrol
 					v[i].multi+=rstr(")");
 				}
 			}
+		}
 		zpre::arrange(v);
 		return true;
 	}

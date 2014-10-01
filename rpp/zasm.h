@@ -45,7 +45,6 @@ struct zasm
 		rbuf<tasm> vasm;
 		tasm item;
 		item.pos=tfi.first_pos;
-
 		int size=zfind::get_func_local_size(tfi);
 		if(!(rppconf(c_op_zero)&&size==0))
 		{

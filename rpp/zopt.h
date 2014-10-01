@@ -59,6 +59,7 @@ struct zopt
 			elif(rppconf(c_op_nop)&&vasm[i].vstr.count()==1&&
 				vasm[i].vstr[0]==sh.m_key[tkey::c_nop])
 			{
+				;
 			}
 			else
 			{

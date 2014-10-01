@@ -387,55 +387,56 @@ struct zpre
 		tmac item;
 		for(int i=v.count()-1;i>=0;i--)
 		{
-			if(v[i]==rppoptr(c_pre))
+			if(v[i]!=rppoptr(c_pre))
 			{
-				rstr key=v.get(i+1).val;
-				if(key!=rppkey(c_ifdef)&&
-					key!=rppkey(c_ifndef))
-					continue;
-				if(i+2>=v.count())
-				{
-					sh.error(v[i],"ifdef");
-					return false;
-				}
-				item.name=v[i+2].val;
-				int endpos=r_find_pos(v,tword(rppkey(c_endif)),i+3);
-				if(endpos>=v.count())
-				{
-					sh.error(v[i],"ifdef");
-					return false;
-				}
-				int elsepos=endpos;
-				for(int j=i+3;j<endpos;j++)
-					if(v[j]==rppoptr(c_pre)&&
-						v.get(j+1)==rppkey(c_else))
-					{
-						elsepos=j+1;
-						break;
-					}
-				rbool defined=vdefine.exist(item);
-				if(key==rppkey(c_ifdef))
-				{
-					if(defined)
-						sh.clear_word_val(v,elsepos,endpos);
-					else
-						sh.clear_word_val(v,i,elsepos);
-				}
-				else
-				{
-					if(!defined)
-						sh.clear_word_val(v,elsepos,endpos);
-					else
-						sh.clear_word_val(v,i,elsepos);
-				}
-				v[i].clear();
-				v[i+1].clear();
-				v[i+2].clear();
-				v[endpos-1].clear();
-				v[endpos].clear();
-				v[elsepos-1].clear();
-				v[elsepos].clear();
+				continue;
 			}
+			rstr key=v.get(i+1).val;
+			if(key!=rppkey(c_ifdef)&&
+				key!=rppkey(c_ifndef))
+				continue;
+			if(i+2>=v.count())
+			{
+				sh.error(v[i],"ifdef");
+				return false;
+			}
+			item.name=v[i+2].val;
+			int endpos=r_find_pos(v,tword(rppkey(c_endif)),i+3);
+			if(endpos>=v.count())
+			{
+				sh.error(v[i],"ifdef");
+				return false;
+			}
+			int elsepos=endpos;
+			for(int j=i+3;j<endpos;j++)
+				if(v[j]==rppoptr(c_pre)&&
+					v.get(j+1)==rppkey(c_else))
+				{
+					elsepos=j+1;
+					break;
+				}
+			rbool defined=vdefine.exist(item);
+			if(key==rppkey(c_ifdef))
+			{
+				if(defined)
+					sh.clear_word_val(v,elsepos,endpos);
+				else
+					sh.clear_word_val(v,i,elsepos);
+			}
+			else
+			{
+				if(!defined)
+					sh.clear_word_val(v,elsepos,endpos);
+				else
+					sh.clear_word_val(v,i,elsepos);
+			}
+			v[i].clear();
+			v[i+1].clear();
+			v[i+2].clear();
+			v[endpos-1].clear();
+			v[endpos].clear();
+			v[elsepos-1].clear();
+			v[elsepos].clear();
 		}
 		arrange(v);
 		return true;

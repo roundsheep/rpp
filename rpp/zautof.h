@@ -147,7 +147,9 @@ struct zautof
 		{
 			if(sh.is_basic_type(tci.vdata[i].type)||
 				sh.is_quote(tci.vdata[i].type))
+			{
 				continue;
+			}
 			sh.push_twi(tfi.vword,twi,rppkey(c_this));
 			sh.push_twi(tfi.vword,twi,rppoptr(c_dot));
 			sh.push_twi(tfi.vword,twi,tci.vdata[i].name);
