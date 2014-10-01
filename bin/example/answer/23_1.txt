@@ -1,0 +1,7 @@
+uint
+uint
+uint
+rstr
+int
+97
+255

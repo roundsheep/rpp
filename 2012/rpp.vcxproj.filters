@@ -1,0 +1,190 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="rpp">
+      <UniqueIdentifier>{215fd1b1-6a2b-4c78-8b15-c31646a41608}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rlib">
+      <UniqueIdentifier>{ab428ca6-6677-43d4-9996-7a8908450db1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\rpp\rpp_def.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\tanalyse.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\tconf.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\tsh.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\tstruct.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\tvm.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\tvm_struct.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\zadd.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\zasm.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\zautof.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\zbin.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\zclass.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\zcontrol.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\zctl.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\zexp.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\zfind.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\zftl.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\zmac.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\zmatch.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\zmemb.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\zpre.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\zread.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\zself.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\zsent.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\zsrep.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rlib\ralgo.h">
+      <Filter>rlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rlib\rbase.h">
+      <Filter>rlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rlib\rbuf.h">
+      <Filter>rlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rlib\rclass.h">
+      <Filter>rlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rlib\rcode.h">
+      <Filter>rlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rlib\rdb.h">
+      <Filter>rlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rlib\rdic.h">
+      <Filter>rlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rlib\rdir.h">
+      <Filter>rlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rlib\rf.h">
+      <Filter>rlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rlib\rfile.h">
+      <Filter>rlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rlib\rhash.h">
+      <Filter>rlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rlib\rindex.h">
+      <Filter>rlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rlib\rlist.h">
+      <Filter>rlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rlib\rmutex.h">
+      <Filter>rlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rlib\rset.h">
+      <Filter>rlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rlib\rsock.h">
+      <Filter>rlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rlib\rstr.h">
+      <Filter>rlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rlib\rstrw.h">
+      <Filter>rlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rlib\rthread.h">
+      <Filter>rlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\znasm.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\rcocos.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\zlambda.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\tvar.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\zopt.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\zjit.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\zjitb.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\zjiti.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\zjitf.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\talloc.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\zmain.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rpp\zsuper.h">
+      <Filter>rpp</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\rpp.cpp" />
+    <ClCompile Include="..\rlib\rclass.cpp">
+      <Filter>rlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\rlib\rsock.cpp">
+      <Filter>rlib</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

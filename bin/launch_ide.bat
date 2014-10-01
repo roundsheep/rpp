@@ -1,0 +1,1 @@
+start ide\SciTE.exe

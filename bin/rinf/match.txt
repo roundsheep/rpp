@@ -1,0 +1,37 @@
+sub esp , 4 
+
+push @n
+push [ @@ + @n ]
+call [ & int "<=(int,int)" ]
+mov ebx , [ esp ]
+add esp , 4
+
+clesb [ @1 + @2 ] , @0
+
+
+push @n
+lea esi,[@@+@n]
+push esi
+call [ & int "=(int&,int)" ]
+
+mov [@1+@2],@0
+
+push [@@+@n]
+lea esi,[@@+@n]
+push esi
+call [ & int "+=(int&,int)" ]
+
+add [@2+@3],[@0+@1]
+
+lea esi,[@@+@n]
+push esi
+call [ & int "++(int&)"]
+
+add [@0+@1],1
+
+push [ @@ + @n ] 
+push [ @@ + @n ] 
+call [ & int "+(int,int)" ]
+
+mov [esp],[@2+@3]
+add [esp],[@0+@1]

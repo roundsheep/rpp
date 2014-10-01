@@ -1,0 +1,53 @@
+IMPORT GetTickCount
+IMPORT Sleep
+IMPORT InitializeCriticalSection
+IMPORT DeleteCriticalSection
+IMPORT EnterCriticalSection
+IMPORT LeaveCriticalSection
+IMPORT _beginthreadex
+IMPORT WaitForSingleObject
+IMPORT CloseHandle
+
+IMPORT lstrlenW
+IMPORT FindClose
+IMPORT FindNextFileW
+IMPORT FindFirstFileW
+
+IMPORT WSAStartup
+IMPORT WSACleanup
+IMPORT socket
+IMPORT connect
+IMPORT closesocket
+IMPORT send
+IMPORT recv
+IMPORT bind
+IMPORT listen
+IMPORT accept
+
+IMPORT __iob_func
+IMPORT _fseeki64
+IMPORT _ftelli64
+IMPORT _wremove
+IMPORT _wrename
+IMPORT _wfopen
+IMPORT fopen
+IMPORT fclose
+IMPORT fread
+IMPORT fwrite
+IMPORT fseek
+IMPORT ftell
+
+IMPORT _time32
+IMPORT srand
+IMPORT rand
+IMPORT exit
+IMPORT system
+IMPORT malloc
+IMPORT free
+IMPORT memcpy
+IMPORT memset
+IMPORT strcpy
+IMPORT strlen
+IMPORT strcmp
+IMPORT sscanf
+IMPORT sprintf

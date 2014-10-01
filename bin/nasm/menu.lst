@@ -1,0 +1,12 @@
+
+color black/cyan yellow/cyan
+timeout 0
+default /default
+
+title rpp
+root (hd0,0)
+kernel (hd0,0)/cell.bin
+boot
+
+
+
