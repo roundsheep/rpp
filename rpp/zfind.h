@@ -47,8 +47,8 @@ struct zfind
 
 	static rbool is_type_mebx(tsh& sh,const rstr& type)
 	{
-		return type==sh.m_key[tkey::c_int]||
-			sh.is_point(type);
+		//这里不用is_point_quote可略为提高效率
+		return type==rppkey(c_int)||sh.is_point(type)||sh.is_quote(type);
 	}
 	
 	//只有rbool(int)或者指针

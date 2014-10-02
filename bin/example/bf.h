@@ -1,5 +1,6 @@
 ﻿/*
-BF解释器，下面是一个BF版的Hello World：
+BF解释器增强版，支持32位运算
+下面是一个BF版的Hello World：
 ++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.
 */
 
@@ -24,11 +25,11 @@ void main()
 		case `,
 			data[pd]=rf.getch
 		case `[
-			if data[pd]==0
+			ifn data[pd]
 				pc=find< ++ >(pc,code,`[,`])
 				continue//这里也可用continued
 		case `]
-			if data[pd]!=0
+			if data[pd]
 				pc=find< -- >(pc,code,`],`[)
 				continue
 }

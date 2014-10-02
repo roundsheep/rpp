@@ -5,7 +5,9 @@
 
 //生成汇编代码
 //tfunc.vsent->vasm
-//返回指针或者int的表达式需要放入ebx中
+//返回指针或引用或int的表达式需要放入ebx中
+//指针或int的引用是对本身的值进行判断
+//其它类型的引用是对引用进行判断
 struct zasm
 {
 	static rbool proc_func(tsh& sh,tclass& tci,tfunc& tfi)
@@ -172,6 +174,11 @@ struct zasm
 					return false;
 				push_asm(vasm,rppkey(c_mov),rppkey(c_ebx),rppoptr(c_comma),
 					rppoptr(c_mbk_l),rppkey(c_esi),rppoptr(c_mbk_r));
+				if(sh.is_quote(src.type)&&(sh.get_tname(src.type)==rppkey(c_int)||
+					sh.is_point(sh.get_tname(src.type))))
+				{
+					push_asm(vasm,"mov","ebx",",","[","ebx","]");
+				}
 			}
 			return true;
 		}
@@ -188,7 +195,8 @@ struct zasm
 			return false;
 		}
 		int size;
-		if(zfind::is_type_mebx(sh,src.type))
+		//多数函数返回void，因此加上这句判断可以提高效率
+		if(src.type!=rppkey(c_void)&&zfind::is_type_mebx(sh,src.type))
 		{
 			push_asm(vasm,"mov","esi",",","esp");
 			int cur=vasm.count();
@@ -202,6 +210,11 @@ struct zasm
 			else
 			{
 				push_asm(vasm,"mov","ebx",",","[","esi","]");
+			}
+			if(sh.is_quote(src.type)&&(sh.get_tname(src.type)==rppkey(c_int)||
+				sh.is_point(sh.get_tname(src.type))))
+			{
+				push_asm(vasm,"mov","ebx",",","[","ebx","]");
 			}
 		}
 		if(!destruct_ret(sh,retval,vasm))
@@ -712,27 +725,6 @@ struct zasm
 	static rstr get_int(rstr& s)
 	{
 		return s.sub(0,s.count()-1);
-	}
-
-	static rbuf<rstr> get_imme_str(tfunc& tfi,rbuf<tsent>& vsent,int i)
-	{
-		rbuf<rstr> ret;
-		if(vsent[i].vword[0].is_cint())
-		{
-			ret.push(vsent[i].vword[0].val);
-			return ret;
-		}
-		tdata* tdi=zfind::local_search(tfi,vsent[i].vword[0].val);
-		if(tdi==null)
-		{
-			return ret;//不可能
-		}
-		ret.push("[");
-		ret.push("ebp");
-		ret.push("+");
-		ret.push(rstr(tdi->off));
-		ret.push("]");
-		return ret;
 	}
 };
 
