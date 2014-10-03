@@ -34,7 +34,7 @@ struct zjit
 #ifdef _MSC_VER
 		if(!tfi.vasm.empty())
 			return true;
-		if(!zbin::cp_vword_to_vasm(sh,*tfi.ptci,tfi))
+		if(!zbin::cp_vword_to_vasm(sh,tfi))
 		{
 			return false;
 		}

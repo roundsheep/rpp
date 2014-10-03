@@ -6,8 +6,7 @@
 //函数模板替换类
 struct zftl
 {
-	static rbool ftl_replace(tsh& sh,tclass& tci,rbuf<tword>& v,
-		tclass* ptci=null)
+	static rbool ftl_replace(tsh& sh,tclass& tci,rbuf<tword>& v,tclass* ptci)
 	{
 		for(int i=0;i<v.count();i++)
 		{
@@ -23,7 +22,7 @@ struct zftl
 					if(ptci==null)
 					{
 						continue;
-					}
+					}	
 				}
 				else
 				{

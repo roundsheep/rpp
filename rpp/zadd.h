@@ -6,8 +6,9 @@
 //增加局部变量和成员变量构造及析构
 struct zadd
 {
-	static void add_local_and_memb(tsh& sh,tclass& tci,tfunc& tfi)
+	static void add_local_and_memb(tsh& sh,tfunc& tfi)
 	{
+		tclass& tci=*tfi.ptci;
 		//增加局部变量构造和析构
 		//注意增加的这些语句type为空
 		tsent temp=add_local_init(sh,tfi);
@@ -21,18 +22,18 @@ struct zadd
 		{
 			if(tci.name==rppkey(c_main)&&tfi.name==rppkey(c_main))
 			{
-				add_member_struct(sh,tci,tfi);	
-				add_member_destruct(sh,tci,tfi);//全局变量在main中构造和析构
+				add_member_struct(sh,tfi);	
+				add_member_destruct(sh,tfi);//全局变量在main中构造和析构
 			}
 			elif(tfi.name==tci.name&&
 				tfi.retval.type==sh.m_key[tkey::c_void]&&
 				!tfi.is_friend)
 			{
-				add_member_struct(sh,tci,tfi);	
+				add_member_struct(sh,tfi);	
 			}
-			elif(zfind::is_destruct(sh,tci,tfi))
+			elif(zfind::is_destruct(sh,tfi))
 			{
-				add_member_destruct(sh,tci,tfi);
+				add_member_destruct(sh,tfi);
 			}
 		}
 	}
@@ -97,21 +98,22 @@ struct zadd
 			zfind::is_empty_struct_type(sh,tdi.type))
 			return;
 		v.push(tword(tdi.type));
-		v.push(tword(sh.m_optr[toptr::c_dot]));
+		v.push(tword(rppoptr(c_dot)));
 		v.push(tword(tdi.type));
 		v.push(tword(rppoptr(c_sbk_l)));
 		v.push(tword(tdi.name));
 		if(!tdi.param.empty())
 		{
-			v.push(tword(sh.m_optr[toptr::c_comma]));
+			v.push(tword(rppoptr(c_comma)));
 			v+=tdi.param;
 		}
-		v.push(tword(sh.m_optr[toptr::c_sbk_r]));
-		v.push(tword(sh.m_optr[toptr::c_semi]));
+		v.push(tword(rppoptr(c_sbk_r)));
+		v.push(tword(rppoptr(c_semi)));
 	}
 
-	static void add_member_destruct(tsh& sh,tclass& tci,tfunc& tfi)
+	static void add_member_destruct(tsh& sh,tfunc& tfi)
 	{
+		tclass& tci=*tfi.ptci;
 		tsent sent;
 		sent.pos=tfi.last_pos;
 		sent.type=sh.m_key[tkey::c_void];
@@ -133,8 +135,9 @@ struct zadd
 		}
 	}
 
-	static void add_member_struct(tsh& sh,tclass& tci,tfunc& tfi)
+	static void add_member_struct(tsh& sh,tfunc& tfi)
 	{
+		tclass& tci=*tfi.ptci;
 		tsent sent;
 		sent.type=sh.m_key[tkey::c_void];
 		for(int i=0;i<tci.vdata.count();i++)

@@ -6,7 +6,9 @@
 #include "rclass.h"
 #include "rf.h"
 
+#ifndef _MSC_VER
 #include "code.txt"
+#endif
 
 static rclass g_rclass;
 

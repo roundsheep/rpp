@@ -177,7 +177,7 @@ struct zclass
 	static rbool name_part(tsh& sh,tclass& tci,rbuf<tword>& name_w)
 	{
 		rbuf<tword> father;
-		int colonpos=r_find_pos(name_w,tword(sh.m_optr[toptr::c_colon]));
+		int colonpos=r_find_pos(name_w,tword(rppoptr(c_colon)));
 		if(colonpos<name_w.count())
 		{
 			for(int i=colonpos+1;i<name_w.count();i++)
@@ -190,13 +190,13 @@ struct zclass
 			name_w.erase(colonpos,name_w.count());
 			tci.vfather=sh.comma_split_t(father);
 		}
-		int pos=r_find_pos(name_w,tword(sh.m_optr[toptr::c_tbk_l]));
+		int pos=r_find_pos(name_w,tword(rppoptr(c_tbk_l)));
 		if(pos<name_w.count())
 		{
 			rstr temp;
 			for(int i=pos+1;i<name_w.count()-1;i++)
 				temp+=name_w[i].val;
-			rbuf<rstr> result=r_split(temp,sh.m_optr[toptr::c_comma]);
+			rbuf<rstr> result=r_split(temp,rppoptr(c_comma));
 			if(result.empty())
 			{
 				sh.error(tci.vword.get(0),"template >error");
@@ -205,7 +205,7 @@ struct zclass
 			for(int i=0;i<result.count();i++)
 			{
 				ttl item;
-				int epos=r_find_pos(result[i],sh.m_optr[toptr::c_equal]);
+				int epos=r_find_pos(result[i],rppoptr(c_equal));
 				for(int j=0;j<epos;j++)
 					item.name+=result[i][j];
 				if(item.name.empty())

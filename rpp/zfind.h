@@ -47,7 +47,7 @@ struct zfind
 
 	static rbool is_type_mebx(tsh& sh,const rstr& type)
 	{
-		//这里不用is_point_quote可略为提高效率
+		//这里不用is_point_quote可略微提高效率
 		return type==rppkey(c_int)||sh.is_point(type)||sh.is_quote(type);
 	}
 	
@@ -276,8 +276,9 @@ struct zfind
 		return func_search(tci,"~"+tci.name,tci.name+"&");
 	}
 
-	static rbool is_destruct(tsh& sh,tclass& tci,tfunc& tfi)
+	static rbool is_destruct(tsh& sh,tfunc& tfi)
 	{
+		tclass& tci=*tfi.ptci;
 		return sh.m_optr[toptr::c_destruct]+tci.name==tfi.name&&
 				tfi.param.count()==1&&
 				tfi.param[0].type==tci.name+sh.m_optr[toptr::c_addr]&&
@@ -289,8 +290,9 @@ struct zfind
 		return func_search(tci,tci.name,tci.name+"&");
 	}
 
-	static rbool is_emptystruct(tsh& sh,tclass& tci,tfunc& tfi)
+	static rbool is_emptystruct(tsh& sh,tfunc& tfi)
 	{
+		tclass& tci=*tfi.ptci;
 		return tci.name==tfi.name&&
 				tfi.param.count()==1&&
 				tfi.param[0].type==tci.name+sh.m_optr[toptr::c_addr]&&
@@ -300,15 +302,6 @@ struct zfind
 	static tfunc* copystruct_search(tclass& tci)
 	{
 		return func_search(tci,tci.name,tci.name+"&",tci.name+"&");
-	}
-
-	static rbool is_copystruct(tsh& sh,const tclass& tci,tfunc& tfi)
-	{
-		return tci.name==tfi.name&&
-				tfi.param.count()==2&&
-				tfi.param[0].type==tci.name+sh.m_optr[toptr::c_addr]&&
-				tfi.param[1].type==tci.name+sh.m_optr[toptr::c_addr]&&
-				tfi.retval.type==sh.m_key[tkey::c_void];
 	}
 
 	static tdata* data_member_search(const tclass& tci,const rstr& name)

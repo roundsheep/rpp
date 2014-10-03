@@ -21,7 +21,7 @@ main
 		putsl('asm error')
 		return
 	cmd='nasm\\GoLink.exe /console /mix /entry _main '
-	cmd+=b+'.obj msvcr100.dll ws2_32.dll kernel32.dll user32.dll'
+	cmd+=b+'.obj msvcrt.dll ws2_32.dll kernel32.dll user32.dll'
 	if rf.cmd(cmd)==0
 		clear(b)
 		putsl('link error')

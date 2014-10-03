@@ -44,8 +44,9 @@ struct zmemb
 		return true;
 	}
 
-	static rbool analyse(tsh& sh,tclass& tci,rbuf<tword>& v)
+	static rbool analyse(tsh& sh,tclass& tci)
 	{
+		rbuf<tword>& v=tci.vword;
 		int start=0;
 		int i;
 		for(i=0;i<v.count();i++)
@@ -557,7 +558,7 @@ struct zmemb
 			}
 			item.vword=v.sub(left+1,right);
 			tci.vfunc.insert(item);
-			if(!default_param_proc(sh,tci,*tci.vfunc.find(item)))
+			if(!default_param_proc(sh,*tci.vfunc.find(item)))
 			{
 				return false;
 			}
@@ -648,7 +649,7 @@ struct zmemb
 		}
 	}
 
-	static rbool default_param_proc(tsh& sh,tclass& tci,tfunc& tfi)
+	static rbool default_param_proc(tsh& sh,tfunc& tfi)
 	{
 		int i;
 		for(i=0;i<tfi.param.count();i++)
@@ -693,12 +694,12 @@ struct zmemb
 			for(int j=0;j<ftemp.param.count();j++)
 				ftemp.param[j].param.free();
 			ftemp.name_dec=ftemp.get_dec();
-			if(tci.vfunc.exist(ftemp))
+			if(tfi.ptci->vfunc.exist(ftemp))
 			{
 				sh.error(tfi.vword.get_bottom(),"func redefined");
 				return false;
 			}
-			tci.vfunc.insert(ftemp);
+			tfi.ptci->vfunc.insert(ftemp);
 		}
 		for(i=0;i<tfi.param.count();i++)
 			tfi.param[i].param.free();

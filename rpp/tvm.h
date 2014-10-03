@@ -73,7 +73,7 @@ next:
 				return false;
 			case tins::c_cp_txt:
 				pvmt->m_meta.clear();
-				if(!zbin::cp_func_txt(sh,*sh.m_main,
+				if(!zbin::cp_func_txt(sh,
 					pvmt->m_meta,(char*)v_pto_uint(reg.esp)))
 				{
 					sh.error(((tasm*)cur)->ptfi);

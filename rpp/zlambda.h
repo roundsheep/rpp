@@ -69,8 +69,9 @@ struct zlambda
 		sh.m_class.insert_c(item);
 	}
 
-	static rbool lambda_replace(tsh& sh,tclass& tci,tfunc& tfi)
+	static rbool lambda_replace(tsh& sh,tfunc& tfi)
 	{
+		tclass& tci=*tfi.ptci;
 		rbuf<tword>& v=tfi.vword;
 		for(int i=0;i<v.count();i++)
 		{
@@ -141,8 +142,9 @@ struct zlambda
 		tfi.local.push(item);
 	}
 
-	static void lambda_proc(tsh& sh,tclass& tci,tfunc& tfi)
+	static void lambda_proc(tsh& sh,tfunc& tfi)
 	{
+		tclass& tci=*tfi.ptci;
 		rbuf<tsent>& v=tfi.vsent;
 		for(int i=0;i<v.count();i++)
 		{

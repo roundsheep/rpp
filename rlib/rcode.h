@@ -11,6 +11,26 @@ struct rcode
 		return utf16_to_utf8(gbk_to_utf16(s));
 	}
 
+#ifdef _MSC_VER
+	static rstr gbk_to_utf16(rstr s)
+	{
+		rstr result;
+		//即使是英语操作系统应该也安装936代码页
+		int size=MultiByteToWideChar(936,0,s.cstr_t(),-1,null,0);
+		if(size<=0)
+		{
+			return result;
+		}
+		result.set_size(size*2);
+		size=MultiByteToWideChar(936,0,s.cstr_t(),-1,result.cstrw_t(),size);
+		if(size<=0)
+		{
+			return "";
+		}
+		result.m_buf.m_count-=2;
+		return result;
+	}
+#else
 	static rstr gbk_to_utf16(const rstr& s)
 	{
 		rstr result;
@@ -44,6 +64,7 @@ struct rcode
 		}
 		return result;
 	}
+#endif
 
 	static rstr utf8_to_gbk(const rstr& s)
 	{
@@ -92,6 +113,25 @@ struct rcode
 		return result;
 	}
 
+#ifdef _MSC_VER
+	static rstr utf16_to_gbk(rstr s)
+	{
+		rstr result;
+		int size=WideCharToMultiByte(936,0,s.cstrw_t(),-1,null,0,null,null);
+		if(size<=0)
+		{
+			return result;
+		}
+		result.set_size(size);
+		size=WideCharToMultiByte(936,0,s.cstrw_t(),-1,(char*)result.begin(),size,null,null);
+		if(size<=0)
+		{
+			return "";
+		}
+		result.pop();
+		return result;
+	}
+#else
 	static rstr utf16_to_gbk(const rstr& s)
 	{
 		rstr result;
@@ -117,6 +157,7 @@ struct rcode
 		}
 		return result;
 	}
+#endif
 
 	static rstr utf16_to_utf8(const rstr& s)
 	{
@@ -273,12 +314,20 @@ struct rcode
 
 	static ushort unicode(int index)
 	{
+#ifdef _MSC_VER
+		return 0;
+#else
 		return *(ushort*)&g_unicode[index*2];
+#endif
 	}
 
 	static ushort gbk(int index)
 	{
+#ifdef _MSC_VER
+		return 0;
+#else
 		return *(ushort*)&g_gbk[index*2];
+#endif
 	}
 
 	static char& get_second(ushort& ch)

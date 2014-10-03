@@ -115,6 +115,11 @@ struct rstr
 		return result;
 	}
 
+	rstr torstr()
+	{
+		return *this;
+	}
+
 	uchar* cstr()
 	{
 		char temp=0;
@@ -477,6 +482,21 @@ struct rstr
 			pro*=2;
 		}
 		return rstr(sum);
+	}
+
+	template<class T>
+	static rstr join(const rbuf<T>& v,const rstr& s)
+	{
+		rstr ret;
+		for(int i=0;i<v.count();i++)
+		{
+			if(i!=0)
+			{
+				ret+=s;
+			}
+			ret+=v[i].torstr();
+		}
+		return ret;
 	}
 };
 

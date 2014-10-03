@@ -68,7 +68,7 @@ struct zautof
 			tfi.param.push(tdata(tci.name+rppoptr(c_addr),rppkey(c_rvara)));
 			tfi.retval=tdata(rppkey(c_void),"");
 
-			add_copy_sent(sh,tci,tfi);
+			add_copy_sent(sh,tfi);
 			tfi.name_dec=tfi.get_dec();
 			tci.vfunc.insert(tfi);
 			added=true;
@@ -96,7 +96,7 @@ struct zautof
 			tfi.param.push(tdata(tci.name+rppoptr(c_addr),rppkey(c_rvara)));
 			tfi.retval=tdata(rppkey(c_void),"");
 
-			add_copy_sent(sh,tci,tfi);
+			add_copy_sent(sh,tfi);
 			tfi.name_dec=tfi.get_dec();
 			tci.vfunc.insert(tfi);
 			added=true;
@@ -138,8 +138,9 @@ struct zautof
 		return true;
 	}
 
-	static void add_copy_sent(tsh& sh,tclass& tci,tfunc& tfi)
+	static void add_copy_sent(tsh& sh,tfunc& tfi)
 	{
+		tclass& tci=*tfi.ptci;
 		tword twi;
 		twi.pos_src=tfi.first_pos;
 		twi.pos=tfi.first_pos;

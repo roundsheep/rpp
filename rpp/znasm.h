@@ -311,7 +311,7 @@ struct znasm
 		tfi.count=1;
 		if(tfi.vasm.empty())
 		{
-			if(!zbin::cp_vword_to_vasm(sh,*tfi.ptci,tfi))
+			if(!zbin::cp_vword_to_vasm(sh,tfi))
 			{
 				return false;
 			}
@@ -419,7 +419,7 @@ struct znasm
 		rbuf<tasm>& vasm=ptfi->vasm;
 		if(vasm.empty())
 		{
-			if(!zbin::cp_vword_to_vasm(sh,*ptfi->ptci,*ptfi))
+			if(!zbin::cp_vword_to_vasm(sh,*ptfi))
 			{
 				return false;
 			}
@@ -547,7 +547,7 @@ struct znasm
 				if(count_mbk_l(vstr)==2)
 				{
 					result+="	lea ecx , "+get_opnd2(vstr)+"\n";
-					result+="	mov "+get_opnd1(vstr)+", ecx\n";
+					result+="	mov "+get_opnd1(vstr)+" , ecx\n";
 				}
 				else
 				{
@@ -560,7 +560,7 @@ struct znasm
 				if(count_mbk_l(vstr)==2)
 				{
 					result+="	mov ecx , "+get_opnd2(vstr)+"\n";
-					result+="	mov "+get_opnd1(vstr)+", ecx\n";
+					result+="	mov "+get_opnd1(vstr)+" , ecx\n";
 				}
 				else
 				{
@@ -571,7 +571,7 @@ struct znasm
 					}
 					else
 					{
-						result+="	mov dword "+get_opnd1(vstr)+","+get_nasm_symbol(*ptfi)+"\n";
+						result+="	mov dword "+get_opnd1(vstr)+" , "+get_nasm_symbol(*ptfi)+"\n";
 					}
 				}
 				return true;
@@ -579,7 +579,7 @@ struct znasm
 		case tkey::c_mov1:
 			{
 				result+="	mov cl , "+get_opnd2(vstr)+"\n";
-				result+="	mov "+get_opnd1(vstr)+", cl\n";
+				result+="	mov "+get_opnd1(vstr)+" , cl\n";
 				return true;
 			}
 		case tkey::c_mov8:
@@ -591,7 +591,7 @@ struct znasm
 				if(count_mbk_l(vstr)==2)
 				{
 					result+="	mov ecx , "+get_opnd2(vstr)+"\n";
-					result+="	add "+get_opnd1(vstr)+", ecx\n";
+					result+="	add "+get_opnd1(vstr)+" , ecx\n";
 				}
 				else
 				{
@@ -604,7 +604,7 @@ struct znasm
 				if(count_mbk_l(vstr)==2)
 				{
 					result+="	mov ecx , "+get_opnd2(vstr)+"\n";
-					result+="	sub "+get_opnd1(vstr)+", ecx\n";
+					result+="	sub "+get_opnd1(vstr)+" , ecx\n";
 				}
 				else
 				{
@@ -616,7 +616,7 @@ struct znasm
 			{
 				result+="	mov ecx , "+get_opnd1(vstr)+"\n";
 				result+="	imul ecx , "+get_opnd2(vstr)+"\n";
-				result+="	mov "+get_opnd1(vstr)+", ecx\n";
+				result+="	mov "+get_opnd1(vstr)+" , ecx\n";
 				return true;
 			}
 		case tkey::c_idiv:
@@ -625,7 +625,7 @@ struct znasm
 				result+="	cdq\n";
 				result+="	mov ecx , "+get_opnd2(vstr)+"\n";
 				result+="	idiv ecx\n";
-				result+="	mov "+get_opnd1(vstr)+", eax\n";
+				result+="	mov "+get_opnd1(vstr)+" , eax\n";
 				return true;
 			}
 		case tkey::c_imod:
@@ -634,7 +634,7 @@ struct znasm
 				result+="	cdq\n";
 				result+="	mov ecx , "+get_opnd2(vstr)+"\n";
 				result+="	idiv ecx\n";
-				result+="	mov "+get_opnd1(vstr)+", edx\n";
+				result+="	mov "+get_opnd1(vstr)+" , edx\n";
 				return true;
 			}
 		case tkey::c_cesb:
@@ -718,7 +718,7 @@ struct znasm
 				if(count_mbk_l(vstr)==2)
 				{
 					result+="	mov ecx , "+get_opnd2(vstr)+"\n";
-					result+="	and "+get_opnd1(vstr)+", ecx\n";
+					result+="	and "+get_opnd1(vstr)+" , ecx\n";
 				}
 				else
 				{
@@ -731,7 +731,7 @@ struct znasm
 				if(count_mbk_l(vstr)==2)
 				{
 					result+="	mov ecx , "+get_opnd2(vstr)+"\n";
-					result+="	or "+get_opnd1(vstr)+", ecx\n";
+					result+="	or "+get_opnd1(vstr)+" , ecx\n";
 				}
 				else
 				{
@@ -749,7 +749,7 @@ struct znasm
 				if(count_mbk_l(vstr)==2)
 				{
 					result+="	mov ecx , "+get_opnd2(vstr)+"\n";
-					result+="	xor "+get_opnd1(vstr)+", ecx\n";
+					result+="	xor "+get_opnd1(vstr)+" , ecx\n";
 				}
 				else
 				{
@@ -775,7 +775,7 @@ struct znasm
 				result+="	xor edx , edx\n";
 				result+="	mov ecx , "+get_opnd2(vstr)+"\n";
 				result+="	div ecx\n";
-				result+="	mov "+get_opnd1(vstr)+", eax\n";
+				result+="	mov "+get_opnd1(vstr)+" , eax\n";
 				return true;
 			}
 		case tkey::c_umod:
@@ -784,7 +784,7 @@ struct znasm
 				result+="	xor edx , edx\n";
 				result+="	mov ecx , "+get_opnd2(vstr)+"\n";
 				result+="	div ecx\n";
-				result+="	mov "+get_opnd1(vstr)+", edx\n";
+				result+="	mov "+get_opnd1(vstr)+" , edx\n";
 				return true;
 			}
 		case tkey::c_ucgsb:
@@ -822,10 +822,7 @@ struct znasm
 
 	static rstr link_vstr(const rbuf<rstr>& v)
 	{
-		rstr ret;
-		for(int i=0;i<v.count();i++)
-			ret+=v[i]+" ";
-		return ret;
+		return rstr::join<rstr>(v," ");
 	}
 
 	static rstr get_opnd1(rbuf<rstr>& vstr)

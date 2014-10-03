@@ -101,7 +101,7 @@ struct zmac
 		return true;
 	}
 
-	static rbool replace(tsh& sh,tclass& tci,rbuf<tword>& v,tfunc* ptfi)
+	static rbool replace(tsh& sh,tclass& tci,rbuf<tword>& v)
 	{
 		for(int i=0;i<c_rpp_deep;i++)
 		{

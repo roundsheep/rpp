@@ -7,11 +7,11 @@
 //简单替换类
 struct zsrep
 {
-	static rbool typeof_replace(tsh& sh,tclass& tci,tfunc& tfi,rbuf<tsent>& vsent)
+	static rbool typeof_replace(tsh& sh,tfunc& tfi)
 	{
-		for(int i=0;i<vsent.count();i++)
+		for(int i=0;i<tfi.vsent.count();i++)
 		{
-			if(!typeof_replace(sh,tci,tfi,vsent[i],vsent[i].vword))
+			if(!typeof_replace(sh,tfi,tfi.vsent[i]))
 			{
 				return false;
 			}
@@ -19,8 +19,9 @@ struct zsrep
 		return true;
 	}
 
-	static rbool typeof_replace(tsh& sh,tclass& tci,tfunc& tfi,tsent& sent,rbuf<tword>& v)
+	static rbool typeof_replace(tsh& sh,tfunc& tfi,tsent& sent)
 	{
+		rbuf<tword>& v=sent.vword;
 		for(int i=0;i<v.count();i++)
 		{
 			if(v[i]!=rppkey(c_typeof))
@@ -48,7 +49,7 @@ struct zsrep
 			}
 			else
 			{
-				if(!zexp::p_exp(sh,dst,tci,tfi))
+				if(!zexp::p_exp(sh,dst,tfi))
 				{
 					return false;
 				}
@@ -60,10 +61,10 @@ struct zsrep
 		return true;
 	}
 
-	static void fpoint_replace(tsh& sh,tclass& tci,tfunc& tfi)
+	static void fpoint_replace(tsh& sh,tfunc& tfi)
 	{
 		for(int i=0;i<tfi.vsent.count();++i)
-			fpoint_replace(sh,tci,tfi.vsent[i].vword);
+			fpoint_replace(sh,*tfi.ptci,tfi.vsent[i].vword);
 	}
 
 	static void fpoint_replace(tsh& sh,tclass& tci,rbuf<tword>& v)

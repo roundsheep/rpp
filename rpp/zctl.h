@@ -86,7 +86,7 @@ struct zctl
 			return true;
 		}
 		sbk_line_proc(sh,tci.vword,true);
-		if(!zmemb::analyse(sh,tci,tci.vword))
+		if(!zmemb::analyse(sh,tci))
 		{
 			return false;
 		}
@@ -269,10 +269,10 @@ struct zctl
 	{
 		for(int i=0;i<v.count();i++)
 		{
-			if(v.get(i+1).val==sh.m_optr[toptr::c_star]&&
+			if(v.get(i+1).val==rppoptr(c_star)&&
 				zfind::is_class(sh,v[i].val))
 			{
-				if(v.get(i+2).val==sh.m_optr[toptr::c_star])
+				if(v.get(i+2).val==rppoptr(c_star))
 				{
 					if(v.get(i+3)==rppoptr(c_sbk_l))
 					{
@@ -322,19 +322,19 @@ struct zctl
 	{
 		for(int i=0;i<v.count();i++)
 		{
-			if(v.get(i+1).val==sh.m_optr[toptr::c_addr]&&
+			if(v.get(i+1).val==rppoptr(c_addr)&&
 				zfind::is_class(sh,v[i].val))
 			{
 				for(int j=i+1;j<v.count();j++)
 				{
-					if(v[j].val!=sh.m_optr[toptr::c_addr])
+					if(v[j].val!=rppoptr(c_addr))
 						break;
 					v[i].val+=v[j].val;
 					v[j].clear();
 				}
 			}
-			elif((v[i].val==sh.m_optr[toptr::c_dot]||v[i]==rppoptr(c_arrow_r))&&
-				v.get(i+1).val==sh.m_optr[toptr::c_destruct]&&
+			elif((v[i].val==rppoptr(c_dot)||v[i]==rppoptr(c_arrow_r))&&
+				v.get(i+1).val==rppoptr(c_destruct)&&
 				zfind::is_class(sh,v.get(i+2).val))
 			{
 				v[i+1].val+=v[i+2].val;

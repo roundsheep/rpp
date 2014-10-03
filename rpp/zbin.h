@@ -9,11 +9,11 @@
 struct zbin
 {
 	//将一个函数翻译成二进制代码
-	static rbool proc_func(tsh& sh,tclass& tci,tfunc& tfi)
+	static rbool proc_func(tsh& sh,tfunc& tfi)
 	{
 		if(!tfi.vasm.empty())
 			return true;
-		if(!cp_vword_to_vasm(sh,tci,tfi))
+		if(!cp_vword_to_vasm(sh,tfi))
 		{
 			return false;
 		}
@@ -29,7 +29,7 @@ struct zbin
 		return true;
 	}
 
-	static rbool cp_func_txt(tsh& sh,tclass& tci,tfunc& tfi,rstr s)
+	static rbool cp_func_txt(tsh& sh,tfunc& tfi,rstr s)
 	{
 		rmutex_t mutex_t(sh.m_mutex);
 		rbuf<tword> v;
@@ -67,7 +67,7 @@ struct zbin
 			return false;
 		}
 		zmemb::obtain_size_func(sh,tfi);
-		if(!proc_func(sh,tci,tfi))
+		if(!proc_func(sh,tfi))
 		{
 			return false;
 		}
@@ -112,7 +112,7 @@ struct zbin
 			sh.error("can't find "+fname);
 			return false;
 		}
-		if(!proc_func(sh,*ptci,*ptfi))
+		if(!proc_func(sh,*ptfi))
 		{
 			return false;
 		}
@@ -149,14 +149,14 @@ struct zbin
 	}
 
 	//从函数的词表编译到vasm
-	static rbool cp_vword_to_vasm(tsh& sh,tclass& tci,tfunc& tfi)
+	static rbool cp_vword_to_vasm(tsh& sh,tfunc& tfi)
 	{
-		if(!zsent::proc_func(sh,tci,tfi))
+		if(!zsent::proc_func(sh,tfi))
 		{
 			sh.error(tfi,"sent error");
 			return false;
 		}
-		if(!zasm::proc_func(sh,tci,tfi))
+		if(!zasm::proc_func(sh,tfi))
 		{
 			sh.error(tfi,"asm error");
 			return false;
@@ -366,7 +366,7 @@ struct zbin
 				o.type=topnd::c_addr;
 				o.off=get_reg_off(sh,v[1]);
 				o.val=v[3].touint();
-				if(v[2]==sh.m_optr[toptr::c_minus])
+				if(v[2]==rppoptr(c_minus))
 					o.val=-o.val;
 			}
 		}
@@ -495,7 +495,7 @@ struct zbin
 		param.clear();
 		for(int i=0;i<temp.count();i++)
 		{
-			param.push(linkvstr(temp[i]));
+			param.push(rstr::join<rstr>(temp[i],""));
 		}
 		if(param.empty())
 			return zfind::func_search(*ptci,fname);
@@ -511,7 +511,7 @@ struct zbin
 		{
 			return 0;
 		}
-		if(!proc_func(sh,*ptfi->ptci,*ptfi))
+		if(!proc_func(sh,*ptfi))
 		{
 			return 0;
 		}
@@ -557,14 +557,6 @@ struct zbin
 			i=right;
 		}
 		zpre::arrange(v);
-	}
-
-	static rstr linkvstr(rbuf<rstr>& v)
-	{
-		rstr ret;
-		for(int i=0;i<v.count();i++)
-			ret+=v[i];
-		return ret;
 	}
 };
 

@@ -10,12 +10,12 @@
 //其它类型的引用是对引用进行判断
 struct zasm
 {
-	static rbool proc_func(tsh& sh,tclass& tci,tfunc& tfi)
+	static rbool proc_func(tsh& sh,tfunc& tfi)
 	{
 		for(int i=0;i<tfi.vsent.count();i++)
 		{
 			rbuf<tasm> vasm;
-			if(!proc_ret(sh,tfi.vsent[i],vasm,tci,tfi))
+			if(!proc_ret(sh,tfi.vsent[i],vasm,tfi))
 			{
 				sh.error(tfi.vsent[i],"build asm error");
 				return false;
@@ -120,7 +120,7 @@ struct zasm
 	}
 
 	static rbool proc_ret(tsh& sh,tsent& src,rbuf<tasm>& vasm,
-		tclass& tci,tfunc& tfi,int level=0)
+		tfunc& tfi,int level=0)
 	{
 		rstr name=src.vword.get_bottom().val;
 		if(sh.m_key.is_asm_ins(name))
@@ -133,6 +133,7 @@ struct zasm
 		{
 			if(src.vword[0].is_cint())
 			{
+				//经测试rppkey(c_mov)比"mov"效率低
 				push_asm(vasm,rppkey(c_mov),rppkey(c_ebx),rppoptr(c_comma),src.vword[0].val);
 				return true;
 			}
@@ -183,14 +184,14 @@ struct zasm
 			return true;
 		}
 		//返回函数
-		return proc_ret_func(sh,src,vasm,tci,tfi,level);
+		return proc_ret_func(sh,src,vasm,tfi,level);
 	}
 
 	static rbool proc_ret_func(tsh& sh,tsent& src,rbuf<tasm>& vasm,
-		tclass& tci,tfunc& tfi,int level)
+		tfunc& tfi,int level)
 	{
 		tdata retval;
-		if(!a_exp(sh,get_src_in(sh,src),vasm,retval,tci,tfi,level))
+		if(!a_exp(sh,get_src_in(sh,src),vasm,retval,tfi,level))
 		{
 			return false;
 		}
@@ -226,9 +227,9 @@ struct zasm
 		return true;
 	}
 	
-	//解析表达式生成汇编代码，其实tci没用，但p_exp用到了
+	//解析表达式生成汇编代码
 	static rbool a_exp(tsh& sh,const tsent& src,rbuf<tasm>& vasm,tdata& retval,
-		tclass& tci,tfunc& tfi,int level=0)
+		tfunc& tfi,int level=0)
 	{
 		if(level++>c_rpp_deep)
 		{
@@ -262,7 +263,7 @@ struct zasm
 			zexp::get_vsent(temp_v,vsent,src);
 			for(int i=vsent.count()-1;i>=0;i--)
 			{
-				if(!zexp::p_exp(sh,vsent[i],tci,tfi,level))
+				if(!zexp::p_exp(sh,vsent[i],tfi,level))
 				{
 					return false;
 				}
@@ -272,16 +273,16 @@ struct zasm
 				tdata tdi;
 				tdi.type=sh.get_tname(vsent[i].type);
 				tdi.size=zfind::get_type_size(sh,tdi.type);
-				if(!pass_param(sh,vsent[i],tdi,vasm,tci,tfi,level))
+				if(!pass_param(sh,vsent[i],tdi,vasm,tfi,level))
 					return false;
 			}
 			tsent sent=src;
 			sent.vword=vlisp[2];
-			if(!zexp::p_exp(sh,sent,tci,tfi,level))
+			if(!zexp::p_exp(sh,sent,tfi,level))
 			{
 				return false;
 			}
-			if(!proc_ret(sh,sent,vasm,tci,tfi,level))
+			if(!proc_ret(sh,sent,vasm,tfi,level))
 				return false;
 			if(sent.type==rstr("rp<void>"))
 			{
@@ -298,10 +299,9 @@ struct zasm
 		zexp::get_vlisp(sh,vlisp[2],vlisp);
 		rbuf<tsent> vsent;
 		zexp::get_vsent(vlisp,vsent,src);
-		
 		for(int i=vsent.count()-1;i>=0;i--)
 		{
-			if(!zexp::p_exp(sh,vsent[i],tci,tfi,level))
+			if(!zexp::p_exp(sh,vsent[i],tfi,level))
 			{
 				return false;
 			}
@@ -321,7 +321,7 @@ struct zasm
 		retval=ptfi->retval;
 		if(rppconf(c_op_empty_func)&&
 			zfind::is_empty_struct_type(sh,ptci->name)&&
-			(zfind::is_destruct(sh,*ptci,*ptfi)||zfind::is_emptystruct(sh,*ptci,*ptfi)))
+			(zfind::is_destruct(sh,*ptfi)||zfind::is_emptystruct(sh,*ptfi)))
 			return true;
 		if(ptfi->param.count()!=vsent.count())
 		{
@@ -331,7 +331,7 @@ struct zasm
 		push_asm(vasm,"sub","esp",",",size);
 		for(int i=vsent.count()-1;i>=0;i--)
 		{
-			if(!pass_param(sh,vsent[i],ptfi->param[i],vasm,tci,tfi,level))
+			if(!pass_param(sh,vsent[i],ptfi->param[i],vasm,tfi,level))
 			{
 				return false;
 			}
@@ -368,7 +368,7 @@ struct zasm
 	}
 
 	static rbool pass_param(tsh& sh,tsent& src,tdata& dst,rbuf<tasm>& vasm,
-		tclass& tci,tfunc& tfi,int level)
+		tfunc& tfi,int level)
 	{
 		if(src.vword.empty())
 			return false;
@@ -382,7 +382,7 @@ struct zasm
 			push_asm(vasm,"sub","esp",",",size);
 			//递归处理子表达式
 			tdata retval;
-			if(!a_exp(sh,src_in,vasm,retval,tci,tfi,level))
+			if(!a_exp(sh,src_in,vasm,retval,tfi,level))
 				return false;
 			//获取传递参数的地址分别放入esi和edi中，
 			//包括函数返回后再dot，如int.get().m_in
@@ -626,6 +626,19 @@ struct zasm
 		return true;
 	}
 
+	static rstr get_int(rstr& s)
+	{
+		return s.sub(0,s.count()-1);
+	}
+
+	static void push_asm(rbuf<tasm>& vasm,const rbuf<rstr>& vstr)
+	{
+		tasm item;
+		item.vstr=vstr;
+		vasm.push(item);
+	}
+
+	//todo 这里无法使用变参函数，可以使用模板元简化代码
 	static void push_asm(rbuf<tasm>& vasm,
 		const rstr& s1,const rstr& s2,const rstr& s3,const rstr& s4,
 		const rstr& s5,const rstr& s6,const rstr& s7,const rstr& s8,
@@ -713,18 +726,6 @@ struct zasm
 		tasm item;
 		item.vstr.push(s1);
 		vasm.push(item);
-	}
-
-	static void push_asm(rbuf<tasm>& vasm,const rbuf<rstr>& vstr)
-	{
-		tasm item;
-		item.vstr=vstr;
-		vasm.push(item);
-	}
-
-	static rstr get_int(rstr& s)
-	{
-		return s.sub(0,s.count()-1);
 	}
 };
 

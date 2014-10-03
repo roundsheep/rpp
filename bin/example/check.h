@@ -31,8 +31,10 @@ main
 		if a.sub(0,3)=='40_'
 			continue
 		
-		rf.cmd('rpp example/'+a+'.h > example/answer/'+a+'_tmp.txt')
-		check_interpret('example/answer/'+a+'_tmp.txt','example/answer/'+a+'.txt')
+		if a!='21_2'
+			rf.cmd('rpp example/'+a+'.h > example/answer/'+a+'_tmp.txt')
+			check_interpret('example/answer/'+a+'_tmp.txt',
+				'example/answer/'+a+'.txt')
 		
 		if a=='14_1'||a=='14_5'||a=='14_6'
 			continue

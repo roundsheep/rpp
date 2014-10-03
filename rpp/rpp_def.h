@@ -61,7 +61,7 @@ return s
 if(count_mbk_l(vstr)==2)                                 \
 {                                                        \
 	result+="	mov ecx , "+get_opnd2(vstr)+"\n";        \
-	result+="	cmp "+get_opnd1(vstr)+", ecx\n";         \
+	result+="	cmp "+get_opnd1(vstr)+" , ecx\n";        \
 }                                                        \
 else                                                     \
 {                                                        \

@@ -13,22 +13,22 @@ struct zexp
 {
 	//处理函数名调用
 	static rbool p_func_call(tsh& sh,tsent& src,tsent& outopnd,
-		tclass& tci,tfunc& tfi,int level,int& i)
+		tfunc& tfi,int level,int& i)
 	{
-		tclass* ptci=&tci;
+		tclass* ptci=tfi.ptci;
 		rstr fname=src.vword[i].val;
 		tfunc* ptfi=zfind::func_search(*ptci,fname);
 		if(ptfi==null)
 		{
 			ptci=sh.m_main;
-			if(!p_call(sh,src,null,outopnd,tci,tfi,level,i,ptci))
+			if(!p_call(sh,src,null,outopnd,tfi,level,i,ptci))
 				return false;
 			return true;
 		}
 		//函数重载不能友元和非友元共存，友元标志很重要。
 		if(ptfi->is_friend)
 		{
-			if(!p_call(sh,src,null,outopnd,tci,tfi,level,i,ptci))
+			if(!p_call(sh,src,null,outopnd,tfi,level,i,ptci))
 				return false;
 		}
 		else
@@ -36,7 +36,7 @@ struct zexp
 			tsent first;
 			first.type=ptci->name+rppoptr(c_addr);
 			first.vword+=rppkey(c_this);
-			if(!p_call(sh,src,&first,outopnd,tci,tfi,level,i,ptci))
+			if(!p_call(sh,src,&first,outopnd,tfi,level,i,ptci))
 				return false;
 		}
 		return true;
@@ -44,7 +44,7 @@ struct zexp
 
 	//处理[]函数指针直接调用
 	static rbool p_point_call(tsh& sh,tsent& src,tsent& outopnd,
-		tclass& tci,tfunc& tfi,int level,int& i)
+		tfunc& tfi,int level,int& i)
 	{
 		int left=i+1;
 		int right=sh.find_symm_mbk(src.vword,left);
@@ -67,7 +67,7 @@ struct zexp
 		}
 		for(int j=0;j<vsent.count();j++)
 		{
-			if(!p_exp(sh,vsent[j],vsent[j],tci,tfi,level))
+			if(!p_exp(sh,vsent[j],tfi,level))
 				return false;
 		}
 		outopnd.vword+=vsent[0].vword;
@@ -83,7 +83,7 @@ struct zexp
 	}
 
 	static rbool p_temp_var(tsh& sh,tsent& src,tsent& outopnd,
-		tclass& tci,tfunc& tfi,int level,int& i)
+		tfunc& tfi,int level,int& i)
 	{
 		int left=i+1;
 		int right=sh.find_symm_sbk(src.vword,left);
@@ -98,7 +98,7 @@ struct zexp
 		{
 			for(int j=0;j<vsent.count();j++)
 			{
-				if(!p_exp(sh,vsent[j],vsent[j],tci,tfi,level))
+				if(!p_exp(sh,vsent[j],tfi,level))
 					return false;
 			}
 		}
@@ -119,7 +119,7 @@ struct zexp
 	
 	//处理类名直接调用
 	static rbool p_class_call(tsh& sh,tsent& src,tsent& outopnd,
-		tclass& tci,tfunc& tfi,int level,int& i)
+		tfunc& tfi,int level,int& i)
 	{
 		if(src.vword.get(i+1).val!=sh.m_optr[toptr::c_dot])
 		{
@@ -134,19 +134,19 @@ struct zexp
 			return false;
 		}
 		i+=2;
-		if(!p_call(sh,src,null,outopnd,tci,tfi,level,i,ptci))
+		if(!p_call(sh,src,null,outopnd,tfi,level,i,ptci))
 			return false;
 		return true;
 	}
 
 	static rbool p_mbk(tsh& sh,const tsent& first,const tsent& second,tsent& outopnd,
-		tclass& tci,tfunc& tfi,int level)
+		tfunc& tfi,int level)
 	{
 		rbuf<tsent> vsent;
 		sh.split_param(vsent,second.vword,first);
 		for(int j=0;j<vsent.count();j++)
 		{
-			if(!p_exp(sh,vsent[j],vsent[j],tci,tfi,level))
+			if(!p_exp(sh,vsent[j],tfi,level))
 				return false;
 		}
 		vsent.push_front(first);
@@ -162,12 +162,12 @@ struct zexp
 			sh.error(first,"can't find func mbk");
 			return false;
 		}
-		set_func(sh,outopnd,vsent,ptci,ptfi);
+		set_func(sh,outopnd,vsent,ptfi);
 		return true;
 	}
 
 	static rbool p_lisp_param(tsh& sh,const tsent& src,rbuf<tsent>& vsent,
-		tclass& tci,tfunc& tfi,int level)
+		tfunc& tfi,int level)
 	{
 		if(src.vword.get_bottom().val!=rppoptr(c_mbk_l)&&
 			src.vword.get_top().val!=rppoptr(c_mbk_r))
@@ -194,7 +194,7 @@ struct zexp
 				sent=src.sub(j,j+1);
 				right=j;
 			}
-			if(!p_exp(sh,sent,tci,tfi,level))
+			if(!p_exp(sh,sent,tfi,level))
 			{
 				return false;
 			}
@@ -205,7 +205,7 @@ struct zexp
 	}
 
 	static rbool p_lisp(tsh& sh,const tsent& src,tsent& outopnd,
-		tclass& tci,tfunc& tfi,int level)
+		tfunc& tfi,int level)
 	{
 		if(src.vword.get_bottom().val!=rppoptr(c_mbk_l)&&
 			src.vword.get_top().val!=rppoptr(c_mbk_r))
@@ -226,14 +226,14 @@ struct zexp
 			rbuf<tsent> vsent;
 			if(ptfi!=null)
 			{
-				if(!p_lisp_param(sh,src.sub(3,src.vword.count()-1),vsent,tci,tfi,level))
+				if(!p_lisp_param(sh,src.sub(3,src.vword.count()-1),vsent,tfi,level))
 				{
 					return false;
 				}
 			}
 			else
 			{
-				if(!p_lisp_param(sh,src.sub(3,src.vword.count()-1),vsent,tci,tfi,level))
+				if(!p_lisp_param(sh,src.sub(3,src.vword.count()-1),vsent,tfi,level))
 				{
 					return false;
 				}
@@ -244,7 +244,7 @@ struct zexp
 					return false;
 				}
 			}
-			set_func(sh,outopnd,vsent,ptci,ptfi);
+			set_func(sh,outopnd,vsent,ptfi);
 			return true;
 		}
 		if(cname==rppkey(c_pcall)||cname==rppkey(c_btemp))
@@ -265,7 +265,7 @@ struct zexp
 			}
 			sent.vword=vlisp[1];
 			sent.pos=src.pos;
-			ifn(p_exp(sh,sent,tci,tfi,level))
+			ifn(p_exp(sh,sent,tfi,level))
 			{
 				return false;
 			}
@@ -334,7 +334,7 @@ struct zexp
 	
 	//处理变参中括号调用,变参不能重载
 	static rbool p_mbk_param(tsh& sh,tsent& src,tsent* pfirst,tsent& outopnd,
-		tclass& tci,tfunc& tfi,int level,int& i,tclass* ptci)
+		tfunc& tfi,int level,int& i,tclass* ptci)
 	{
 		rstr cname=ptci->name;
 		rstr fname=src.vword[i].val;
@@ -356,7 +356,7 @@ struct zexp
 		sh.split_param(vsent,src.vword.sub(left+1,right),src);
 		for(int j=0;j<vsent.count();j++)
 		{
-			if(!p_exp(sh,vsent[j],tci,tfi,level))
+			if(!p_exp(sh,vsent[j],tfi,level))
 				return false;
 		}
 		tsent tmp;
@@ -370,7 +370,7 @@ struct zexp
 			if(!sh.is_point(pfirst->type))
 			{
 				vsent[0].vword.push_front(tword(rppoptr(c_addr)));
-				if(!p_exp(sh,vsent[0],tci,tfi,level))
+				if(!p_exp(sh,vsent[0],tfi,level))
 				{
 					return false;
 				}
@@ -401,7 +401,7 @@ struct zexp
 	
 	//无括号call
 	static rbool p_call_n(tsh& sh,tsent& src,tsent* pfirst,tsent& outopnd,
-		tclass& tci,tfunc& tfi,int level,int& i,tclass* ptci)
+		tfunc& tfi,int level,int& i,tclass* ptci)
 	{
 		rstr cname=ptci->name;
 		rstr fname=src.vword[i].val;
@@ -454,14 +454,14 @@ struct zexp
 		}
 		outopnd.vword.push(tword(sh.m_optr[toptr::c_sbk_r]));
 		//无括号调用添加括号递归处理
-		if(!p_exp(sh,outopnd,outopnd,tci,tfi,level))
+		if(!p_exp(sh,outopnd,tfi,level))
 			return false;
 		i=right-1;
 		return true;
 	}
 
 	static rbool p_ftl(tsh& sh,tsent src,tsent* pfirst,tsent& outopnd,
-		tclass& tci,tfunc& tfi,int level,int& i,tclass* ptci)
+		tfunc& tfi,int level,int& i,tclass* ptci)
 	{
 		int left=i+1;
 		if(src.vword.get(left)!=rppoptr(c_tbk_l))
@@ -476,23 +476,23 @@ struct zexp
 			return false;
 		}
 		rbuf<tword> temp=src.vword.sub(i,right+1);
-		if(!zftl::ftl_replace(sh,tci,temp,ptci))
+		if(!zftl::ftl_replace(sh,*tfi.ptci,temp,ptci))
 		{
 			return false;
 		}
 		src.vword[right]=temp.get_bottom();
 		i=right;
-		return p_call(sh,src,pfirst,outopnd,tci,tfi,level,i,ptci);
+		return p_call(sh,src,pfirst,outopnd,tfi,level,i,ptci);
 	}
 
 	static rbool p_call(tsh& sh,tsent& src,tsent* pfirst,tsent& outopnd,
-		tclass& tci,tfunc& tfi,int level,int& i,tclass* ptci)
+		tfunc& tfi,int level,int& i,tclass* ptci)
 	{
 		rstr cname=ptci->name;
 		rstr fname=src.vword[i].val;
 		if(src.vword.get(i+1).val==rppoptr(c_mbk_l))
 		{
-			return p_mbk_param(sh,src,pfirst,outopnd,tci,tfi,level,i,ptci);
+			return p_mbk_param(sh,src,pfirst,outopnd,tfi,level,i,ptci);
 		}
 		if(pfirst!=null&&sh.get_tname(pfirst->type)==rppkey(c_var)&&
 			null==zfind::func_search(*ptci,fname))
@@ -502,7 +502,7 @@ struct zexp
 		}
 		if(src.vword.get(i+1).val!=rppoptr(c_sbk_l))
 		{
-			return p_call_n(sh,src,pfirst,outopnd,tci,tfi,level,i,ptci);
+			return p_call_n(sh,src,pfirst,outopnd,tfi,level,i,ptci);
 		}
 		int left=i+1;
 		int right;
@@ -516,7 +516,7 @@ struct zexp
 		sh.split_param(vsent,src.vword.sub(left+1,right),src);
 		for(int j=0;j<vsent.count();j++)
 		{
-			if(!p_exp(sh,vsent[j],vsent[j],tci,tfi,level))
+			if(!p_exp(sh,vsent[j],tfi,level))
 				return false;
 		}
 		if(pfirst!=null)
@@ -537,18 +537,18 @@ struct zexp
 				return false;
 			}
 		}
-		set_func(sh,outopnd,vsent,ptci,ptfi);
+		set_func(sh,outopnd,vsent,ptfi);
 		i=right;
 		return true;
 	}
 
-	static rbool p_exp_all(tsh& sh,tclass& tci,tfunc& tfi)
+	static rbool p_exp_all(tsh& sh,tfunc& tfi)
 	{
 		for(int i=0;i<tfi.vsent.count();++i)
 		{
 			if(sh.m_key.is_asm_ins(tfi.vsent[i].vword.get_bottom().val))
 				continue;
-			if(!zexp::p_exp(sh,tfi.vsent[i],tci,tfi))
+			if(!zexp::p_exp(sh,tfi.vsent[i],tfi))
 			{
 				return false;
 			}
@@ -556,14 +556,15 @@ struct zexp
 		return true;
 	}
 
-	static rbool p_exp(tsh& sh,tsent& src,tclass& tci,tfunc& tfi,int level=0)
+	static rbool p_exp(tsh& sh,tsent& src,tfunc& tfi,int level=0)
 	{
-		return p_exp(sh,src,src,tci,tfi,level);
+		return p_exp(sh,src,src,tfi,level);
 	}
 	
 	//表达式标准化，并设置dst.type
-	static rbool p_exp(tsh& sh,tsent src,tsent& dst,tclass& tci,tfunc& tfi,int level=0)
+	static rbool p_exp(tsh& sh,tsent src,tsent& dst,tfunc& tfi,int level=0)
 	{
+		tclass& tci=*tfi.ptci;
 		if(level++>c_rpp_deep)
 		{
 			sh.error(src,"expression too deep");
@@ -606,7 +607,7 @@ struct zexp
 				}
 				tsent outopnd;
 				outopnd.pos=src.pos;
-				if(!p_exp(sh,src.sub(i+1,right),outopnd,tci,tfi,level))
+				if(!p_exp(sh,src.sub(i+1,right),outopnd,tfi,level))
 					return false;
 				sopnd.push(outopnd);
 				i=right;
@@ -617,7 +618,7 @@ struct zexp
 				//[]函数指针调用
 				tsent outopnd;
 				outopnd.pos=src.pos;
-				if(!p_point_call(sh,src,outopnd,tci,tfi,level,i))
+				if(!p_point_call(sh,src,outopnd,tfi,level,i))
 					return false;
 				sopnd.push(outopnd);
 			}
@@ -635,12 +636,12 @@ struct zexp
 					src.vword.get(i+1).val==rppoptr(c_addr)&&
 					zfind::is_class(sh,src.vword.get(i+2).val))
 				{
-					if(!p_lisp(sh,src.sub(i,right+1),outopnd,tci,tfi,level))
+					if(!p_lisp(sh,src.sub(i,right+1),outopnd,tfi,level))
 						return false;
 				}
 				else
 				{
-					if(!p_mbk(sh,sopnd.pop(),src.sub(i+1,right),outopnd,tci,tfi,level))
+					if(!p_mbk(sh,sopnd.pop(),src.sub(i+1,right),outopnd,tfi,level))
 						return false;
 				}
 				sopnd.push(outopnd);
@@ -680,12 +681,12 @@ struct zexp
 				if(src.vword.get(i+1)==rppoptr(c_tbk_l)&&
 					zfind::ftl_search(*ptci,name)!=null)
 				{
-					if(!p_ftl(sh,src,&first,outopnd,tci,tfi,level,i,ptci))
+					if(!p_ftl(sh,src,&first,outopnd,tfi,level,i,ptci))
 						return false;
 				}
 				else
 				{
-					if(!p_call(sh,src,&first,outopnd,tci,tfi,level,i,ptci))
+					if(!p_call(sh,src,&first,outopnd,tfi,level,i,ptci))
 						return false;
 				}
 				sopnd.push(outopnd);
@@ -699,7 +700,7 @@ struct zexp
 				}
 				tsent first=sopnd.pop();
 				first.vword.push_front(tword(sh.m_optr[toptr::c_star]));
-				if(!p_exp(sh,first,first,tci,tfi,level))
+				if(!p_exp(sh,first,tfi,level))
 					return false;
 				sopnd.push(first);
 				src.vword[i].val=sh.m_optr[toptr::c_dot];
@@ -735,7 +736,7 @@ struct zexp
 					ptfi=zmatch::find_replace(sh,*ptci,theta,vsent);
 					if(ptfi!=null)
 					{
-						set_func(sh,outopnd,vsent,ptci,ptfi);
+						set_func(sh,outopnd,vsent,ptfi);
 						sopnd.push(outopnd);
 						i--;
 						continue;
@@ -753,7 +754,7 @@ struct zexp
 					ptfi=zmatch::find_replace(sh,*ptci,theta,vsent);
 					if(ptfi!=null)
 					{
-						set_func(sh,outopnd,vsent,ptci,ptfi);
+						set_func(sh,outopnd,vsent,ptfi);
 						sopnd.push(outopnd);
 						i--;
 						continue;
@@ -765,7 +766,7 @@ struct zexp
 					ptfi=zmatch::find_replace(sh,*ptci,theta,vsent);
 					if(ptfi!=null)
 					{
-						set_func(sh,outopnd,vsent,ptci,ptfi);
+						set_func(sh,outopnd,vsent,ptfi);
 						sopnd.push(outopnd);
 						i--;
 						continue;
@@ -781,7 +782,7 @@ struct zexp
 				if(src.vword.get(i+1).val==rppoptr(c_sbk_l))
 				{
 					//临时变量
-					if(!p_temp_var(sh,src,outopnd,tci,tfi,level,i))
+					if(!p_temp_var(sh,src,outopnd,tfi,level,i))
 					{
 						return false;
 					}
@@ -789,7 +790,7 @@ struct zexp
 				else
 				{
 					//类名直接调用
-					if(!p_class_call(sh,src,outopnd,tci,tfi,level,i))
+					if(!p_class_call(sh,src,outopnd,tfi,level,i))
 						return false;
 				}
 				sopnd.push(outopnd);
@@ -836,7 +837,7 @@ struct zexp
 					sopnd.push(outopnd);
 					continue;
 				}
-				if(!p_func_call(sh,src,outopnd,tci,tfi,level,i))
+				if(!p_func_call(sh,src,outopnd,tfi,level,i))
 					return false;
 				sopnd.push(outopnd);
 			}
@@ -856,8 +857,9 @@ struct zexp
 		return true;
 	}
 
-	static void set_func(tsh& sh,tsent& outopnd,rbuf<tsent>& vsent,tclass* ptci,tfunc* ptfi)
+	static void set_func(tsh& sh,tsent& outopnd,rbuf<tsent>& vsent,tfunc* ptfi)
 	{
+		tclass* ptci=ptfi->ptci;
 		outopnd.type=ptfi->retval.type;
 		outopnd.vword+=tword(rppoptr(c_mbk_l));
 		outopnd.vword+=tword(ptci->name);
