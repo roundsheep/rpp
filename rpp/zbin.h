@@ -428,23 +428,23 @@ struct zbin
 	{
 		treg reg;
 		int ret=r_size(treg);
-		if(sh.m_key[tkey::c_eax]==s)
+		if(rppkey(c_eax)==s)
 			ret=(uchar*)&reg.eax-(uchar*)&reg;
-		elif(sh.m_key[tkey::c_ebx]==s)
+		elif(rppkey(c_ebx)==s)
 			ret=(uchar*)&reg.ebx-(uchar*)&reg;
-		elif(sh.m_key[tkey::c_ecx]==s)
+		elif(rppkey(c_ecx)==s)
 			ret=(uchar*)&reg.ecx-(uchar*)&reg;
-		elif(sh.m_key[tkey::c_edx]==s)
+		elif(rppkey(c_edx)==s)
 			ret=(uchar*)&reg.edx-(uchar*)&reg;
-		elif(sh.m_key[tkey::c_esi]==s)
+		elif(rppkey(c_esi)==s)
 			ret=(uchar*)&reg.esi-(uchar*)&reg;
-		elif(sh.m_key[tkey::c_edi]==s)
+		elif(rppkey(c_edi)==s)
 			ret=(uchar*)&reg.edi-(uchar*)&reg;
-		elif(sh.m_key[tkey::c_esp]==s)
+		elif(rppkey(c_esp)==s)
 			ret=(uchar*)&reg.esp-(uchar*)&reg;
-		elif(sh.m_key[tkey::c_ebp]==s)
+		elif(rppkey(c_ebp)==s)
 			ret=(uchar*)&reg.ebp-(uchar*)&reg;
-		elif(sh.m_key[tkey::c_eip]==s)
+		elif(rppkey(c_eip)==s)
 			ret=(uchar*)&reg.eip-(uchar*)&reg;
 		return ret;
 	}

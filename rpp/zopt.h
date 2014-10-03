@@ -8,15 +8,13 @@ struct zopt
 {
 	static rbool is_add_sub(tsh& sh,rstr& s)
 	{
-		return s==sh.m_key[tkey::c_add]||s==sh.m_key[tkey::c_sub];
+		return s==rppkey(c_add)||s==rppkey(c_sub);
 	}
 
 	static rbool is_add_sub(tsh& sh,rbuf<rstr>& v)
 	{
-		return v.count()==4&&
-			is_add_sub(sh,v[0])&&
-			v[2]==sh.m_optr[toptr::c_comma]&&
-			v[3].is_number();
+		return v.count()==4&&is_add_sub(sh,v[0])&&
+			v[2]==rppoptr(c_comma)&&v[3].is_number();
 	}
 
 	static rbool op_add_sub(tsh& sh,rbuf<tasm>& vasm)
@@ -37,7 +35,7 @@ struct zopt
 				int val=0;
 				for(int k=i;k<j;k++)
 				{
-					if(vasm[k].vstr.get(0)==sh.m_key[tkey::c_add])
+					if(vasm[k].vstr.get(0)==rppkey(c_add))
 						val+=vasm[k].vstr.get(3).toint();
 					else
 						val-=vasm[k].vstr.get(3).toint();
@@ -45,11 +43,11 @@ struct zopt
 				if(val<0)
 				{
 					val=-val;
-					vasm[i].vstr[0]=sh.m_key[tkey::c_sub];
+					vasm[i].vstr[0]=rppkey(c_sub);
 				}
 				else
 				{
-					vasm[i].vstr[0]=sh.m_key[tkey::c_add];
+					vasm[i].vstr[0]=rppkey(c_add);
 				}
 				vasm[i].vstr[3]=rstr(val);
 				if(val!=0)
@@ -57,7 +55,7 @@ struct zopt
 				i=j-1;
 			}
 			elif(rppconf(c_op_nop)&&vasm[i].vstr.count()==1&&
-				vasm[i].vstr[0]==sh.m_key[tkey::c_nop])
+				vasm[i].vstr[0]==rppkey(c_nop))
 			{
 				;
 			}

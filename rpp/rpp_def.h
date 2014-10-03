@@ -42,33 +42,33 @@
 #define rppj4(a,b,c,d) (zjiti::a(build_ins(sh,"nop",b,c,d)))
 #define rppjf(a,b) sh.m_jit_f[a]=&b
 
-#define rppjcmp(a)                   \
-rstr s;                              \
-if(znasm::count_mbk_l(vstr)==2)      \
-{                                    \
+#define rppjcmp(a)                       \
+rstr s;                                  \
+if(znasm::count_mbk_l(vstr)==2)          \
+{                                        \
 	s+=rppj4(b_mov,"ecx",",",rppjb); \
 	s+=rppj4(b_cmp,rppja,",","ecx"); \
-}                                    \
-else                                 \
-{                                    \
+}                                        \
+else                                     \
+{                                        \
 	s+=zjiti::b_cmp(ins);            \
-}                                    \
-s+=rppj4(b_mov,"ebx",",","0");       \
-s+=zjiti::a();                       \
+}                                        \
+s+=rppj4(b_mov,"ebx",",","0");           \
+s+=zjiti::a();                           \
 return s
 
-#define rppncmp(a)                                       \
-if(count_mbk_l(vstr)==2)                                 \
-{                                                        \
+#define rppncmp(a)                                               \
+if(count_mbk_l(vstr)==2)                                         \
+{                                                                \
 	result+="	mov ecx , "+get_opnd2(vstr)+"\n";        \
 	result+="	cmp "+get_opnd1(vstr)+" , ecx\n";        \
-}                                                        \
-else                                                     \
-{                                                        \
+}                                                                \
+else                                                             \
+{                                                                \
 	result+="	cmp dword "+link_vstr(vstr.sub(1))+"\n"; \
-}                                                        \
-result+="	mov ebx , 0\n";                              \
-result+=a;                                               \
+}                                                                \
+result+="	mov ebx , 0\n";                                  \
+result+=a;                                                       \
 return true
 
 #endif

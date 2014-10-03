@@ -71,13 +71,13 @@ struct zsrep
 	{
 		for(int i=0;i<v.count();i++)
 		{
-			if(v[i].val!=sh.m_optr[toptr::c_addr])
+			if(v[i].val!=rppoptr(c_addr))
 				continue;
 			tclass* ptci;
 			rstr name;
 			tfunc* ptfi;
 			int left;
-			if(v.get(i+2).val==sh.m_optr[toptr::c_dot])
+			if(v.get(i+2).val==rppoptr(c_dot))
 			{
 				ptci=zfind::class_search(sh,v.get(i+1).val);
 				if(null==ptci)
@@ -144,31 +144,31 @@ struct zsrep
 		{
 			if(!v[i].is_const())
 				continue;
-			if(v[i].is_cint()&&v.get(i+1).val==sh.m_optr[toptr::c_dot])
+			if(v[i].is_cint()&&v.get(i+1).val==rppoptr(c_dot))
 			{
-				v[i].multi.push(sh.m_key[tkey::c_int]);
+				v[i].multi.push(rppkey(c_int));
 				v[i].multi.push(rppoptr(c_sbk_l));
 				v[i].multi.push(v[i].val);
-				v[i].multi.push(sh.m_optr[toptr::c_sbk_r]);
+				v[i].multi.push(rppoptr(c_sbk_r));
 				v[i].val.clear();
 			}
-			elif(v[i].is_cdouble()&&v.get(i+1).val==sh.m_optr[toptr::c_dot])
+			elif(v[i].is_cdouble()&&v.get(i+1).val==rppoptr(c_dot))
 			{
 				v[i].multi.push(rstr("double"));
 				v[i].multi.push(rppoptr(c_sbk_l));
 				v[i].multi.push(v[i].val);
-				v[i].multi.push(sh.m_optr[toptr::c_sbk_r]);
+				v[i].multi.push(rppoptr(c_sbk_r));
 				v[i].val.clear();
 			}
 			elif(v[i].is_cstr()&&
-				(v.get(i+1).val==sh.m_optr[toptr::c_dot]||
+				(v.get(i+1).val==rppoptr(c_dot)||
 				zfind::is_rstr_optr(sh,v.get(i+1).val)||
 				zfind::is_rstr_optr(sh,v.get(i-1).val)))
 			{
-				v[i].multi.push(sh.m_key[tkey::c_rstr]);
+				v[i].multi.push(rppkey(c_rstr));
 				v[i].multi.push(rppoptr(c_sbk_l));
 				v[i].multi.push(v[i].val);
-				v[i].multi.push(sh.m_optr[toptr::c_sbk_r]);
+				v[i].multi.push(rppoptr(c_sbk_r));
 				v[i].val.clear();
 			}
 		}
@@ -222,8 +222,8 @@ struct zsrep
 	{
 		for(int i=0;i<v.count();i++)
 		{
-			if(v[i].val==sh.m_key[tkey::c_sizeof]||
-				v[i].val==sh.m_key[tkey::c_s_off])
+			if(v[i].val==rppkey(c_sizeof)||
+				v[i].val==rppkey(c_s_off))
 			{
 				if(i+1>=v.count())
 				{
@@ -272,7 +272,7 @@ struct zsrep
 			if(v[i].multi.count()!=2)
 				continue;
 			rstr name=v[i].multi[1];
-			if(v[i].multi[0]==sh.m_key[tkey::c_sizeof])
+			if(v[i].multi[0]==rppkey(c_sizeof))
 			{
 				if(rppkey(c_s_local)==name)
 				{
@@ -290,7 +290,7 @@ struct zsrep
 					v[i].val=rstr(ptci->size);
 				}
 			}
-			elif(v[i].multi[0]==sh.m_key[tkey::c_s_off])
+			elif(v[i].multi[0]==rppkey(c_s_off))
 			{
 				tdata* ptdi=zfind::local_search(tfi,name);
 				if(null==ptdi)
@@ -311,7 +311,7 @@ struct zsrep
 				if(ptdi==null)
 					continue;
 				rbuf<rstr> vdst;
-				if(v.get(i-1).val==sh.m_optr[toptr::c_addr])
+				if(v.get(i-1).val==rppoptr(c_addr))
 				{
 					vdst.push(rstr("ebp"));
 					vdst.push(rstr("+"));
@@ -419,17 +419,17 @@ struct zsrep
 		//动态类型和构造函数有歧义
 		rbuf<tword> vtemp;
 		vtemp.push(tword(ptdi->type));
-		vtemp.push(tword(sh.m_optr[toptr::c_dot]));
+		vtemp.push(tword(rppoptr(c_dot)));
 		vtemp.push(tword(ptdi->type));
 		vtemp.push(tword(rppoptr(c_sbk_l)));
 		vtemp+=v.sub(0,left);
 		rbuf<tword> vsub=v.sub(left+1,right);
 		if(!vsub.empty())
 		{
-			vtemp.push(tword(sh.m_optr[toptr::c_comma]));
+			vtemp.push(tword(rppoptr(c_comma)));
 			vtemp+=vsub;
 		}
-		vtemp.push(tword(sh.m_optr[toptr::c_sbk_r]));
+		vtemp.push(tword(rppoptr(c_sbk_r)));
 		v=vtemp;
 		return true;
 	}

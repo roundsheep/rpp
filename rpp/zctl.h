@@ -62,9 +62,7 @@ struct zctl
 
 	static rbool add_point_declare(tsh& sh,tclass& tci)
 	{
-		if(sh.is_basic_type(tci.name)||
-			tci.is_friend||
-			sh.is_point(tci.name))
+		if(sh.is_basic_type(tci.name)||tci.is_friend||sh.is_point(tci.name))
 			return true;
 		rbuf<tword> temp;
 		temp+=rppkey(c_rp);
@@ -269,50 +267,51 @@ struct zctl
 	{
 		for(int i=0;i<v.count();i++)
 		{
-			if(v.get(i+1).val==rppoptr(c_star)&&
-				zfind::is_class(sh,v[i].val))
+			if(v.get(i+1).val!=rppoptr(c_star)||
+				!zfind::is_class(sh,v[i].val))
 			{
-				if(v.get(i+2).val==rppoptr(c_star))
+				continue;
+			}
+			if(v.get(i+2).val==rppoptr(c_star))
+			{
+				if(v.get(i+3)==rppoptr(c_sbk_l))
 				{
-					if(v.get(i+3)==rppoptr(c_sbk_l))
-					{
-						continue;
-					}
-					rbuf<tword> vword;
-					tword word;
-					word.pos=v[i].pos;
-					word.pos_src=v[i].pos_src;
-					sh.push_twi(vword,word,rppkey(c_rp));
-					sh.push_twi(vword,word,rppoptr(c_tbk_l));
-					sh.push_twi(vword,word,rppkey(c_rp));
-					sh.push_twi(vword,word,rppoptr(c_tbk_l));
-					sh.push_twi(vword,word,v[i].val);
-					sh.push_twi(vword,word,rppoptr(c_tbk_r));
-					sh.push_twi(vword,word,rppoptr(c_tbk_r));
-					v[i].multi=sh.vword_to_vstr(vword);
-					v[i].val.clear();
-					v[i+1].val.clear();
-					v[i+2].val.clear();
+					continue;
 				}
-				else
+				rbuf<tword> vword;
+				tword word;
+				word.pos=v[i].pos;
+				word.pos_src=v[i].pos_src;
+				sh.push_twi(vword,word,rppkey(c_rp));
+				sh.push_twi(vword,word,rppoptr(c_tbk_l));
+				sh.push_twi(vword,word,rppkey(c_rp));
+				sh.push_twi(vword,word,rppoptr(c_tbk_l));
+				sh.push_twi(vword,word,v[i].val);
+				sh.push_twi(vword,word,rppoptr(c_tbk_r));
+				sh.push_twi(vword,word,rppoptr(c_tbk_r));
+				v[i].multi=sh.vword_to_vstr(vword);
+				v[i].val.clear();
+				v[i+1].val.clear();
+				v[i+2].val.clear();
+			}
+			else
+			{
+				if(v.get(i+2)==rppoptr(c_sbk_l))
 				{
-					if(v.get(i+2)==rppoptr(c_sbk_l))
-					{
-						continue;
-					}
-					rbuf<tword> vword;
-					tword word;
-					word.pos=v[i].pos;
-					word.pos_src=v[i].pos_src;
-					sh.push_twi(vword,word,rppkey(c_rp));
-					sh.push_twi(vword,word,rppoptr(c_tbk_l));
-					sh.push_twi(vword,word,v[i].val);
-					sh.push_twi(vword,word,rppoptr(c_tbk_r));
+					continue;
+				}
+				rbuf<tword> vword;
+				tword word;
+				word.pos=v[i].pos;
+				word.pos_src=v[i].pos_src;
+				sh.push_twi(vword,word,rppkey(c_rp));
+				sh.push_twi(vword,word,rppoptr(c_tbk_l));
+				sh.push_twi(vword,word,v[i].val);
+				sh.push_twi(vword,word,rppoptr(c_tbk_r));
 
-					v[i].multi=sh.vword_to_vstr(vword);
-					v[i].val.clear();
-					v[i+1].val.clear();
-				}
+				v[i].multi=sh.vword_to_vstr(vword);
+				v[i].val.clear();
+				v[i+1].val.clear();
 			}
 		}
 		zpre::arrange(v,&need);

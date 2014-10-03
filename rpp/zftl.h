@@ -10,13 +10,13 @@ struct zftl
 	{
 		for(int i=0;i<v.count();i++)
 		{
-			if(v[i].val!=sh.m_optr[toptr::c_tbk_l])
+			if(v[i].val!=rppoptr(c_tbk_l))
 				continue;
 			int left=i;
 			rstr name=v.get(left-1).val;
 			if(ptci==null)
 			{
-				if(v.get(left-2).val==sh.m_optr[toptr::c_dot])
+				if(v.get(left-2).val==rppoptr(c_dot))
 				{
 					ptci=zfind::class_search(sh,v.get(left-3).val);
 					if(ptci==null)

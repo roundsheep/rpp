@@ -308,13 +308,13 @@ struct zcontrol
 		for(int i=0;i<v.count();i++)
 		{
 			int begin;
-			if(v[i].val==sh.m_key[tkey::c_else]&&
-				v.get(i+1).val!=sh.m_key[tkey::c_if])
+			if(v[i].val==rppkey(c_else)&&
+				v.get(i+1).val!=rppkey(c_if))
 			{
 				begin=i+1;
 			}
-			elif(v[i].val==sh.m_key[tkey::c_if]||
-				v[i].val==sh.m_key[tkey::c_for])
+			elif(v[i].val==rppkey(c_if)||
+				v[i].val==rppkey(c_for))
 			{
 				begin=get_condition_end(sh,v,i);
 			}
@@ -327,7 +327,7 @@ struct zcontrol
 				sh.error(v[i],"miss { or miss tab");
 				return false;
 			}
-			if(v[begin].val==sh.m_optr[toptr::c_bbk_l])
+			if(v[begin].val==rppoptr(c_bbk_l))
 				continue;
 			int end=get_low_end(sh,v,begin,i);
 			if(end>=v.count())
@@ -340,10 +340,10 @@ struct zcontrol
 				sh.error(v[i],"miss { or miss tab");
 				return false;
 			}
-			v[begin].multi.push(sh.m_optr[toptr::c_bbk_l]);
+			v[begin].multi.push(rppoptr(c_bbk_l));
 			v[begin].multi.push(v[begin].val);
 			v[begin].val.clear();
-			v[end].multi.push(sh.m_optr[toptr::c_bbk_r]);
+			v[end].multi.push(rppoptr(c_bbk_r));
 			v[end].multi.push(v[end].val);
 			v[end].val.clear();
 			return true;
@@ -356,7 +356,7 @@ struct zcontrol
 		rbuf<tword> vtag;
 		for(int i=0;i<tfi.vsent.count();i++)
 		{
-			if(tfi.vsent[i].vword.get(1).val==sh.m_optr[toptr::c_colon]&&
+			if(tfi.vsent[i].vword.get(1).val==rppoptr(c_colon)&&
 				tfi.vsent[i].vword.get(0).is_name())
 			{
 				tword word=tfi.vsent[i].vword.get(0);
@@ -429,7 +429,7 @@ struct zcontrol
 
 	static void proc_return_v(tsh& sh,rbuf<tword>& v,tfunc& tfi)
 	{
-		if(v.get_bottom().val!=sh.m_key[tkey::c_return])
+		if(v.get_bottom().val!=rppkey(c_return))
 			return;
 		tword twi;
 		twi.pos_src=tfi.last_pos;
@@ -484,7 +484,7 @@ struct zcontrol
 		int start=0;
 		for(int i=0;i<v.count();++i)
 		{
-			if(v[i].val==sh.m_optr[toptr::c_semi])
+			if(v[i].val==rppoptr(c_semi))
 			{
 				tsent sent;
 				sent.vword=v.sub(start,i);
@@ -516,7 +516,7 @@ struct zcontrol
 	{
 		for(int i=0;i<v.count();i++)
 		{
-			if(v[i].val==sh.m_optr[toptr::c_bbk_l])
+			if(v[i].val==rppoptr(c_bbk_l))
 			{
 				int left=i;
 				int right=sh.find_symm_bbk(v,left);
@@ -527,7 +527,7 @@ struct zcontrol
 				}
 				v[left].val.clear();
 				v[right].val.clear();
-				v[right].multi.push(sh.m_optr[toptr::c_semi]);
+				v[right].multi.push(rppoptr(c_semi));
 				v[right].multi.push(rstr("nop"));
 			}
 		}
@@ -541,10 +541,10 @@ struct zcontrol
 		{
 			if(begin>=v.count())
 				return v.count();
-			if(v.get(begin).val==sh.m_key[tkey::c_else]&&
-				v.get(begin+1).val==sh.m_key[tkey::c_if])
+			if(v.get(begin).val==rppkey(c_else)&&
+				v.get(begin+1).val==rppkey(c_if))
 			{
-				int left=r_find_pos(v,tword(sh.m_optr[toptr::c_bbk_l]),begin+2);
+				int left=r_find_pos(v,tword(rppoptr(c_bbk_l)),begin+2);
 				if(left==v.count())
 					return v.count();
 				int right=sh.find_symm_bbk(v,left);
@@ -552,9 +552,9 @@ struct zcontrol
 					return v.count();
 				begin=right+1;
 			}
-			elif(v.get(begin).val==sh.m_key[tkey::c_else])
+			elif(v.get(begin).val==rppkey(c_else))
 			{
-				int left=r_find_pos(v,tword(sh.m_optr[toptr::c_bbk_l]),begin+1);
+				int left=r_find_pos(v,tword(rppoptr(c_bbk_l)),begin+1);
 				if(left==v.count())
 					return v.count();
 				int right=sh.find_symm_bbk(v,left);
@@ -571,7 +571,7 @@ struct zcontrol
 	{
 		for(int i=0;i<v.count();i++)
 		{
-			if(v[i].val==sh.m_key[tkey::c_if])
+			if(v[i].val==rppkey(c_if))
 			{
 				int cond_end;
 				rbuf<tword> vcond;
@@ -582,7 +582,7 @@ struct zcontrol
 					return false;
 				}
 				int left=cond_end;
-				if(v.get(left).val!=sh.m_optr[toptr::c_bbk_l])
+				if(v.get(left).val!=rppoptr(c_bbk_l))
 				{
 					sh.error(v.get(i),"miss {");
 					return false;
@@ -599,7 +599,7 @@ struct zcontrol
 					sh.error(v.get(i),"miss else end");
 					return false;
 				}
-				if(v.get(right+1).val==sh.m_key[tkey::c_else])
+				if(v.get(right+1).val==rppkey(c_else))
 				{
 					insert_jmp_asm(v[right],v[else_end]);
 					v[right+1].val.clear();
@@ -609,7 +609,7 @@ struct zcontrol
 				sh.clear_word_val(v,i,cond_end);
 				v[left].val.clear();
 				v[right].val.clear();
-				v[right].multi.push(sh.m_optr[toptr::c_semi]);
+				v[right].multi.push(rppoptr(c_semi));
 				v[right].multi.push(rstr("nop"));
 			}
 		}
@@ -620,7 +620,7 @@ struct zcontrol
 	{
 		for(int i=0;i<v.count();i++)
 		{
-			if(v[i].val!=sh.m_key[tkey::c_for])
+			if(v[i].val!=rppkey(c_for))
 				continue;
 			int cond_end;
 			rbuf<tword> vcond;
@@ -637,7 +637,7 @@ struct zcontrol
 				is_for=false;
 			}
 			int left=cond_end;
-			if(v.get(left).val!=sh.m_optr[toptr::c_bbk_l])
+			if(v.get(left).val!=rppoptr(c_bbk_l))
 			{
 				sh.error(v.get(i),"miss {");
 				return false;
@@ -650,7 +650,7 @@ struct zcontrol
 			}
 			if(is_for)
 			{
-				rbuf<rbuf<tword> > forcond=r_split_e(vcond,tword(sh.m_optr[toptr::c_semi]));
+				rbuf<rbuf<tword> > forcond=r_split_e(vcond,tword(rppoptr(c_semi)));
 				if(forcond.count()!=3)
 				{
 					sh.error(v.get(i),"miss for cond");
@@ -700,15 +700,15 @@ struct zcontrol
 
 	static void insert_cond_true_asm(tsh& sh,rbuf<rstr>& multi,const tword& posword)
 	{
-		multi.push(sh.m_optr[toptr::c_semi]);
-		multi.push(sh.m_key[tkey::c_jebxnz]);
+		multi.push(rppoptr(c_semi));
+		multi.push(rppkey(c_jebxnz));
 		multi.push(rstr(posword.pos.line));
 	}
 
 	static void insert_cond_false_asm(tsh& sh,rbuf<rstr>& multi,const tword& posword)
 	{
-		multi.push(sh.m_optr[toptr::c_semi]);
-		multi.push(sh.m_key[tkey::c_jebxz]);
+		multi.push(rppoptr(c_semi));
+		multi.push(rppkey(c_jebxz));
 		multi.push(rstr(posword.pos.line));
 	}
 
@@ -717,7 +717,7 @@ struct zcontrol
 		int j;
 		for(j=i-1;j>=0;--j)
 		{
-			if(v[j].val==sh.m_key[tkey::c_for])
+			if(v[j].val==rppkey(c_for))
 			{
 				int left=get_condition_end(sh,v,j);
 				if(left>=v.count())
@@ -738,8 +738,8 @@ struct zcontrol
 	{
 		for(int i=0;i<v.count();i++)
 		{
-			if(v[i].val==sh.m_key[tkey::c_continue]||
-				v[i].val==sh.m_key[tkey::c_continued])
+			if(v[i].val==rppkey(c_continue)||
+				v[i].val==rppkey(c_continued))
 			{
 				int j=find_jump_out(sh,v,i);
 				if(j<0)
@@ -754,7 +754,7 @@ struct zcontrol
 				{
 					is_for=false;
 				}
-				int left=r_find_pos(v,tword(sh.m_optr[toptr::c_bbk_l]),cond_end);
+				int left=r_find_pos(v,tword(rppoptr(c_bbk_l)),cond_end);
 				if(left>=v.count())
 				{
 					sh.error(v.get(j),"miss {");
@@ -768,7 +768,7 @@ struct zcontrol
 				}
 				if(is_for)
 				{
-					if(v[i].val==sh.m_key[tkey::c_continue])
+					if(v[i].val==rppkey(c_continue))
 					{
 						insert_jmp_asm(v[i],v[right]);
 						v[i].val.clear();
@@ -794,7 +794,7 @@ struct zcontrol
 	{
 		for(int i=0;i<v.count();i++)
 		{
-			if(v[i].val==sh.m_key[tkey::c_break])
+			if(v[i].val==rppkey(c_break))
 			{
 				int j=find_jump_out(sh,v,i);
 				if(j<0)
@@ -802,7 +802,7 @@ struct zcontrol
 					sh.error(v.get(i),"no loop sturct");
 					return false;
 				}
-				int left=r_find_pos(v,tword(sh.m_optr[toptr::c_bbk_l]),j);
+				int left=r_find_pos(v,tword(rppoptr(c_bbk_l)),j);
 				int right=sh.find_symm_bbk(v,left);
 				if(right==0||right+1>=v.count())
 				{
@@ -885,14 +885,14 @@ struct zcontrol
 	{
 		for(int i=0;i<v.count();i++)
 		{
-			if(v[i].val==sh.m_key[tkey::c_for])
+			if(v[i].val==rppkey(c_for))
 			{
 				rbuf<tword> vcond;
 				int cond_end=get_condition_end(sh,v,i,&vcond);
-				int topos=r_find_pos(vcond,tword(sh.m_key[tkey::c_to]));
+				int topos=r_find_pos(vcond,tword(rppkey(c_to)));
 				if(topos<vcond.count())
 				{
-					int assignpos=r_find_pos(vcond,tword(sh.m_optr[toptr::c_equal]));
+					int assignpos=r_find_pos(vcond,tword(rppoptr(c_equal)));
 					if(assignpos==vcond.count())
 					{
 						sh.error(v.get(i),"for to miss assign optr");
@@ -909,19 +909,19 @@ struct zcontrol
 					v[i].multi.push(rstr("("));
 					for(int j=0;j<topos;j++)
 						v[i].multi.push(vcond[j].val);
-					v[i].multi.push(sh.m_optr[toptr::c_semi]);
+					v[i].multi.push(rppoptr(c_semi));
 					v[i].multi.push(name);
 					v[i].multi.push(rstr("<="));
 					for(int j=topos+1;j<vcond.count();j++)
 						v[i].multi.push(vcond[j].val);
-					v[i].multi.push(sh.m_optr[toptr::c_semi]);
+					v[i].multi.push(rppoptr(c_semi));
 					v[i].multi.push(rstr("++"));
 					v[i].multi.push(name);
 					v[i].multi.push(rstr(")"));
 					sh.clear_word_val(v,i,cond_end);
 					continue;
 				}
-				int inpos=r_find_pos(vcond,tword(sh.m_key[tkey::c_in]));
+				int inpos=r_find_pos(vcond,tword(rppkey(c_in)));
 				if(inpos<vcond.count())
 				{
 					rstr var=vcond.get(0).val;

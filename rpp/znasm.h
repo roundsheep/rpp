@@ -461,7 +461,7 @@ struct znasm
 				return false;
 			}
 		}
-		if(temp.count()>=1&&temp.top().vstr.get(0)==sh.m_key[tkey::c_reti]&&
+		if(temp.count()>=1&&temp.top().vstr.get(0)==rppkey(c_reti)&&
 			temp.top().vstr.get(1).toint()!=0)
 		{
 			result+="	add esp,"+temp.top().vstr.get(1)+"\n";

@@ -233,7 +233,7 @@ struct zmain
 		{
 			sh.m_ret=1;
 		}
-		if(sh.m_conf[tconf::c_pause])
+		if(rppconf(c_pause))
 			rf::getch();
 		return sh.m_ret;
 	}

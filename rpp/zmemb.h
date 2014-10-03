@@ -61,7 +61,7 @@ struct zmemb
 			}
 			elif(i>0&&v[i-1].pos!=v[i].pos)
 			{
-				if(v[i].val==sh.m_optr[toptr::c_bbk_l])
+				if(v[i].val==rppoptr(c_bbk_l))
 				{
 					int right=sh.find_symm_bbk(v,i);
 					if(right>=v.count())
@@ -87,7 +87,7 @@ struct zmemb
 					i--;
 				}
 			}
-			elif(v[i].val==sh.m_optr[toptr::c_bbk_l])
+			elif(v[i].val==rppoptr(c_bbk_l))
 			{
 				int right=sh.find_symm_bbk(v,i);
 				if(right>=v.count())
@@ -102,7 +102,7 @@ struct zmemb
 				i=right;
 				start=right+1;
 			}
-			elif(v[i].val==sh.m_optr[toptr::c_semi])
+			elif(v[i].val==rppoptr(c_semi))
 			{
 				if(!data_add(sh,tci,v.sub(start,i)))
 				{
@@ -110,10 +110,10 @@ struct zmemb
 				}
 				start=i+1;
 			}
-			elif(v[i].val==sh.m_key[tkey::c_enum])
+			elif(v[i].val==rppkey(c_enum))
 			{
 				int left=i+1;
-				if(v.get(left).val!=sh.m_optr[toptr::c_bbk_l])
+				if(v.get(left).val!=rppoptr(c_bbk_l))
 				{
 					sh.error(v.get(i),"miss {");
 					return false;
@@ -131,7 +131,7 @@ struct zmemb
 				i=right;
 				start=right+1;
 			}
-			elif(v[i].val==sh.m_key[tkey::c_mac])
+			elif(v[i].val==rppkey(c_mac))
 			{
 				int right;
 				if(!mac_add(sh,tci,v,i,right))
@@ -148,12 +148,12 @@ struct zmemb
 		uint enum_val=0;
 		for(int j=0;j<v.count();j++)
 		{
-			if(v[j].val!=sh.m_optr[toptr::c_comma]&&
-				v[j].val!=sh.m_optr[toptr::c_semi])
+			if(v[j].val!=rppoptr(c_comma)&&
+				v[j].val!=rppoptr(c_semi))
 			{
 				tmac eitem;
 				eitem.name=v[j].val;
-				if(v.get(j+1).val==sh.m_optr[toptr::c_equal])
+				if(v.get(j+1).val==rppoptr(c_equal))
 				{
 					if(v.get(j+2)==rppoptr(c_sbk_l))
 					{
@@ -223,7 +223,7 @@ struct zmemb
 			left=right;
 		}
 		right=left;
-		if(v.get(left).val==sh.m_optr[toptr::c_bbk_l])
+		if(v.get(left).val==rppoptr(c_bbk_l))
 		{
 			right=sh.find_symm_bbk(v,left);
 			if(right>=v.count())
@@ -260,12 +260,12 @@ struct zmemb
 					{
 						mitem.vstr.push(rppoptr(c_sbk_l));
 						mitem.vstr.push(v[j].val);
-						mitem.vstr.push(sh.m_optr[toptr::c_sbk_r]);
+						mitem.vstr.push(rppoptr(c_sbk_r));
 					}
 					else
 						mitem.vstr.push(v[j].val);
 				}
-				mitem.vstr.push(sh.m_optr[toptr::c_sbk_r]);
+				mitem.vstr.push(rppoptr(c_sbk_r));
 			}
 		}
 		if(tci.vmac.exist(mitem))
@@ -279,7 +279,7 @@ struct zmemb
 
 	static rbool a_data_define(tsh& sh,tdata& item,const rbuf<tword>& vword)
 	{
-		int pos=vword.find(tword(sh.m_optr[toptr::c_equal]));
+		int pos=vword.find(tword(rppoptr(c_equal)));
 		if(pos<vword.count())
 		{
 			for(int i=pos+1;i<vword.count();i++)
@@ -293,7 +293,7 @@ struct zmemb
 					item.param.push(vword[i]);
 		}
 		//process func template
-		if(vword.get(1).val==sh.m_optr[toptr::c_tbk_l])
+		if(vword.get(1).val==rppoptr(c_tbk_l))
 		{
 			int end=sh.find_symm_tbk(vword,1);
 			if(end>=vword.count())
@@ -306,8 +306,8 @@ struct zmemb
 			int pointpos=end+1;
 			for(;pointpos<pos;++pointpos)
 			{
-				if(vword[pointpos].val!=sh.m_optr[toptr::c_addr]&&
-					vword[pointpos].val!=sh.m_optr[toptr::c_star])
+				if(vword[pointpos].val!=rppoptr(c_addr)&&
+					vword[pointpos].val!=rppoptr(c_star))
 					break;
 				item.type+=vword[pointpos].val;
 			}
@@ -396,7 +396,7 @@ struct zmemb
 			return lambda_a_func_define(sh,item,v);
 		}
 		int start=0;
-		if(v[start].val==sh.m_key[tkey::c_friend])
+		if(v[start].val==rppkey(c_friend))
 		{
 			item.is_friend=true;
 			start++;
@@ -428,8 +428,8 @@ struct zmemb
 			sh.error(v.get(0),"miss ret type");
 			return false;
 		}
-		item.retval.name=sh.m_key[tkey::c_s_ret];
-		if(v.get(start).val==sh.m_optr[toptr::c_destruct])
+		item.retval.name=rppkey(c_s_ret);
+		if(v.get(start).val==rppoptr(c_destruct))
 		{
 			item.name+=v.get(start).val;
 			start++;
@@ -445,7 +445,7 @@ struct zmemb
 		elif(sh.m_optr.is_optr(v.get(start).val))
 		{
 			item.name=v.get(start).val;
-			if(v.get(start).val==sh.m_optr[toptr::c_mbk_l])
+			if(v.get(start).val==rppoptr(c_mbk_l))
 			{
 				start++;
 				item.name+=v.get(start).val;
@@ -625,7 +625,7 @@ struct zmemb
 		rbuf<rbuf<rstr> > vdst;
 		rbuf<rstr> vsrc=sh.vword_to_vstr(
 			temp.sub(left+1,temp.count()-1));
-		vdst=r_split(vsrc,sh.m_optr[toptr::c_comma]);
+		vdst=r_split(vsrc,rppoptr(c_comma));
 		if(vdst.empty())
 			return;
 		for(int i=0;i<vdst.count();i++)
@@ -643,8 +643,8 @@ struct zmemb
 		if(!tfi.is_friend)
 		{
 			tdata tdi;
-			tdi.name=sh.m_key[tkey::c_this];
-			tdi.type=tci.name+sh.m_optr[toptr::c_addr];
+			tdi.name=rppkey(c_this);
+			tdi.type=tci.name+rppoptr(c_addr);
 			tfi.param.push_front(tdi);
 		}
 	}
@@ -684,9 +684,9 @@ struct zmemb
 					twi.val=tfi.param[j].param[k].val;
 					vtemp.push(twi);
 				}
-				twi.val=sh.m_optr[toptr::c_sbk_r];
+				twi.val=rppoptr(c_sbk_r);
 				vtemp.push(twi);
-				twi.val=sh.m_optr[toptr::c_semi];
+				twi.val=rppoptr(c_semi);
 				vtemp.push(twi);
 			}
 			vtemp+=ftemp.vword;

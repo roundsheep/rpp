@@ -200,7 +200,7 @@ struct zsent
 	{
 		tclass& tci=*tfi.ptci;
 		if(sent.vword.count()>=3&&
-			sent.vword[1].val==sh.m_optr[toptr::c_equal]&&
+			sent.vword[1].val==rppoptr(c_equal)&&
 			sent.vword[0].is_name())
 		{
 			//处理类型推断

@@ -121,7 +121,7 @@ struct zexp
 	static rbool p_class_call(tsh& sh,tsent& src,tsent& outopnd,
 		tfunc& tfi,int level,int& i)
 	{
-		if(src.vword.get(i+1).val!=sh.m_optr[toptr::c_dot])
+		if(src.vword.get(i+1).val!=rppoptr(c_dot))
 		{
 			sh.error(src,"class name miss .");
 			return false;
@@ -433,7 +433,7 @@ struct zexp
 		}
 		tsent param=src.sub(left+1,right);
 		outopnd.vword.push(tword(cname));
-		outopnd.vword.push(tword(sh.m_optr[toptr::c_dot]));
+		outopnd.vword.push(tword(rppoptr(c_dot)));
 		outopnd.vword.push(tword(fname));
 		outopnd.vword.push(tword(rppoptr(c_sbk_l)));
 		if(pfirst!=null&&!ptfi->is_friend)
@@ -441,7 +441,7 @@ struct zexp
 			outopnd.vword+=pfirst->vword;
 			if(!param.empty())
 			{
-				outopnd.vword.push(tword(sh.m_optr[toptr::c_comma]));
+				outopnd.vword.push(tword(rppoptr(c_comma)));
 				outopnd.vword+=param.vword;
 			}
 		}
@@ -452,7 +452,7 @@ struct zexp
 				outopnd.vword+=param.vword;
 			}
 		}
-		outopnd.vword.push(tword(sh.m_optr[toptr::c_sbk_r]));
+		outopnd.vword.push(tword(rppoptr(c_sbk_r)));
 		//无括号调用添加括号递归处理
 		if(!p_exp(sh,outopnd,tfi,level))
 			return false;
@@ -573,12 +573,12 @@ struct zexp
 		dst.clear();
 		rbuf<rstr> soptr;
 		rbuf<tsent> sopnd;
-		soptr.push(sh.m_optr[toptr::c_exp_part]);
-		src.vword.push(tword(sh.m_optr[toptr::c_exp_part]));
+		soptr.push(rppoptr(c_exp_part));
+		src.vword.push(tword(rppoptr(c_exp_part)));
 		for(int i=0;i<src.vword.count();++i)
 		{
-			if(src.vword[i].val==sh.m_optr[toptr::c_exp_part]&&
-				soptr.get_top()==sh.m_optr[toptr::c_exp_part])
+			if(src.vword[i].val==rppoptr(c_exp_part)&&
+				soptr.get_top()==rppoptr(c_exp_part))
 				break;
 			if(src.vword[i].is_const())
 			{
@@ -593,12 +593,12 @@ struct zexp
 				tsent outopnd;
 				outopnd.pos=src.pos;
 				outopnd.vword.push(src.vword[i]);
-				outopnd.type=sh.m_key[tkey::c_int];
+				outopnd.type=rppkey(c_int);
 				sopnd.push(outopnd);
 			}
 			elif(src.vword[i].val==rppoptr(c_sbk_l))
 			{
-				//todo,小括号重载有点复杂 
+				//todo 小括号重载有点复杂 
 				int right=sh.find_symm_sbk(src.vword,i);
 				if(right>=src.vword.count())
 				{
@@ -622,7 +622,7 @@ struct zexp
 					return false;
 				sopnd.push(outopnd);
 			}
-			elif(src.vword[i].val==sh.m_optr[toptr::c_mbk_l])
+			elif(src.vword[i].val==rppoptr(c_mbk_l))
 			{
 				int right=sh.find_symm_mbk(src.vword,i);
 				if(right>=src.vword.count())
@@ -647,7 +647,7 @@ struct zexp
 				sopnd.push(outopnd);
 				i=right;
 			}
-			elif(src.vword[i].val==sh.m_optr[toptr::c_dot])
+			elif(src.vword[i].val==rppoptr(c_dot))
 			{
 				if(sopnd.empty())
 				{
@@ -691,7 +691,7 @@ struct zexp
 				}
 				sopnd.push(outopnd);
 			}
-			elif(src.vword[i].val==sh.m_optr[toptr::c_arrow_r])
+			elif(src.vword[i].val==rppoptr(c_arrow_r))
 			{
 				if(sopnd.empty())
 				{
@@ -699,11 +699,11 @@ struct zexp
 					return false;
 				}
 				tsent first=sopnd.pop();
-				first.vword.push_front(tword(sh.m_optr[toptr::c_star]));
+				first.vword.push_front(tword(rppoptr(c_star)));
 				if(!p_exp(sh,first,tfi,level))
 					return false;
 				sopnd.push(first);
-				src.vword[i].val=sh.m_optr[toptr::c_dot];
+				src.vword[i].val=rppoptr(c_dot);
 				i--;
 			}
 			elif(sh.m_optr.is_optr(src.vword[i].val))

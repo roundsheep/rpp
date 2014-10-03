@@ -127,7 +127,7 @@ struct zmac
 			item.name=v[i].val;
 			if(ptci->vmac.exist(item))
 			{
-				ifn(i>1&&v.get(i-1).val==sh.m_optr[toptr::c_dot])
+				ifn(i>1&&v.get(i-1).val==rppoptr(c_dot))
 				{
 					if(!replace_param(sh,v,i,*ptci->vmac.find(item),right))
 					{
@@ -140,7 +140,7 @@ struct zmac
 			ptci=sh.m_main;
 			if(ptci->vmac.exist(item))
 			{
-				ifn(i>1&&v.get(i-1).val==sh.m_optr[toptr::c_dot])
+				ifn(i>1&&v.get(i-1).val==rppoptr(c_dot))
 				{
 					if(!replace_param(sh,v,i,*ptci->vmac.find(item),right))
 					{
@@ -150,9 +150,9 @@ struct zmac
 					continue;
 				}
 			}
-			if(i==0||v[i].val!=sh.m_optr[toptr::c_dot]||i==v.count()-1)
+			if(i==0||v[i].val!=rppoptr(c_dot)||i==v.count()-1)
 				continue;
-			if(i>=2&&v[i-2].val==sh.m_optr[toptr::c_dot])
+			if(i>=2&&v[i-2].val==rppoptr(c_dot))
 				continue;
 			ptci=zfind::class_search(sh,v[i-1].val);
 			if(null==ptci)

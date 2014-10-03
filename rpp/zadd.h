@@ -26,7 +26,7 @@ struct zadd
 				add_member_destruct(sh,tfi);//全局变量在main中构造和析构
 			}
 			elif(tfi.name==tci.name&&
-				tfi.retval.type==sh.m_key[tkey::c_void]&&
+				tfi.retval.type==rppkey(c_void)&&
 				!tfi.is_friend)
 			{
 				add_member_struct(sh,tfi);	
@@ -116,7 +116,7 @@ struct zadd
 		tclass& tci=*tfi.ptci;
 		tsent sent;
 		sent.pos=tfi.last_pos;
-		sent.type=sh.m_key[tkey::c_void];
+		sent.type=rppkey(c_void);
 		for(int i=tci.vdata.count()-1;i>=0;i--)
 		{
 			if(sh.is_quote(tci.vdata[i].type))
@@ -139,7 +139,7 @@ struct zadd
 	{
 		tclass& tci=*tfi.ptci;
 		tsent sent;
-		sent.type=sh.m_key[tkey::c_void];
+		sent.type=rppkey(c_void);
 		for(int i=0;i<tci.vdata.count();i++)
 		{
 			if(sh.is_quote(tci.vdata[i].type))

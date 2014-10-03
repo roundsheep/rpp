@@ -74,13 +74,13 @@ struct zclass
 
 	static void main_add(tsh& sh)
 	{
-		sh.m_main=zfind::class_search(sh,sh.m_key[tkey::c_main]);
+		sh.m_main=zfind::class_search(sh,rppkey(c_main));
 		if(sh.m_main==null)
 		{
 			tclass item;
 			item.name=rppkey(c_main);
 			sh.m_class.insert(item);
-			sh.m_main=zfind::class_search(sh,sh.m_key[tkey::c_main]);	
+			sh.m_main=zfind::class_search(sh,rppkey(c_main));	
 		}
 		sh.m_main->is_friend=true;
 	}
@@ -123,13 +123,10 @@ struct zclass
 	{
 		for(int i=1;i<v.count();i++)
 		{
-			if(v[i].val==sh.m_key[tkey::c_switch]||
-				v[i].val==sh.m_key[tkey::c_case]||
-				v[i].val==sh.m_key[tkey::c_for]||
-				v[i].val==sh.m_key[tkey::c_else]||
-				v[i].val==sh.m_key[tkey::c_ifn]||
-				v[i].val==sh.m_key[tkey::c_if]&&
-				v[i-1].val!=sh.m_key[tkey::c_else])
+			if(v[i].val==rppkey(c_switch)||v[i].val==rppkey(c_case)||
+				v[i].val==rppkey(c_for)||v[i].val==rppkey(c_else)||
+				v[i].val==rppkey(c_ifn)||v[i].val==rppkey(c_if)&&
+				v[i-1].val!=rppkey(c_else))
 			{
 				if(v[i-1].pos==v[i].pos)
 				{
@@ -281,7 +278,7 @@ struct zclass
 			{
 				continue;
 			}
-			int left=r_find_pos(v,tword(sh.m_optr[toptr::c_bbk_l]),i+1);
+			int left=r_find_pos(v,tword(rppoptr(c_bbk_l)),i+1);
 			if(left>=v.count())
 			{
 				sh.error(v.get(i),"miss {");
@@ -303,7 +300,7 @@ struct zclass
 				sh.error(v.get(i),"miss {");
 				return false;
 			}
-			if(v.get(i-1).val==sh.m_key[tkey::c_friend])
+			if(v.get(i-1).val==rppkey(c_friend))
 			{
 				v[i-1].clear();
 				item.is_friend=true;

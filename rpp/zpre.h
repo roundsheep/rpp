@@ -118,7 +118,7 @@ struct zpre
 		rstrw exe_dir=rdir::get_exe_dir();
 		for(int i=0;i<v.count();i++)
 		{
-			if(v[i].val==sh.m_key[tkey::c_import])
+			if(v[i].val==rppkey(c_import))
 			{
 				if(v.get(i-1).val==rppoptr(c_pre))
 					v[i-1].clear();
@@ -217,23 +217,24 @@ struct zpre
 	{
 		for(int i=0;i<v.count();i++)
 		{
-			if(v[i].val==sh.m_key[tkey::c_include])
-				v[i].val=sh.m_key[tkey::c_import];
-			if(v[i].val==sh.m_key[tkey::c_private])
+			if(v[i].val==rppkey(c_include))
+				v[i].val=rppkey(c_import);
+			//这里不能用超级宏实现，因为有带冒号和不带冒号两种
+			if(v[i].val==rppkey(c_private))
 			{
 				v[i].clear();
 				tword temp=v.get(i+1);
 				if(rppoptr(c_colon)==temp.val)
 					v[i+1].clear();
 			}
-			if(v[i].val==sh.m_key[tkey::c_public])
+			if(v[i].val==rppkey(c_public))
 			{
 				v[i].clear();
 				tword temp=v.get(i+1);
 				if(rppoptr(c_colon)==temp.val)
 					v[i+1].clear();
 			}
-			if(v[i].val==sh.m_key[tkey::c_protected])
+			if(v[i].val==rppkey(c_protected))
 			{
 				v[i].clear();
 				tword temp=v.get(i+1);
@@ -338,7 +339,7 @@ struct zpre
 	{
 		for(int i=0;i<v.count();i++)
 		{
-			if(v[i].val==sh.m_key[tkey::c_define])
+			if(v[i].val==rppkey(c_define))
 			{
 				if(v.get(i-1).val==rppoptr(c_pre))
 					v[i-1].clear();

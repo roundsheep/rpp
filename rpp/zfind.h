@@ -64,17 +64,14 @@ struct zfind
 
 	static rbool is_op_pass_type(tsh& sh,const rstr& s)
 	{
-		return s==sh.m_key[tkey::c_int]||
-			s==sh.m_key[tkey::c_uint]||sh.is_point(s);
+		return s==rppkey(c_int)||s==rppkey(c_uint)||sh.is_point(s);
 	}
 
 	static rbool is_rstr_optr(tsh& sh,const rstr& s)
 	{
-		return s==sh.m_optr[toptr::c_plus]||
-			s==sh.m_optr[toptr::c_equalequal]||
-			s==sh.m_optr[toptr::c_notequal]||
-			s==sh.m_optr[toptr::c_greatequal]||
-			s==sh.m_optr[toptr::c_lessequal];
+		return s==rppoptr(c_plus)||s==rppoptr(c_equalequal)||
+			s==rppoptr(c_notequal)||s==rppoptr(c_greatequal)||
+			s==rppoptr(c_lessequal);
 		//大于和小于最好不要加上，防止与尖括号作用冲突
 	}
 
@@ -82,23 +79,17 @@ struct zfind
 	{
 		if(!sh.m_optr.is_optr(s))
 			return false;
-		return s==sh.m_optr[toptr::c_dot]||
-			s==sh.m_optr[toptr::c_sbk_r]||
-			s==sh.m_optr[toptr::c_mbk_r]||
-			s==sh.m_optr[toptr::c_plus];
+		return s==rppoptr(c_dot)||s==rppoptr(c_sbk_r)||
+			s==rppoptr(c_mbk_r)||s==rppoptr(c_plus);
 		//还有很多这样的运算符，暂时不写
 	}
 
 	static rbool is_empty_struct_type(tsh& sh,const rstr& s)
 	{
-		return s==sh.m_key[tkey::c_int]||
-			s==sh.m_key[tkey::c_char]||
-			s==sh.m_key[tkey::c_uint]||
-			s==sh.m_key[tkey::c_int8]||
-			s==sh.m_key[tkey::c_double]||
-			s==sh.m_key[tkey::c_rd4]||
-			s==sh.m_key[tkey::c_rcs]||
-			sh.is_point_quote(s);
+		return s==rppkey(c_int)||s==rppkey(c_char)||
+			s==rppkey(c_uint)||s==rppkey(c_int8)||
+			s==rppkey(c_double)||s==rppkey(c_rd4)||
+			s==rppkey(c_rcs)||sh.is_point_quote(s);
 	}
 
 	static rbool is_class(tsh& sh,const rstr& s)
@@ -279,10 +270,10 @@ struct zfind
 	static rbool is_destruct(tsh& sh,tfunc& tfi)
 	{
 		tclass& tci=*tfi.ptci;
-		return sh.m_optr[toptr::c_destruct]+tci.name==tfi.name&&
+		return rppoptr(c_destruct)+tci.name==tfi.name&&
 				tfi.param.count()==1&&
-				tfi.param[0].type==tci.name+sh.m_optr[toptr::c_addr]&&
-				tfi.retval.type==sh.m_key[tkey::c_void];
+				tfi.param[0].type==tci.name+rppoptr(c_addr)&&
+				tfi.retval.type==rppkey(c_void);
 	}
 
 	static tfunc* emptystruct_search(tclass& tci)
@@ -295,8 +286,8 @@ struct zfind
 		tclass& tci=*tfi.ptci;
 		return tci.name==tfi.name&&
 				tfi.param.count()==1&&
-				tfi.param[0].type==tci.name+sh.m_optr[toptr::c_addr]&&
-				tfi.retval.type==sh.m_key[tkey::c_void];
+				tfi.param[0].type==tci.name+rppoptr(c_addr)&&
+				tfi.retval.type==rppkey(c_void);
 	}
 
 	static tfunc* copystruct_search(tclass& tci)
