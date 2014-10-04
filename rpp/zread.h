@@ -2,6 +2,7 @@
 #define zread_h__
 
 #include "tsh.h"
+#include "zsuper.h"
 #include "../rlib/rdir.h"
 
 //读取基本配置信息和主文件  
@@ -70,6 +71,76 @@ struct zread
 		{
 			return false;
 		}
+		if(!read_match(sh,get_inf_dir(sh)+rstrw("rinf/match.txt")))
+		{
+			return false;
+		}
+		return true;
+	}
+
+	static rbuf<tasm> get_op_vasm(tsh& sh,const rbuf<rstr>& v)
+	{
+		rbuf<tasm> result;
+		tasm item;
+		rbuf<tword> vword;
+		rbuf<rstr>& vstr=item.vstr;
+		for(int i=0;i<v.count();i++)
+		{
+			ifn(word_analyse(sh,v[i],vword,null))
+			{
+				result.clear();
+				return result;
+			}
+			vstr=sh.vword_to_vstr(vword);
+			for(int j=0;j<vstr.count();j++)
+			{
+				if(j+1<vstr.count()&&vstr[j]=="@")
+				{
+					vstr[j]+=vstr[j+1];
+					vstr.erase(j+1);
+				}
+				elif(vstr[j].get_bottom()=='\"')
+				{
+					vstr[j]=zsuper::del_quote(vstr[j]);
+				}
+			}
+			result.push(item);
+		}
+		return result;
+	}
+
+	static rbool read_match(tsh& sh,const rstrw& name)
+	{
+		if(!rppconf(c_op_match))
+		{
+			return true;
+		}
+		rstr data=get_file_data(sh,name);
+		if(data.empty())
+		{
+			sh.error("can't read match file "+name.torstr());
+			return false;
+		}
+		rbuf<rstr> vstr=r_split_e(data,rstr("\r\n"));
+		top_node item;
+		int start=0;
+		for(int i=0;i<vstr.count();i++)
+		{
+			if(vstr[i].empty())
+			{
+				if(item.src.empty())
+				{
+					item.src=get_op_vasm(sh,vstr.sub(start,i));
+				}
+				elif(item.dst.empty())
+				{
+					item.dst=get_op_vasm(sh,vstr.sub(start,i));
+					sh.m_match.push(item);
+					item.clear();
+				}
+				start=i+1;
+			}
+		}
 		return true;
 	}
 
@@ -89,10 +160,14 @@ struct zread
 			uint udst;
 			if(i/2==tconf::c_stack_size)
 			{
-				rbuf<rstr> vstr2;
-				word_analyse_a_q(vstr[i],vstr2);
+				rbuf<tword> vword;
+				ifn(word_analyse(sh,vstr[i],vword,null))
+				{
+					sh.error("can't read conf file "+name.torstr());
+					return false;
+				}
 				int dst;
-				if(!const_eval(sh,vstr2,dst))
+				if(!const_eval(sh,sh.vword_to_vstr(vword),dst))
 					return false;
 				udst=(uint)dst;
 			}
@@ -329,41 +404,249 @@ struct zread
 		return true;
 	}
 
-	//快速词法分析
-	static rbool word_analyse_a_q(rstr& src,rbuf<rstr>& dst)
+	static rbool word_analyse(tsh& sh,rstr& src,rbuf<tword>& result,tfile* pfile)
 	{
-		dst.clear();
+		result.clear();
+		tword cur_word;
+		cur_word.pos.file=pfile;
+		cur_word.pos.line=1;
+		int len;
 		uchar* start;
 		uchar* p;
 		for(p=src.cstr();*p;++p)
 		{
 			start=p;
-			if(rstr::is_number(*p))
+			if(*p&&*(p+1)&&*p=='/'&&*(p+1)=='*')
 			{
-				for(++p;*p&&rstr::is_number(*p);++p)
+				p+=2;
+				int count=1;
+				for(;*p&&*(p+1);p++)
+				{
+					if('\n'==*p)
+						++cur_word.pos.line;
+					if(*p&&*(p+1)&&*p=='/'&&*(p+1)=='*')
+					{
+						++count;
+					}
+					if(*p&&*(p+1)&&*p=='*'&&*(p+1)=='/')
+					{
+						--count;
+					}
+					if(0==count)
+					{
+						break;
+					}
+				}
+				if(count)
+				{
+					sh.error(rstr(cur_word.pos.line)+rstr("miss */"));
+					return false;
+				}
+				p++;
+			}
+			elif(*p&&*(p+1)&&*p=='/'&&*(p+1)=='/')
+			{
+				p+=2;
+				for(;*p&&*p!='\n';p++)
+				{
 					;
-				dst.push(rstr(start,p));
+				}
+				if(*p==0)
+					return true;
+				++cur_word.pos.line;
+			}
+			elif('\\'==*p&&'\\'==*(p+1))
+			{
+				p+=2;
+				for(;*p&&*p!='\n'&&*p!=0xd;p++)
+				{
+					;
+				}
+				cur_word.val=zsuper::add_quote(rstr(start+2,p));
+				add_rstr(sh,result,cur_word);
+				if(*p==0)
+					return true;
+				if(*p=='\n')
+					++cur_word.pos.line;
+			}
+			elif('"'==*p)
+			{
+				int line=cur_word.pos.line;
+				for(++p;*p;++p)
+				{
+					if('\n'==*p)
+						++cur_word.pos.line;
+					if(*p=='\\')
+					{
+						if(*(p+1)=='x'&&*(p+2)&&*(p+3))
+						{
+							p+=3;
+						}
+						elif(*(p+1))
+						{
+							p++;
+						}
+						continue;
+					}
+					if(*p=='\"')
+					{
+						break;
+					}
+				}
+				cur_word.pos.line=line;
+				if(*p)
+				{
+					cur_word.val=rstr(start,p+1);
+					push_word(result,cur_word);
+				}
+				else
+				{
+					sh.error(rstr(cur_word.pos.line)+rstr("miss \""));
+					return false;
+				}
+			}
+			elif('\''==*p)
+			{
+				int line=cur_word.pos.line;
+				for(++p;*p;++p)
+				{
+					if('\n'==*p)
+						++cur_word.pos.line;
+					if(*p=='\\')
+					{
+						if(*(p+1)=='x'&&*(p+2)&&*(p+3))
+						{
+							p+=3;
+						}
+						elif(*(p+1))
+						{
+							p++;
+						}
+						continue;
+					}
+					if(*p=='\'')
+					{
+						break;
+					}
+				}
+				cur_word.pos.line=line;
+				if(*p)
+				{
+					cur_word.val=rstr(start,p+1);
+					if(cur_word.val.count()<2)
+					{
+						sh.error(rstr(cur_word.pos.line)+rstr("miss '"));
+						return false;
+					}
+					cur_word.val[0]='"';
+					cur_word.val[cur_word.val.count()-1]='"';
+					add_rstr(sh,result,cur_word);
+				}
+				else
+				{
+					sh.error(rstr(cur_word.pos.line)+rstr("miss '"));
+					return false;
+				}
+			}
+			elif('`'==*p)
+			{
+				if(*(p+1)==0)
+				{
+					sh.error(rstr(cur_word.pos.line)+rstr("miss `"));
+					return false;
+				}
+				p++;
+				cur_word.val=rstr((uint)*(p));
+				push_word(result,cur_word);
+			}
+			elif(rstr::is_number(*p))
+			{
+				for(++p;*p&&(rstr::is_number(*p)||'_'==*p||
+					rstr::is_alpha(*p));++p)
+					;
+				cur_word.val=rstr(start,p);
+				push_word(result,cur_word);
 				p--;
 			}
-			elif(rstr::is_alpha(*p)||'_'==*p)
+			elif((len=get_optr_s_len(sh,p,src.end()-p))>0)
 			{
-				for(++p;*p&&(rstr::is_number(*p)||rstr::is_alpha(*p)||'_'==*p);++p)
-					;
-				dst.push(rstr(start,p));
+				cur_word.val=rstr(p,p+len);
+				push_word(result,cur_word);
+				p+=len;
 				p--;
 			}
-			elif(is_asm_optr(*p))
+			elif(rstr::is_alpha(*p)||'_'==*p||
+				rcode::is_utf8_3(*p)&&*(p+1)&&*(p+2)||
+				rcode::is_utf8_2(*p)&&*(p+1))
 			{
-				dst.push(rstr(p,p+1));
+				for(;*p;++p)
+				{
+					if(rstr::is_number(*p)||rstr::is_alpha(*p)||'_'==*p)
+						continue;
+					elif(rcode::is_utf8_3(*p)&&*(p+1)&&*(p+2))
+					{
+						//todo 应该只能以汉字开头不能以特殊符号开头
+						p+=2;
+						continue;
+					}
+					elif(rcode::is_utf8_2(*p)&&*(p+1))
+					{
+						p++;
+						continue;
+					}
+					else
+						break;
+				}
+				cur_word.val=rstr(start,p);
+				push_word(result,cur_word);
+				p--;
+			}
+			elif('\n'==*p)
+			{
+				++cur_word.pos.line;
 			}
 		}
 		return true;
 	}
 
-	static rbool is_asm_optr(char ch)
+	static void push_word(rbuf<tword>& result,tword word)
 	{
-		return ch=='['||ch==']'||ch=='+'||ch=='-'||ch==','||ch==':'||
-			ch=='('||ch==')'||ch=='*'||ch=='/';
+		word.pos_src=word.pos;
+		result.push(word);
+	}
+
+	static int get_optr_s_len(tsh& sh,const uchar* s,int len)
+	{
+		rstr dst;
+		for(int i=sh.m_optr.m_optr_max;i>0;i--)
+		{
+			if(len<i)
+				continue;
+			dst=rstr(s,s+i);
+			int pos=r_find_pos_b(sh.m_optr.m_optr_s,dst);//这里是瓶颈
+			if(pos<sh.m_optr.m_optr_s.count())
+				return sh.m_optr.m_optr_s[pos].count();
+		}
+		return 0;
+	}
+
+	static void add_rstr(tsh& sh,rbuf<tword>& result,const tword& word)
+	{
+		if(result.get_top()==rppkey(c_import)||
+			result.get_top()==rppkey(c_include))
+		{
+			push_word(result,word);
+			return;
+		}
+		tword temp;
+		temp.pos=word.pos;
+		temp.val=rppkey(c_rstr);
+		push_word(result,temp);
+		temp.val=rppoptr(c_sbk_l);
+		push_word(result,temp);
+		push_word(result,word);
+		temp.val=rppoptr(c_sbk_r);
+		push_word(result,temp);
 	}
 
 	static rbool is_const_str(tsh& sh,const rstr& s)

@@ -468,7 +468,7 @@ struct zbin
 	{
 		rmutex_t mutex_t(sh.m_mutex);
 		rbuf<tword> vword;
-		if(!zpre::word_analyse(sh,name,vword,null))
+		if(!zread::word_analyse(sh,name,vword,null))
 			return 0;
 		zctl::combine_quote(sh,vword);
 		combine_template(sh,vword);

@@ -393,15 +393,16 @@ struct zcontrol
 		for(int i=0;i<vsent.count();++i)
 		{
 			rbuf<rbuf<tword> > temp=r_split(vsent[i].vword,tword(rstr(";")));
-			if(!temp.empty())
+			if(temp.empty())
 			{
-				tsent sent;
-				sent.pos=vsent[i].pos;
-				for(int j=0;j<temp.count();j++)
-				{
-					sent.vword=temp[j];
-					result.push(sent);
-				}
+				continue;
+			}
+			tsent sent;
+			sent.pos=vsent[i].pos;
+			for(int j=0;j<temp.count();j++)
+			{
+				sent.vword=temp[j];
+				result.push(sent);
 			}
 		}
 		vsent=result;
