@@ -247,8 +247,7 @@ struct zctl
 	{
 		for(int j=0;j<vparam.count();j++)
 		{
-			str_replace(result,vtl[j].name,
-				tsh::vword_to_vstr(vparam[j]));
+			str_replace(result,vtl[j].name,tsh::vword_to_vstr(vparam[j]));
 		}
 		zpre::arrange(result);
 	}
@@ -256,11 +255,14 @@ struct zctl
 	static void str_replace(rbuf<tword>& v,const rstr& src,const rbuf<rstr>& vstr)
 	{
 		for(int i=0;i<v.count();i++)
-			if(v[i].val==src)
+		{
+			if(v[i].val!=src)
 			{
-				v[i].val.clear();
-				v[i].multi=vstr;
+				continue;
 			}
+			v[i].val.clear();
+			v[i].multi=vstr;	
+		}
 	}
 
 	static void point_replace(tsh& sh,rbuf<tword>& v,rbool& need)

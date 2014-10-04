@@ -118,64 +118,65 @@ struct zpre
 		rstrw exe_dir=rdir::get_exe_dir();
 		for(int i=0;i<v.count();i++)
 		{
-			if(v[i].val==rppkey(c_import))
+			if(v[i].val!=rppkey(c_import))
 			{
-				if(v.get(i-1).val==rppoptr(c_pre))
-					v[i-1].clear();
-				v[i].val.clear();
-				rstrw name;
-				if(v.get(i+1).is_cstr())
-				{
-					name=v.get(i+1).val;
-					v[i+1].clear();
-				}
-				else
-				{
-					//处理不带引号的import
-					name+=rstrw("\"");
-					int j;
-					for(j=i+1;j<v.count();j++)
-					{
-						if(v[j].pos.line!=v[i].pos.line)
-						{
-							break;
-						}
-						name+=rstrw(v[j].val);
-						v[j].val.clear();
-					}
-					name+=rstrw("\"");
-				}
-				if(name.count()<3)
-					return false;
-				if(sh.m_is_pack_read)
-				{
-					continue;
-				}
-				name.pop();
-				name.pop_front();
-				name=rdir::dir_std(name);
-				rstrw temp=get_abs_name(rdir::get_prev_dir(f.name),name);
-				if(vname.exist(temp))
-					continue;
-				if(zread::exist(sh,temp))
-					continue;
-				if(!zread::file_exist(temp))
-				{
-					rstrw dir;
-					if(rdir::get_suffix(name)==rstrw("rp"))
-						dir=rstrw("rp/");
-					else
-						dir=rstrw("rsrc/");
-					temp=get_abs_name(exe_dir+dir,name);
-				}
-				if(vname.exist(temp))
-					continue;
-				if(zread::exist(sh,temp))
-					continue;
-				if(!zread::file_exist(temp))
-					return false;
-				vname.push(temp);
+				continue;
 			}
+			if(v.get(i-1).val==rppoptr(c_pre))
+				v[i-1].clear();
+			v[i].val.clear();
+			rstrw name;
+			if(v.get(i+1).is_cstr())
+			{
+				name=v.get(i+1).val;
+				v[i+1].clear();
+			}
+			else
+			{
+				//处理不带引号的import
+				name+=rstrw("\"");
+				int j;
+				for(j=i+1;j<v.count();j++)
+				{
+					if(v[j].pos.line!=v[i].pos.line)
+					{
+						break;
+					}
+					name+=rstrw(v[j].val);
+					v[j].val.clear();
+				}
+				name+=rstrw("\"");
+			}
+			if(name.count()<3)
+				return false;
+			if(sh.m_is_pack_read)
+			{
+				continue;
+			}
+			name.pop();
+			name.pop_front();
+			name=rdir::dir_std(name);
+			rstrw temp=get_abs_name(rdir::get_prev_dir(f.name),name);
+			if(vname.exist(temp))
+				continue;
+			if(zread::exist(sh,temp))
+				continue;
+			if(!zread::file_exist(temp))
+			{
+				rstrw dir;
+				if(rdir::get_suffix(name)==rstrw("rp"))
+					dir=rstrw("rp/");
+				else
+					dir=rstrw("rsrc/");
+				temp=get_abs_name(exe_dir+dir,name);
+			}
+			if(vname.exist(temp))
+				continue;
+			if(zread::exist(sh,temp))
+				continue;
+			if(!zread::file_exist(temp))
+				return false;
+			vname.push(temp);
 		}
 		arrange(v);
 		return true;
@@ -252,20 +253,21 @@ struct zpre
 		{
 			item.name=v[i].val;
 			tmac* p=vmac.find(item);
-			if(p!=null)
+			if(p==null)
 			{
-				if(p->is_super)
+				continue;
+			}
+			if(p->is_super)
+			{
+				ifn(zsuper::replace_item(sh,v,i,*p))
 				{
-					ifn(zsuper::replace_item(sh,v,i,*p))
-					{
-						return false;
-					}
+					return false;
 				}
-				else
-				{
-					v[i].val.clear();
-					v[i].multi=p->vstr;
-				}
+			}
+			else
+			{
+				v[i].val.clear();
+				v[i].multi=p->vstr;
 			}
 		}
 		return true;
@@ -339,45 +341,46 @@ struct zpre
 	{
 		for(int i=0;i<v.count();i++)
 		{
-			if(v[i].val==rppkey(c_define))
+			if(v[i].val!=rppkey(c_define))
 			{
-				if(v.get(i-1).val==rppoptr(c_pre))
-					v[i-1].clear();
-				if(v.get(i+1)=="$")
+				continue;
+			}
+			if(v.get(i-1).val==rppoptr(c_pre))
+				v[i-1].clear();
+			if(v.get(i+1)=="$")
+			{
+				int right=i;
+				ifn(zsuper::add_super_mac(sh,v,right,vdefine))
 				{
-					int right=i;
-					ifn(zsuper::add_super_mac(sh,v,right,vdefine))
-					{
-						return false;
-					}
-					sh.clear_word_val(v,i,right+1);
-					i=right;
-					continue;
-				}
-				tmac item;
-				item.name=v.get(i+1).val;
-				if(item.name.empty())
-				{
-					sh.error(v[i]);
 					return false;
 				}
-				for(int k=i+2;
-					k<v.count()&&
-					v.get(k).pos==v[i].pos;
-					k++)
-				{
-					item.vstr.push(v[k].val);
-					v[k].clear();
-				}
-				if(vdefine.exist(item))
-				{
-					sh.error(v.get(i+1),"redefined");
-						return false;
-				}
-				vdefine.insert(item);
-				v[i+1].clear();
-				v[i].clear();
+				sh.clear_word_val(v,i,right+1);
+				i=right;
+				continue;
 			}
+			tmac item;
+			item.name=v.get(i+1).val;
+			if(item.name.empty())
+			{
+				sh.error(v[i]);
+				return false;
+			}
+			for(int k=i+2;
+				k<v.count()&&
+				v.get(k).pos==v[i].pos;
+			k++)
+			{
+				item.vstr.push(v[k].val);
+				v[k].clear();
+			}
+			if(vdefine.exist(item))
+			{
+				sh.error(v.get(i+1),"redefined");
+				return false;
+			}
+			vdefine.insert(item);
+			v[i+1].clear();
+			v[i].clear();
 		}
 		arrange(v);
 		return true;

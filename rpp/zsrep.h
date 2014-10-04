@@ -222,32 +222,32 @@ struct zsrep
 	{
 		for(int i=0;i<v.count();i++)
 		{
-			if(v[i].val==rppkey(c_sizeof)||
-				v[i].val==rppkey(c_s_off))
+			if(v[i].val!=rppkey(c_sizeof)&&v[i].val!=rppkey(c_s_off))
 			{
-				if(i+1>=v.count())
-				{
+				continue;
+			}
+			if(i+1>=v.count())
+			{
+				return false;
+			}
+			if(v.get(i+1).val!=rppoptr(c_sbk_l))
+			{
+				v[i].multi.push(v[i].val);
+				v[i].multi.push(v.get(i+1).val);
+				v[i+1].clear();
+				v[i].val=rstr("0");
+				i++;
+			}
+			else
+			{
+				int right=sh.find_symm_sbk(v,i+1);
+				if(right>=v.count())
 					return false;
-				}
-				if(v.get(i+1).val!=rppoptr(c_sbk_l))
-				{
-					v[i].multi.push(v[i].val);
-					v[i].multi.push(v.get(i+1).val);
-					v[i+1].clear();
-					v[i].val=rstr("0");
-					i++;
-				}
-				else
-				{
-					int right=sh.find_symm_sbk(v,i+1);
-					if(right>=v.count())
-						return false;
-					v[i].multi.push(v[i].val);
-					v[i].multi+=sh.vword_to_vstr(v.sub(i+2,right));
-					sh.clear_word_val(v,i+1,right+1);
-					v[i].val=rstr("0");
-					i=right;
-				}
+				v[i].multi.push(v[i].val);
+				v[i].multi+=sh.vword_to_vstr(v.sub(i+2,right));
+				sh.clear_word_val(v,i+1,right+1);
+				v[i].val=rstr("0");
+				i=right;
 			}
 		}
 		zpre::arrange(v);
@@ -301,37 +301,37 @@ struct zsrep
 				continue;
 			v[i].multi.clear();
 		}
-		if(sh.m_key.is_asm_ins(v.get_bottom().val))
+		ifn(sh.m_key.is_asm_ins(v.get_bottom().val))
 		{
-			for(int i=1;i<v.count();i++)
-			{
-				if(!v[i].is_name())
-					continue;
-				tdata* ptdi=zfind::local_search(tfi,v[i].val);
-				if(ptdi==null)
-					continue;
-				rbuf<rstr> vdst;
-				if(v.get(i-1).val==rppoptr(c_addr))
-				{
-					vdst.push(rstr("ebp"));
-					vdst.push(rstr("+"));
-					vdst.push(rstr(ptdi->off));
-					v[i-1].clear();
-				}
-				else
-				{
-					vdst.push(rstr("["));
-					vdst.push(rstr("ebp"));
-					vdst.push(rstr("+"));
-					vdst.push(rstr(ptdi->off));
-					vdst.push(rstr("]"));
-				}
-				v[i].clear();
-				v[i].multi=vdst;
-			}
-			zpre::arrange(v);
+			return true;
 		}
-		
+		for(int i=1;i<v.count();i++)
+		{
+			if(!v[i].is_name())
+				continue;
+			tdata* ptdi=zfind::local_search(tfi,v[i].val);
+			if(ptdi==null)
+				continue;
+			rbuf<rstr> vdst;
+			if(v.get(i-1).val==rppoptr(c_addr))
+			{
+				vdst.push(rstr("ebp"));
+				vdst.push(rstr("+"));
+				vdst.push(rstr(ptdi->off));
+				v[i-1].clear();
+			}
+			else
+			{
+				vdst.push(rstr("["));
+				vdst.push(rstr("ebp"));
+				vdst.push(rstr("+"));
+				vdst.push(rstr(ptdi->off));
+				vdst.push(rstr("]"));
+			}
+			v[i].clear();
+			v[i].multi=vdst;
+		}
+		zpre::arrange(v);
 		return true;
 	}
 

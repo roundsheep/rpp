@@ -103,19 +103,19 @@ struct zclass
 	{
 		for(int i=0;i<v.count();i++)
 		{
-			if(v[i].val==rppoptr(c_bbk_l)||
-				v[i].val==rppoptr(c_bbk_r))
+			if(v[i].val!=rppoptr(c_bbk_l)&&v[i].val!=rppoptr(c_bbk_r))
 			{
-				if(v.get(i-1).pos==v[i].pos||
-					v.get(i+1).pos==v[i].pos)
-				{
-					v[i].pos.line++;
-					for(int j=i+1;j<v.count();j++)
-						v[j].pos.line+=2;
-					if(ptfi)
-						ptfi->last_pos.line+=2;
-				}
+				continue;
 			}
+			if(v.get(i-1).pos!=v[i].pos&&v.get(i+1).pos!=v[i].pos)
+			{
+				continue;
+			}
+			v[i].pos.line++;
+			for(int j=i+1;j<v.count();j++)
+				v[j].pos.line+=2;
+			if(ptfi)
+				ptfi->last_pos.line+=2;
 		}
 	}
 
@@ -123,19 +123,21 @@ struct zclass
 	{
 		for(int i=1;i<v.count();i++)
 		{
-			if(v[i].val==rppkey(c_switch)||v[i].val==rppkey(c_case)||
-				v[i].val==rppkey(c_for)||v[i].val==rppkey(c_else)||
-				v[i].val==rppkey(c_ifn)||v[i].val==rppkey(c_if)&&
-				v[i-1].val!=rppkey(c_else))
+			if(v[i].val!=rppkey(c_switch)&&v[i].val!=rppkey(c_case)&&
+				v[i].val!=rppkey(c_for)&&v[i].val!=rppkey(c_else)&&
+				v[i].val!=rppkey(c_ifn)&&
+				(v[i].val!=rppkey(c_if)||v[i-1].val==rppkey(c_else)))
 			{
-				if(v[i-1].pos==v[i].pos)
-				{
-					v[i].pos.line++;
-					for(int j=i+1;j<v.count();j++)
-						v[j].pos.line++;
-					ptfi->last_pos.line++;
-				}
+				continue;
 			}
+			if(v[i-1].pos!=v[i].pos)
+			{
+				continue;
+			}
+			v[i].pos.line++;
+			for(int j=i+1;j<v.count();j++)
+				v[j].pos.line++;
+			ptfi->last_pos.line++;
 		}	
 	}
 
@@ -154,20 +156,20 @@ struct zclass
 			{
 				continue;
 			}
-			if(v[i].val==rppoptr(c_bbk_l)||
-				v[i].val==rppoptr(c_bbk_r))
+			if(v[i].val!=rppoptr(c_bbk_l)&&v[i].val!=rppoptr(c_bbk_r))
 			{
-				if(v.get(i-1).pos==v[i].pos||
-					v.get(i+1).pos==v[i].pos)
-				{
-					//！warning：{ } need occupy one line，otherwise can't debug
-					v[i].pos.line++;
-					for(int j=i+1;j<v.count();j++)
-						v[j].pos.line+=2;
-					if(ptfi)
-						ptfi->last_pos.line+=2;
-				}
+				continue;
 			}
+			if(v.get(i-1).pos!=v[i].pos&&v.get(i+1).pos!=v[i].pos)
+			{
+				continue;
+			}
+			//！warning：{ } need occupy one line，otherwise can't debug
+			v[i].pos.line++;
+			for(int j=i+1;j<v.count();j++)
+				v[j].pos.line+=2;
+			if(ptfi)
+				ptfi->last_pos.line+=2;
 		}
 	}
 
@@ -321,8 +323,7 @@ struct zclass
 	{
 		if(!name_part(sh,tci,name_w))
 			return false;
-		if(zfind::is_class(sh,tci.name)||
-			zfind::is_classtl(sh,tci.name))
+		if(zfind::is_class(sh,tci.name)||zfind::is_classtl(sh,tci.name))
 		{
 			sh.error(name_w.get_bottom(),"type redefined");
 			return false;

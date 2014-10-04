@@ -148,40 +148,40 @@ struct zmemb
 		uint enum_val=0;
 		for(int j=0;j<v.count();j++)
 		{
-			if(v[j].val!=rppoptr(c_comma)&&
-				v[j].val!=rppoptr(c_semi))
+			if(v[j].val==rppoptr(c_comma)||v[j].val==rppoptr(c_semi))
 			{
-				tmac eitem;
-				eitem.name=v[j].val;
-				if(v.get(j+1).val==rppoptr(c_equal))
+				continue;
+			}
+			tmac eitem;
+			eitem.name=v[j].val;
+			if(v.get(j+1).val==rppoptr(c_equal))
+			{
+				if(v.get(j+2)==rppoptr(c_sbk_l))
 				{
-					if(v.get(j+2)==rppoptr(c_sbk_l))
-					{
-						enum_val=v.get(j+3).val.touint();
-						eitem.vstr.push(rstr(enum_val));
-						enum_val++;
-						j+=4;
-					}
-					else
-					{
-						enum_val=v.get(j+2).val.touint();
-						eitem.vstr.push(rstr(enum_val));
-						enum_val++;
-						j+=2;
-					}
+					enum_val=v.get(j+3).val.touint();
+					eitem.vstr.push(rstr(enum_val));
+					enum_val++;
+					j+=4;
 				}
 				else
 				{
+					enum_val=v.get(j+2).val.touint();
 					eitem.vstr.push(rstr(enum_val));
 					enum_val++;
+					j+=2;
 				}
-				if(tci.vmac.exist(eitem))
-				{
-					sh.error(v.get_bottom(),"enum redefined");
-					return false;
-				}
-				tci.vmac.insert(eitem);
 			}
+			else
+			{
+				eitem.vstr.push(rstr(enum_val));
+				enum_val++;
+			}
+			if(tci.vmac.exist(eitem))
+			{
+				sh.error(v.get_bottom(),"enum redefined");
+				return false;
+			}
+			tci.vmac.insert(eitem);
 		}
 		return true;
 	}
@@ -375,15 +375,16 @@ struct zmemb
 		item.retval.name=rppkey(c_s_ret);
 		for(;i<list.count();i++)
 		{
-			tdata ditem;
-			ifn(list[i].empty())
+			if(list[i].empty())
 			{
-				ifn(a_data_define(sh,ditem,list[i]))
-				{
-					return false;
-				}
-				item.param.push(ditem);
+				continue;
 			}
+			tdata ditem;
+			ifn(a_data_define(sh,ditem,list[i]))
+			{
+				return false;
+			}
+			item.param.push(ditem);
 		}
 		return true;
 	}
@@ -481,15 +482,16 @@ struct zmemb
 		rbuf<rbuf<tword> > list=sh.comma_split(param);
 		for(int i=0;i<list.count();i++)
 		{
-			tdata ditem;
-			ifn(list[i].empty())
+			if(list[i].empty())
 			{
-				ifn(a_data_define(sh,ditem,list[i]))
-				{
-					return false;
-				}
-				item.param.push(ditem);
+				continue;
 			}
+			tdata ditem;
+			ifn(a_data_define(sh,ditem,list[i]))
+			{
+				return false;
+			}
+			item.param.push(ditem);
 		}
 		return true;
 	}

@@ -403,12 +403,13 @@ struct znasm
 	{
 		for(int i=0;i<item.vstr.count();i++)
 		{
-			if(item.vstr[i]==rppkey(c_esp)||item.vstr[i]==rppkey(c_ebp))
+			if(item.vstr[i]!=rppkey(c_esp)&&item.vstr[i]!=rppkey(c_ebp))
 			{
-				if(item.vstr.count()>i+2&&item.vstr[i+2].is_number())
-				{
-					item.vstr[i+2]=item.vstr[i+2].toint()-4;
-				}
+				continue;
+			}
+			if(item.vstr.count()>i+2&&item.vstr[i+2].is_number())
+			{
+				item.vstr[i+2]=item.vstr[i+2].toint()-4;
 			}
 		}
 	}

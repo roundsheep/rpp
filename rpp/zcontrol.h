@@ -356,16 +356,17 @@ struct zcontrol
 		rbuf<tword> vtag;
 		for(int i=0;i<tfi.vsent.count();i++)
 		{
-			if(tfi.vsent[i].vword.get(1).val==rppoptr(c_colon)&&
-				tfi.vsent[i].vword.get(0).is_name())
+			if(tfi.vsent[i].vword.get(1).val!=rppoptr(c_colon)||
+				!tfi.vsent[i].vword.get(0).is_name())
 			{
-				tword word=tfi.vsent[i].vword.get(0);
-				word.pos.line=tfi.vsent[i].pos.line;
-				vtag.push(word);
-				tfi.vsent[i].vword[0].clear();
-				tfi.vsent[i].vword[1].clear();
-				zpre::arrange(tfi.vsent[i].vword);
+				continue;
 			}
+			tword word=tfi.vsent[i].vword.get(0);
+			word.pos.line=tfi.vsent[i].pos.line;
+			vtag.push(word);
+			tfi.vsent[i].vword[0].clear();
+			tfi.vsent[i].vword[1].clear();
+			zpre::arrange(tfi.vsent[i].vword);
 		}
 		for(int i=0;i<tfi.vsent.count();i++)
 			for(int j=0;j<tfi.vsent[i].vword.count();j++)
@@ -516,20 +517,21 @@ struct zcontrol
 	{
 		for(int i=0;i<v.count();i++)
 		{
-			if(v[i].val==rppoptr(c_bbk_l))
+			if(v[i].val!=rppoptr(c_bbk_l))
 			{
-				int left=i;
-				int right=sh.find_symm_bbk(v,left);
-				if(right>=v.count())
-				{
-					sh.error(v.get(i),"miss }");
-					return false;
-				}
-				v[left].val.clear();
-				v[right].val.clear();
-				v[right].multi.push(rppoptr(c_semi));
-				v[right].multi.push(rstr("nop"));
+				continue;
 			}
+			int left=i;
+			int right=sh.find_symm_bbk(v,left);
+			if(right>=v.count())
+			{
+				sh.error(v.get(i),"miss }");
+				return false;
+			}
+			v[left].val.clear();
+			v[right].val.clear();
+			v[right].multi.push(rppoptr(c_semi));
+			v[right].multi.push(rstr("nop"));
 		}
 		zpre::arrange(v);
 		return true;
@@ -571,47 +573,48 @@ struct zcontrol
 	{
 		for(int i=0;i<v.count();i++)
 		{
-			if(v[i].val==rppkey(c_if))
+			if(v[i].val!=rppkey(c_if))
 			{
-				int cond_end;
-				rbuf<tword> vcond;
-				cond_end=get_condition_end(sh,v,i,&vcond);
-				if(vcond.empty())
-				{
-					sh.error(v.get(i),"miss cond");
-					return false;
-				}
-				int left=cond_end;
-				if(v.get(left).val!=rppoptr(c_bbk_l))
-				{
-					sh.error(v.get(i),"miss {");
-					return false;
-				}
-				int right=sh.find_symm_bbk(v,left);
-				if(right>=v.count())
-				{
-					sh.error(v.get(i),"miss }");
-					return false;
-				}
-				int else_end=find_else_end(sh,v,right+1);
-				if(else_end==v.count())
-				{
-					sh.error(v.get(i),"miss else end");
-					return false;
-				}
-				if(v.get(right+1).val==rppkey(c_else))
-				{
-					insert_jmp_asm(v[right],v[else_end]);
-					v[right+1].val.clear();
-				}
-				v[left].multi=sh.vword_to_vstr(vcond);
-				insert_cond_false_asm(sh,v[left].multi,v.get(right+1));
-				sh.clear_word_val(v,i,cond_end);
-				v[left].val.clear();
-				v[right].val.clear();
-				v[right].multi.push(rppoptr(c_semi));
-				v[right].multi.push(rstr("nop"));
+				continue;
 			}
+			int cond_end;
+			rbuf<tword> vcond;
+			cond_end=get_condition_end(sh,v,i,&vcond);
+			if(vcond.empty())
+			{
+				sh.error(v.get(i),"miss cond");
+				return false;
+			}
+			int left=cond_end;
+			if(v.get(left).val!=rppoptr(c_bbk_l))
+			{
+				sh.error(v.get(i),"miss {");
+				return false;
+			}
+			int right=sh.find_symm_bbk(v,left);
+			if(right>=v.count())
+			{
+				sh.error(v.get(i),"miss }");
+				return false;
+			}
+			int else_end=find_else_end(sh,v,right+1);
+			if(else_end==v.count())
+			{
+				sh.error(v.get(i),"miss else end");
+				return false;
+			}
+			if(v.get(right+1).val==rppkey(c_else))
+			{
+				insert_jmp_asm(v[right],v[else_end]);
+				v[right+1].val.clear();
+			}
+			v[left].multi=sh.vword_to_vstr(vcond);
+			insert_cond_false_asm(sh,v[left].multi,v.get(right+1));
+			sh.clear_word_val(v,i,cond_end);
+			v[left].val.clear();
+			v[right].val.clear();
+			v[right].multi.push(rppoptr(c_semi));
+			v[right].multi.push(rstr("nop"));
 		}
 		return true;
 	}
@@ -717,19 +720,20 @@ struct zcontrol
 		int j;
 		for(j=i-1;j>=0;--j)
 		{
-			if(v[j].val==rppkey(c_for))
+			if(v[j].val!=rppkey(c_for))
 			{
-				int left=get_condition_end(sh,v,j);
-				if(left>=v.count())
-					return -2;
-				if(v[left]!=rstr("{"))
-					return -2;
-				int right=sh.find_symm_bbk(v,left);
-				if(right>=v.count())
-					return -2;
-				if(i>left&&i<right)
-					break;
+				continue;
 			}
+			int left=get_condition_end(sh,v,j);
+			if(left>=v.count())
+				return -2;
+			if(v[left]!=rstr("{"))
+				return -2;
+			int right=sh.find_symm_bbk(v,left);
+			if(right>=v.count())
+				return -2;
+			if(i>left&&i<right)
+				break;
 		}
 		return j;
 	}
@@ -738,53 +742,53 @@ struct zcontrol
 	{
 		for(int i=0;i<v.count();i++)
 		{
-			if(v[i].val==rppkey(c_continue)||
-				v[i].val==rppkey(c_continued))
+			if(v[i].val!=rppkey(c_continue)&&
+				v[i].val!=rppkey(c_continued))
 			{
-				int j=find_jump_out(sh,v,i);
-				if(j<0)
+				continue;
+			}
+			int j=find_jump_out(sh,v,i);
+			if(j<0)
+			{
+				sh.error(v.get(i),"no loop sturct");
+				return false;
+			}
+			rbuf<tword> vcond;
+			int cond_end=get_condition_end(sh,v,j,&vcond);
+			rbool is_for=true;
+			if(r_find_pos(vcond,tword(rppoptr(c_semi)))>=vcond.count())
+			{
+				is_for=false;
+			}
+			int left=r_find_pos(v,tword(rppoptr(c_bbk_l)),cond_end);
+			if(left>=v.count())
+			{
+				sh.error(v.get(j),"miss {");
+				return false;
+			}
+			int right=sh.find_symm_bbk(v,left);
+			if(right==0||right+1>=v.count())
+			{
+				sh.error(v.get(j),"miss }");
+				return false;
+			}
+			if(is_for)
+			{
+				if(v[i].val==rppkey(c_continue))
 				{
-					sh.error(v.get(i),"no loop sturct");
-					return false;
-				}
-				rbuf<tword> vcond;
-				int cond_end=get_condition_end(sh,v,j,&vcond);
-				rbool is_for=true;
-				if(r_find_pos(vcond,tword(rppoptr(c_semi)))>=vcond.count())
-				{
-					is_for=false;
-				}
-				int left=r_find_pos(v,tword(rppoptr(c_bbk_l)),cond_end);
-				if(left>=v.count())
-				{
-					sh.error(v.get(j),"miss {");
-					return false;
-				}
-				int right=sh.find_symm_bbk(v,left);
-				if(right==0||right+1>=v.count())
-				{
-					sh.error(v.get(j),"miss }");
-					return false;
-				}
-				if(is_for)
-				{
-					if(v[i].val==rppkey(c_continue))
-					{
-						insert_jmp_asm(v[i],v[right]);
-						v[i].val.clear();
-					}
-					else
-					{
-						insert_jmp_asm(v[i],v[left]);
-						v[i].val.clear();
-					}
+					insert_jmp_asm(v[i],v[right]);
+					v[i].val.clear();
 				}
 				else
 				{
 					insert_jmp_asm(v[i],v[left]);
 					v[i].val.clear();
 				}
-
+			}
+			else
+			{
+				insert_jmp_asm(v[i],v[left]);
+				v[i].val.clear();
 			}
 		}
 		return true;
@@ -794,24 +798,25 @@ struct zcontrol
 	{
 		for(int i=0;i<v.count();i++)
 		{
-			if(v[i].val==rppkey(c_break))
+			if(v[i].val!=rppkey(c_break))
 			{
-				int j=find_jump_out(sh,v,i);
-				if(j<0)
-				{
-					sh.error(v.get(i),"no loop sturct");
-					return false;
-				}
-				int left=r_find_pos(v,tword(rppoptr(c_bbk_l)),j);
-				int right=sh.find_symm_bbk(v,left);
-				if(right==0||right+1>=v.count())
-				{
-					sh.error(v.get(j),"miss { or }");
-					return false;
-				}
-				insert_jmp_asm(v[i],v[right+1]);
-				v[i].val.clear();
+				continue;
 			}
+			int j=find_jump_out(sh,v,i);
+			if(j<0)
+			{
+				sh.error(v.get(i),"no loop sturct");
+				return false;
+			}
+			int left=r_find_pos(v,tword(rppoptr(c_bbk_l)),j);
+			int right=sh.find_symm_bbk(v,left);
+			if(right==0||right+1>=v.count())
+			{
+				sh.error(v.get(j),"miss { or }");
+				return false;
+			}
+			insert_jmp_asm(v[i],v[right+1]);
+			v[i].val.clear();
 		}
 		return true;
 	}
@@ -885,71 +890,72 @@ struct zcontrol
 	{
 		for(int i=0;i<v.count();i++)
 		{
-			if(v[i].val==rppkey(c_for))
+			if(v[i].val!=rppkey(c_for))
 			{
-				rbuf<tword> vcond;
-				int cond_end=get_condition_end(sh,v,i,&vcond);
-				int topos=r_find_pos(vcond,tword(rppkey(c_to)));
-				if(topos<vcond.count())
+				continue;
+			}
+			rbuf<tword> vcond;
+			int cond_end=get_condition_end(sh,v,i,&vcond);
+			int topos=r_find_pos(vcond,tword(rppkey(c_to)));
+			if(topos<vcond.count())
+			{
+				int assignpos=r_find_pos(vcond,tword(rppoptr(c_equal)));
+				if(assignpos==vcond.count())
 				{
-					int assignpos=r_find_pos(vcond,tword(rppoptr(c_equal)));
-					if(assignpos==vcond.count())
-					{
-						sh.error(v.get(i),"for to miss assign optr");
-						vcond.print();
-						return false;
-					}
-					rstr name=vcond.get(assignpos-1).val;
-					if(name.empty())
-					{
-						sh.error(v.get(i),"for to miss assign name");
-						return false;
-					}
-					v[i].multi.push(rstr("for"));
-					v[i].multi.push(rstr("("));
-					for(int j=0;j<topos;j++)
-						v[i].multi.push(vcond[j].val);
-					v[i].multi.push(rppoptr(c_semi));
-					v[i].multi.push(name);
-					v[i].multi.push(rstr("<="));
-					for(int j=topos+1;j<vcond.count();j++)
-						v[i].multi.push(vcond[j].val);
-					v[i].multi.push(rppoptr(c_semi));
-					v[i].multi.push(rstr("++"));
-					v[i].multi.push(name);
-					v[i].multi.push(rstr(")"));
-					sh.clear_word_val(v,i,cond_end);
-					continue;
+					sh.error(v.get(i),"for to miss assign optr");
+					vcond.print();
+					return false;
 				}
-				int inpos=r_find_pos(vcond,tword(rppkey(c_in)));
-				if(inpos<vcond.count())
+				rstr name=vcond.get(assignpos-1).val;
+				if(name.empty())
 				{
-					rstr var=vcond.get(0).val;
-					rbuf<rstr> vset=sh.vword_to_vstr(vcond.sub(2));
-					if(var.empty()||vset.empty())
-					{
-						sh.error(v.get(i),"for in miss name or set");
-						return false;
-					}
-					sh.clear_word_val(v,i,cond_end);
-					v[i].multi.push(rstr("for"));
-					v[i].multi.push(rstr("("));
-					v[i].multi+=var;
-					v[i].multi+=rstr("=");
-					v[i].multi+=rstr("0");
-					v[i].multi+=rstr(";");
-					v[i].multi+=var;
-					v[i].multi+=rstr("<");
-					v[i].multi+=vset;
-					v[i].multi+=rstr(".");
-					v[i].multi+=rstr("count");
-					v[i].multi+=rstr("(");
-					v[i].multi+=rstr(")");
-					v[i].multi+=rstr(";");
-					v[i].multi+=rstr("++");
-					v[i].multi+=var;
-					v[i].multi+=rstr(")");
+					sh.error(v.get(i),"for to miss assign name");
+					return false;
 				}
+				v[i].multi.push(rstr("for"));
+				v[i].multi.push(rstr("("));
+				for(int j=0;j<topos;j++)
+					v[i].multi.push(vcond[j].val);
+				v[i].multi.push(rppoptr(c_semi));
+				v[i].multi.push(name);
+				v[i].multi.push(rstr("<="));
+				for(int j=topos+1;j<vcond.count();j++)
+					v[i].multi.push(vcond[j].val);
+				v[i].multi.push(rppoptr(c_semi));
+				v[i].multi.push(rstr("++"));
+				v[i].multi.push(name);
+				v[i].multi.push(rstr(")"));
+				sh.clear_word_val(v,i,cond_end);
+				continue;
+			}
+			int inpos=r_find_pos(vcond,tword(rppkey(c_in)));
+			if(inpos<vcond.count())
+			{
+				rstr var=vcond.get(0).val;
+				rbuf<rstr> vset=sh.vword_to_vstr(vcond.sub(2));
+				if(var.empty()||vset.empty())
+				{
+					sh.error(v.get(i),"for in miss name or set");
+					return false;
+				}
+				sh.clear_word_val(v,i,cond_end);
+				v[i].multi.push(rstr("for"));
+				v[i].multi.push(rstr("("));
+				v[i].multi+=var;
+				v[i].multi+=rstr("=");
+				v[i].multi+=rstr("0");
+				v[i].multi+=rstr(";");
+				v[i].multi+=var;
+				v[i].multi+=rstr("<");
+				v[i].multi+=vset;
+				v[i].multi+=rstr(".");
+				v[i].multi+=rstr("count");
+				v[i].multi+=rstr("(");
+				v[i].multi+=rstr(")");
+				v[i].multi+=rstr(";");
+				v[i].multi+=rstr("++");
+				v[i].multi+=var;
+				v[i].multi+=rstr(")");
 			}
 		}
 		zpre::arrange(v);

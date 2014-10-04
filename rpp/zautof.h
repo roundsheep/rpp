@@ -183,15 +183,7 @@ struct zautof
 			{
 				continue;
 			}
-			if(v[i+1]!="<")
-			{
-				continue;
-			}
-			if(v[i+2]!="char")
-			{
-				continue;
-			}
-			if(v[i+3]!=">")
+			if(v[i+1]!="<"||v[i+2]!="char"||v[i+3]!=">")
 			{
 				continue;
 			}
