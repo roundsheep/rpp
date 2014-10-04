@@ -17,8 +17,6 @@
 #include <time.h>  
 //#include <random>
 
-using namespace std;
-
 struct rf
 {
 	enum

@@ -191,6 +191,8 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CallingConvention>Cdecl</CallingConvention>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
     </ClCompile>
     <Link>
       <OutputFile>$(OutDir)..\..\bin\$(ProjectName).exe</OutputFile>

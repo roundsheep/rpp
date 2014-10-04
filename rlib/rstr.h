@@ -4,7 +4,6 @@
 #include "rbuf.h"
 #include "ralgo.h"
 #ifdef _MSC_VER
-#include <string>
 #include <conio.h>
 #else
 #include <stdarg.h>

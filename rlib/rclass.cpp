@@ -1,5 +1,6 @@
 ﻿#ifdef _MSC_VER
 #include <winsock2.h>
+#include <string>
 #pragma comment(lib,"Ws2_32")
 #else
 #endif
@@ -20,7 +21,7 @@ void new_fail_handle()
 rclass::rclass()
 {
 #ifdef _MSC_VER
-	set_new_handler(new_fail_handle);
+	std::set_new_handler(new_fail_handle);
 
 	WORD wVersionRequested;
 	WSADATA wsaData;
