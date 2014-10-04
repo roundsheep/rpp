@@ -56,5 +56,4 @@ struct tanalyse
 };
 #endif
 
-
 #endif

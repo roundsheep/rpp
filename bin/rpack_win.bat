@@ -1,3 +1,3 @@
 @echo off
 cd /d %~dp0
-rppw.exe -jit %1
+rpp_win.exe -pack %1

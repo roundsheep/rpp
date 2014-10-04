@@ -5,5 +5,5 @@
 int main(int argc, char* argv[])
 {
 	static tvm vm;
-	return zmain::rpp_main(vm.m_sh,vm,argc,argv);
+	return zmain::rpp_main(vm,argc,argv);
 }

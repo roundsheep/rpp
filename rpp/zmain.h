@@ -170,8 +170,9 @@ struct zmain
 		return true;
 	}
 
-	static int rpp_main(tsh& sh,tvm& vm,int argc,char** argv)
+	static int rpp_main(tvm& vm,int argc,char** argv)
 	{
+		tsh& sh=vm.m_sh;
 		rstr name;
 		sh.m_argc=argc;
 		sh.m_argv=argv;

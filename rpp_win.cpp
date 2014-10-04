@@ -26,7 +26,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine,i
 	freopen("CONOUT$","w",stdout);
 	freopen("CONOUT$","w",stderr);
 #endif
-	int ret=zmain::rpp_main(vm.m_sh,vm,argc,argv);
+	int ret=zmain::rpp_main(vm,argc,argv);
 #ifdef RPP_SHOW_CONSOLE
 	FreeConsole();
 #endif

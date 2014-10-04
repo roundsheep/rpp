@@ -33,28 +33,28 @@ del /F /Q .\2010\*.user
 rd /S /Q .\2010\debug
 rd /S /Q .\2010\Release
 
-del /F /Q .\2012\*.vsp
-rem del /F /Q .\2012\*.filters
-del /F /Q .\2012\*.psess
-del /F /Q .\2012\*.sdf
-del /F /Q .\2012\*.ncb
-attrib -R -S -A -H .\2012\*.suo
-del /F /Q .\2012\*.suo
-del /F /Q .\2012\*.user
+del /F /Q .\proj\rpp_win\*.vsp
+rem del /F /Q .\proj\rpp_win\*.filters
+del /F /Q .\proj\rpp_win\*.psess
+del /F /Q .\proj\rpp_win\*.sdf
+del /F /Q .\proj\rpp_win\*.ncb
+attrib -R -S -A -H .\proj\rpp_win\*.suo
+del /F /Q .\proj\rpp_win\*.suo
+del /F /Q .\proj\rpp_win\*.user
 
-rd /S /Q .\2012\debug
-rd /S /Q .\2012\Release
+rd /S /Q .\proj\rpp_win\debug
+rd /S /Q .\proj\rpp_win\Release
 
-del /F /Q .\rppw\*.vsp
-rem del /F /Q .\rppw\*.filters
-del /F /Q .\rppw\*.psess
-del /F /Q .\rppw\*.sdf
-del /F /Q .\rppw\*.ncb
-attrib -R -S -A -H .\rppw\*.suo
-del /F /Q .\rppw\*.suo
-del /F /Q .\rppw\*.user
+del /F /Q .\proj\*.vsp
+rem del /F /Q .\proj\*.filters
+del /F /Q .\proj\*.psess
+del /F /Q .\proj\*.sdf
+del /F /Q .\proj\*.ncb
+attrib -R -S -A -H .\proj\*.suo
+del /F /Q .\proj\*.suo
+del /F /Q .\proj\*.user
 
-rd /S /Q .\rppw\debug
-rd /S /Q .\rppw\Release
+rd /S /Q .\proj\debug
+rd /S /Q .\proj\Release
 
 pause
