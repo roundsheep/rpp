@@ -4,7 +4,6 @@
 #include "rbase.h"
 #include <stdio.h>
 #include <string.h>
-#include <utility>
 
 //#define r_round(d) ((uint)(d+0.5))
 //#define r_log(a,b) (log(b)/log(a))
