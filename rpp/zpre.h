@@ -360,10 +360,7 @@ struct zpre
 				sh.error(v[i]);
 				return false;
 			}
-			for(int k=i+2;
-				k<v.count()&&
-				v.get(k).pos==v[i].pos;
-			k++)
+			for(int k=i+2;k<v.count()&&v.get(k).pos==v[i].pos;k++)
 			{
 				item.vstr.push(v[k].val);
 				v[k].clear();

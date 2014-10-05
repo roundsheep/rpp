@@ -452,12 +452,12 @@ struct zcontrol
 			sh.push_twi(vtemp,twi,")");
 			sh.push_twi(vtemp,twi,";");
 			sh.push_twi(vtemp,twi,"mov");
-			sh.push_twi(vtemp,twi,"[");
+			sh.push_twi(vtemp,twi,rppoptr(c_mbk_l));
 			sh.push_twi(vtemp,twi,"ebp");
 			sh.push_twi(vtemp,twi,"+");
 			sh.push_twi(vtemp,twi,rppkey(c_s_off));
 			sh.push_twi(vtemp,twi,tfi.retval.name);
-			sh.push_twi(vtemp,twi,"]");
+			sh.push_twi(vtemp,twi,rppoptr(c_mbk_r));
 			sh.push_twi(vtemp,twi,",");
 			sh.push_twi(vtemp,twi,"ebx");
 			sh.push_twi(vtemp,twi,";");

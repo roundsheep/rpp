@@ -142,20 +142,20 @@ struct tsh
 		return r_move(s);
 	}
 
-	static rbuf<rstr> get_func_declare_lisp(tclass& tci,tfunc& tfi)
+	static rbuf<rstr> get_func_declare_lisp(tsh& sh,tclass& tci,tfunc& tfi)
 	{
-		return get_func_declare_call(tci,tfi).sub(1);
+		return get_func_declare_call(sh,tci,tfi).sub(1);
 	}
 
-	static rbuf<rstr> get_func_declare_call(tclass& tci,tfunc& tfi)
+	static rbuf<rstr> get_func_declare_call(tsh& sh,tclass& tci,tfunc& tfi)
 	{
 		rbuf<rstr> ret;
 		ret+="call";
-		ret+="[";
+		ret+=rppoptr(c_mbk_l);
 		ret+="&";
 		ret+=tci.name;
 		ret+=tfi.name_dec;
-		ret+="]";
+		ret+=rppoptr(c_mbk_r);
 		return r_move(ret);
 	}
 

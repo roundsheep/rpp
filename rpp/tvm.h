@@ -1315,7 +1315,7 @@ next:
 	static rbool main_init(tsh& sh,rbuf<tasm>& vasm)
 	{
 		zasm::push_asm(vasm,"sub","esp",",","4");
-		zasm::push_asm(vasm,"call","[","&","main","main()","]");
+		zasm::push_asm(vasm,"call",rppoptr(c_mbk_l),"&","main","main()",rppoptr(c_mbk_r));
 		zasm::push_asm(vasm,"add","esp",",","4");
 		zasm::push_asm(vasm,"halt");
 		return zbin::proc_vasm(sh,vasm);

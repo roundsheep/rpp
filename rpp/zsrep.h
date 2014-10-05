@@ -102,7 +102,7 @@ struct zsrep
 				if(null==ptfi)
 					continue;
 				sh.clear_word_val(v,i,left);
-				v[i].multi=sh.get_func_declare_lisp(*ptci,*ptfi);
+				v[i].multi=sh.get_func_declare_lisp(sh,*ptci,*ptfi);
 				i=left-1;
 			}
 			else
@@ -121,7 +121,7 @@ struct zsrep
 				if(null==ptfi)
 					continue;
 				sh.clear_word_val(v,i,right+1);
-				v[i].multi=sh.get_func_declare_lisp(*ptci,*ptfi);
+				v[i].multi=sh.get_func_declare_lisp(sh,*ptci,*ptfi);
 				i=right;
 			}
 		}
@@ -322,11 +322,11 @@ struct zsrep
 			}
 			else
 			{
-				vdst.push(rstr("["));
+				vdst.push(rstr(rppoptr(c_mbk_l)));
 				vdst.push(rstr("ebp"));
 				vdst.push(rstr("+"));
 				vdst.push(rstr(ptdi->off));
-				vdst.push(rstr("]"));
+				vdst.push(rstr(rppoptr(c_mbk_r)));
 			}
 			v[i].clear();
 			v[i].multi=vdst;

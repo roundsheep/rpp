@@ -659,12 +659,8 @@ struct zread
 
 	static rbool is_const_str(tsh& sh,const rstr& s)
 	{
-		return s.is_number()||
-			s==rppoptr(c_sbk_l)||
-			s==rppoptr(c_sbk_r)||
-			s==rppoptr(c_plus)||
-			s==rppoptr(c_minus)||
-			s==rppoptr(c_star)||
+		return s.is_number()||s==rppoptr(c_sbk_l)||s==rppoptr(c_sbk_r)||
+			s==rppoptr(c_plus)||s==rppoptr(c_minus)||s==rppoptr(c_star)||
 			s==rppoptr(c_divide);
 	}
 

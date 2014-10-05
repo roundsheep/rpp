@@ -590,5 +590,3 @@ struct rbuf
 };
 
 #endif
-
-
