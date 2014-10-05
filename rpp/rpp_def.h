@@ -55,7 +55,7 @@ else                                     \
 }                                        \
 s+=rppj4(b_mov,"ebx",",","0");           \
 s+=zjiti::a();                           \
-return s
+return r_move(s)
 
 #define rppncmp(a)                                               \
 if(count_mbk_l(vstr)==2)                                         \

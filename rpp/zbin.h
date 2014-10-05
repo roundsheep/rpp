@@ -145,7 +145,7 @@ struct zbin
 			ret+=tmp[i];
 		}
 		ret+=")";
-		return ret;
+		return r_move(ret);
 	}
 
 	//从函数的词表编译到vasm

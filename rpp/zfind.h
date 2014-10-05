@@ -50,17 +50,6 @@ struct zfind
 		//这里不用is_point_quote可略微提高效率
 		return type==rppkey(c_int)||sh.is_point(type)||sh.is_quote(type);
 	}
-	
-	//只有rbool(int)或者指针
-	static rbool is_type_cond(tsh& sh,const rstr& type)
-	{
-		return type==rppkey(c_int)||sh.is_point(type);
-	}
-
-	static rbool is_type_cond_t(tsh& sh,const rstr& type)
-	{
-		return is_type_cond(sh,sh.get_tname(type));
-	}
 
 	static rbool is_op_pass_type(tsh& sh,const rstr& s)
 	{

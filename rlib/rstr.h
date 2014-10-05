@@ -82,6 +82,11 @@ struct rstr
 		memcpy(begin(),s.begin(),s.count());
 	}
 
+	rstr(rstr&& s)
+	{
+		m_buf.move(s.m_buf);
+	}
+
 	int toint()
 	{
 		int result;
@@ -156,6 +161,12 @@ struct rstr
 		//m_buf=a.m_buf;
 	}
 
+	void operator=(rstr&& s)
+	{
+		m_buf.free();
+		m_buf.move(s.m_buf);
+	}
+
 	uchar& operator[](int num) const 
 	{
 		return m_buf[num];
@@ -171,6 +182,7 @@ struct rstr
 		return a.m_buf!=b.m_buf;
 	}
 
+	//有待优化
 	friend rstr operator+(const rstr& a,const rstr& b)
 	{
 		/*rstr ret;
@@ -191,7 +203,7 @@ struct rstr
 		ret.m_buf.m_count=total;
 		memcpy(ret.begin(),a.begin(),a.m_buf.m_count);
 		memcpy(ret.begin()+a.m_buf.m_count,b.begin(),b.m_buf.m_count);
-		return ret;
+		return r_move(ret);
 	}
 
 	void operator+=(const rstr& a)
@@ -240,7 +252,6 @@ struct rstr
 		int len=(int)strlen((const char*)p);
 		m_buf.realloc_n_not_change(rbuf<uchar>::extend_num(len));
 		m_buf.m_count=len;
-		
 		memcpy(m_buf.begin(),p,len);
 	}
 
@@ -323,7 +334,7 @@ struct rstr
 	{
 		rstr ret;
 		ret.m_buf=m_buf.sub(begin,end);
-		return ret;
+		return r_move(ret);
 	}
 
 	rbool erase(int begin,int end)

@@ -172,11 +172,11 @@ struct rhash
 
 	static int bkdr_hash32(void* data,int len)
 	{
-		uint seed = 131; // 31 131 1313 13131 131313 etc..
-		uint hash = 0;
-		for(int i = 0; i < len; ++i)
+		uint seed=131; // 31 131 1313 13131 131313 etc..
+		uint hash=0;
+		for(int i=0;i<len;++i)
 		{
-			hash = (hash * seed) + ((uchar*)data)[i];
+			hash=(hash*seed)+((uchar*)data)[i];
 		}
 		return (int)hash;
 	}

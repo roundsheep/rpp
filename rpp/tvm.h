@@ -28,13 +28,11 @@ struct tvm
 	rlist<tvm_t> m_list;
 	tsh m_sh;
 
-#include "rcocos.h"
-
 	static rbool other_call(int index,tsh* sh,tvm_t* pvmt,treg& reg)
 	{
 		if(index<2000)
 		{
-			return cocos_call(index,sh,pvmt,reg);
+			return false;//cocos_call
 		}
 		return false;
 	}

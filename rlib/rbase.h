@@ -65,6 +65,7 @@ typedef ushort wchar;
 #define ifn(a) if(!(a))
 
 #define r_size(a) ((int)sizeof(a))
+#define r_move(a) std::move(a)
 #define r_max(a,b) ((a)>(b)?(a):(b))
 #define r_min(a,b) ((a)>(b)?(b):(a))
 #define r_cond(cond,a,b) ((cond)?(a):(b))

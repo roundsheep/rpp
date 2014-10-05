@@ -386,7 +386,7 @@ struct tfunc
 			s+=param[j].type;
 		}
 		s+=")";
-		return s;
+		return r_move(s);
 	}
 
 	friend rbool operator<(const tfunc& a,const tfunc& b)

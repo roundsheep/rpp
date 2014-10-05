@@ -42,6 +42,11 @@ struct rstrw
 		memcpy(begin(),tmp.begin(),tmp.size());
 	}
 
+	rstrw(rstrw&& s)
+	{
+		m_buf.move(s.m_buf);
+	}
+
 	rstr torstr() const
 	{
 		return rcode::utf16_to_utf8(rstr((char*)begin(),size()));
@@ -69,6 +74,12 @@ struct rstrw
 		m_buf=a.m_buf;
 	}
 
+	void operator=(rstrw&& a)
+	{
+		m_buf.free();
+		m_buf.move(a.m_buf);
+	}
+
 	ushort& operator[](int num) const 
 	{
 		return m_buf[num];
@@ -88,7 +99,7 @@ struct rstrw
 	{
 		rstrw ret;
 		ret.m_buf=a.m_buf+b.m_buf;
-		return ret;
+		return r_move(ret);
 	}
 
 	void operator+=(const rstrw& a)
@@ -237,7 +248,7 @@ struct rstrw
 	{
 		rstrw ret;
 		ret.m_buf=m_buf.sub(begin,end);
-		return ret;
+		return r_move(ret);
 	}
 
 	rbool erase(int begin,int end)

@@ -5,7 +5,7 @@
 
 //binary search
 template <class V,class T>
-int r_find_pos_b(const V& v,T a)
+int r_find_pos_b(const V& v,const T& a)
 {
 	int left=0;
 	int right=v.count()-1;
@@ -32,9 +32,9 @@ rbool r_not_equal(const T& a,const T& b)
 template<class T>
 void r_swap(T& a,T& b)
 {
-	T temp=a;
-	a=b;
-	b=temp;
+	T temp(r_move(a));
+	a=r_move(b);
+	b=r_move(temp);
 }
 
 template <class V>
@@ -182,7 +182,7 @@ rbuf<V> r_split(const V& v,const V& m,int start=0)
 		temp+=v[i];
 	if(!temp.empty())
 		result.push(temp);
-	return result;
+	return r_move(result);
 }
 
 template <class V,class T>
@@ -214,7 +214,7 @@ rbuf<V> r_split_e(const V& v,const V& m,int start=0)
 	for(i=start;i<v.count();i++)
 		temp+=v[i];
 	result.push(temp);
-	return result;
+	return r_move(result);
 }
 
 template <class V,class T>

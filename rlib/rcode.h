@@ -28,7 +28,7 @@ struct rcode
 			return "";
 		}
 		result.m_buf.m_count-=2;
-		return result;
+		return r_move(result);
 	}
 #else
 	static rstr gbk_to_utf16(const rstr& s)
@@ -62,7 +62,7 @@ struct rcode
 			result+=get_second(wuni);
 			i++;
 		}
-		return result;
+		return r_move(result);
 	}
 #endif
 
@@ -110,7 +110,7 @@ struct rcode
 				result.push(0);
 			}
 		}
-		return result;
+		return r_move(result);
 	}
 
 #ifdef _MSC_VER
@@ -129,7 +129,7 @@ struct rcode
 			return "";
 		}
 		result.pop();
-		return result;
+		return r_move(result);
 	}
 #else
 	static rstr utf16_to_gbk(const rstr& s)
@@ -155,7 +155,7 @@ struct rcode
 				result+=get_second(wgbk);
 			}
 		}
-		return result;
+		return r_move(result);
 	}
 #endif
 
@@ -187,7 +187,7 @@ struct rcode
 				result.push((temp&0x3f)|0x80);
 			}
 		}
-		return result;
+		return r_move(result);
 	}
 
 	static rstr to_utf16_txt(const rstr& s)
@@ -213,7 +213,7 @@ struct rcode
 		temp.push(0xbb);
 		temp.push(0xbf);
 		temp+=s;
-		return temp;
+		return r_move(temp);
 	}
 
 	static rstr to_utf8_txt(const rstr& s)
@@ -243,7 +243,7 @@ struct rcode
 		{
 			return utf16_to_gbk(s.sub(2));
 		}
-		return s;
+		return r_move(s);
 	}
 
 	static rbool is_utf16_txt(const rstr& s)
@@ -312,23 +312,17 @@ struct rcode
 		return ch>=0x81&&ch<=0xfd;
 	}
 
+#ifndef _MSC_VER
 	static ushort unicode(int index)
 	{
-#ifdef _MSC_VER
-		return 0;
-#else
 		return *(ushort*)&g_unicode[index*2];
-#endif
 	}
 
 	static ushort gbk(int index)
 	{
-#ifdef _MSC_VER
-		return 0;
-#else
 		return *(ushort*)&g_gbk[index*2];
-#endif
 	}
+#endif
 
 	static char& get_second(ushort& ch)
 	{

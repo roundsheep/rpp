@@ -144,9 +144,6 @@
     <ClInclude Include="..\rpp\znasm.h">
       <Filter>rpp</Filter>
     </ClInclude>
-    <ClInclude Include="..\rpp\rcocos.h">
-      <Filter>rpp</Filter>
-    </ClInclude>
     <ClInclude Include="..\rpp\zlambda.h">
       <Filter>rpp</Filter>
     </ClInclude>

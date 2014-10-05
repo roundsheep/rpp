@@ -82,7 +82,7 @@ struct zself
 			}
 			v.push(tfi.local[i]);
 		}
-		return v;
+		return r_move(v);
 	}
 
 	static void push_func_param(tsh& sh,tfunc& tfi,rbuf<tword>& v)
@@ -118,7 +118,7 @@ struct zself
 			s+=" ";
 		}
 		s+="}\"";
-		return s;
+		return r_move(s);
 	}
 
 	static rstr get_func_txt_dec(tdata& tdi)
@@ -129,7 +129,7 @@ struct zself
 			s+="&";
 		}
 		s+=" "+tdi.name;
-		return s;
+		return r_move(s);
 	}
 
 	static void self_push_param(tsh& sh,tfunc& tfi,rbuf<rstr>& vstr)
@@ -165,7 +165,7 @@ struct zself
 			ret+=self_get_data_dec(vdata[i]);
 		}
 		ret+=")";
-		return ret;
+		return r_move(ret);
 	}
 
 	static rstr self_get_data_dec(tdata& tdi)

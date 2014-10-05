@@ -204,7 +204,7 @@ struct zjit
 				ins.second.val+=4;
 				s+=rppj4(b_mov,"ecx",",",rppjb);
 				s+=rppj4(b_mov,rppja,",","ecx");
-				return s;
+				return r_move(s);
 			}
 		case tkey::c_add:
 			{

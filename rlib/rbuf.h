@@ -4,6 +4,7 @@
 #include "rbase.h"
 #include <stdio.h>
 #include <string.h>
+#include <utility>
 
 //#define r_round(d) ((uint)(d+0.5))
 //#define r_log(a,b) (log(b)/log(a))
@@ -47,6 +48,20 @@ struct rbuf
 		copy(a);
 	}
 
+	rbuf<T>(rbuf<T>&& a)
+	{
+		move(a);
+	}
+
+	void move(rbuf<T>& a)
+	{
+		//memcpy(this,&a,sizeof(a));
+		m_p=a.m_p;
+		m_count=a.m_count;
+		m_cmax=a.m_cmax;
+		a.m_p=null;
+	}
+
 	//如果复制指针一定要处理好等于号，不支持自己复制自己
 	void operator=(const rbuf<T>& a)
 	{
@@ -55,6 +70,12 @@ struct rbuf
 			return;
 		}
 		copy(a);
+	}
+
+	void operator=(rbuf<T>&& a)
+	{
+		free();
+		move(a);
 	}
 
 	friend rbuf<T> operator+(const rbuf<T>& a,const rbuf<T>& b)
@@ -70,9 +91,17 @@ struct rbuf
 		{
 			ret.alloc_not_change(max);
 		}
-		ret+=a;
-		ret+=b;
-		return ret;
+		int i;
+		for(i=0;i<a.count();i++)
+		{
+			ret[i]=a[i];
+		}
+		for(i=0;i<b.count();i++)
+		{
+			ret[i+a.count()]=b[i];
+		}
+		ret.m_count=total;
+		return r_move(ret);
 	}
 
 	void operator+=(const rbuf<T>& a)
@@ -332,6 +361,7 @@ struct rbuf
 		return true;
 	}
 
+	//这里的重复代码可用宏或者模板简化
 	void alloc(int num)
 	{
 		if(m_p!=null)
@@ -376,7 +406,7 @@ struct rbuf
 			return;
 		}
 		T* p=new T[num];
-		int copy_size=num>m_count?m_count:num;
+		int copy_size=r_min(num,m_count);
 		for(int i=0;i<copy_size;i++)
 		{
 			p[i]=m_p[i];
@@ -452,7 +482,6 @@ struct rbuf
 		{
 			return;
 		}
-
 		delete []m_p;
 		init();
 	}
@@ -500,7 +529,7 @@ struct rbuf
 		{
 			ret[i]=m_p[begin+i];
 		}
-		return ret;
+		return r_move(ret);
 	}
 
 	rbuf<T> sub(int begin) const 

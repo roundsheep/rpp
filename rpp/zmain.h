@@ -91,7 +91,7 @@ struct zmain
 				i=j;
 			}
 		}
-		return v;
+		return r_move(v);
 	}
 
 	static void tick(int& start)

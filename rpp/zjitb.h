@@ -11,7 +11,7 @@ struct zjitb
 		rstr s;
 		s.set_size(1);
 		s[0]=one;
-		return s;
+		return r_move(s);
 	}
 
 	static rstr build_two(int one,int two)
@@ -20,7 +20,7 @@ struct zjitb
 		s.set_size(2);
 		s[0]=one;
 		s[1]=two;
-		return s;
+		return r_move(s);
 	}
 
 	static rstr build_three(int one,int two,int three)
@@ -30,7 +30,7 @@ struct zjitb
 		s[0]=one;
 		s[1]=two;
 		s[2]=three;
-		return s;
+		return r_move(s);
 	}
 
 	static rstr build_i(const tins& ins,int one)
@@ -39,7 +39,7 @@ struct zjitb
 		s.set_size(5);
 		s[0]=one;
 		*(int*)&s[1]=ins.first.val;
-		return s;
+		return r_move(s);
 	}
 
 	static rstr build_r(const tins& ins,int one)
@@ -48,7 +48,7 @@ struct zjitb
 		s.set_size(1);
 		s[0]=one;
 		set_reg_bit(ins.first.off,&s[0]);
-		return s;
+		return r_move(s);
 	}
 
 	static rstr build_r(const tins& ins,int one,int two)
@@ -58,7 +58,7 @@ struct zjitb
 		s[0]=one;
 		s[1]=two;
 		set_reg_bit(ins.first.off,&s[1]);
-		return s;
+		return r_move(s);
 	}
 
 	static rstr build_a(const tins& ins,int one,int two)
@@ -75,7 +75,7 @@ struct zjitb
 		s[0]=one;
 		s[1]=two;
 		set_addr_bit(ins.first.off,&s[1],ins.first.val);
-		return s;
+		return r_move(s);
 	}
 
 	static rstr build_relative(const tins& ins,uchar* start,int one)
@@ -84,7 +84,7 @@ struct zjitb
 		s.set_size(5);
 		s[0]=one;
 		*(int*)&s[1]=ins.first.val-((int)start+s.count());
-		return s;
+		return r_move(s);
 	}
 
 	static rstr build_relative(const tins& ins,uchar* start,int one,int two)
@@ -94,7 +94,7 @@ struct zjitb
 		s[0]=one;
 		s[1]=two;
 		*(int*)&s[2]=ins.first.val-((int)start+s.count());
-		return s;
+		return r_move(s);
 	}
 
 	static rstr build_ri(const tins& ins,int one)
@@ -104,7 +104,7 @@ struct zjitb
 		s[0]=one;
 		set_reg_bit(ins.first.off,&s[0]);
 		*(int*)&s[1]=ins.second.val;
-		return s;
+		return r_move(s);
 	}
 
 	static rstr build_ri(const tins& ins,int one,int two)
@@ -115,7 +115,7 @@ struct zjitb
 		s[1]=two;
 		set_reg_bit(ins.first.off,&s[1]);
 		*(int*)&s[2]=ins.second.val;
-		return s;
+		return r_move(s);
 	}
 
 	static rstr build_rr(const tins& ins,int one,int two)
@@ -126,7 +126,7 @@ struct zjitb
 		s[1]=two;
 		set_reg_bit_center(ins.first.off,&s[1]);
 		set_reg_bit(ins.second.off,&s[1]);
-		return s;
+		return r_move(s);
 	}
 
 	static rstr build_ra(const tins& ins,int one,int two)
@@ -144,7 +144,7 @@ struct zjitb
 		s[1]=two;
 		set_reg_bit_center(ins.first.off,&s[1]);
 		set_addr_bit(ins.second.off,&s[1],ins.second.val);
-		return s;
+		return r_move(s);
 	}
 
 	static rstr build_ai(const tins& ins,int one,int two)
@@ -163,7 +163,7 @@ struct zjitb
 		s[0]=one;
 		s[1]=two;
 		set_addr_bit(ins.first.off,&s[1],ins.first.val);
-		return s;
+		return r_move(s);
 	}
 
 	static rstr build_ar(const tins& ins,int one,int two)
@@ -181,7 +181,7 @@ struct zjitb
 		s[1]=two;
 		set_addr_bit(ins.first.off,&s[1],ins.first.val);
 		set_reg_bit_center(ins.second.off,&s[1]);
-		return s;
+		return r_move(s);
 	}
 
 	static rstr build_ra(const tins& ins,int one,int two,int three)
@@ -200,7 +200,7 @@ struct zjitb
 		s[2]=three;
 		set_reg_bit_center(ins.first.off,&s[2]);
 		set_addr_bit(ins.second.off,&s[2],ins.second.val);
-		return s;
+		return r_move(s);
 	}
 
 	//设置寄存器相对寻址位

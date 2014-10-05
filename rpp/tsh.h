@@ -123,7 +123,7 @@ struct tsh
 				tfi.param[j].name;
 		}
 		s+=")";
-		return s;
+		return r_move(s);
 	}
 
 	static rstr get_func_declare(tclass& tci,tfunc& tfi)
@@ -139,7 +139,7 @@ struct tsh
 			s+=tfi.param[j].type;
 		}
 		s+=")";
-		return s;
+		return r_move(s);
 	}
 
 	static rbuf<rstr> get_func_declare_lisp(tclass& tci,tfunc& tfi)
@@ -156,7 +156,7 @@ struct tsh
 		ret+=tci.name;
 		ret+=tfi.name_dec;
 		ret+="]";
-		return ret;
+		return r_move(ret);
 	}
 
 	static void clear_word_val(rbuf<tword>& v,int begin,int end)
@@ -177,7 +177,7 @@ struct tsh
 		name=rdir::get_name(name);
 		name=rdir::get_prev_dir(sh.m_main_file)+name.sub(
 			0,name.count()-rdir::get_suffix(name).count()-1);
-		return name;
+		return r_move(name);
 	}
 
 	static rstr get_ctype(tsh& sh,const tword& word)
@@ -204,7 +204,7 @@ struct tsh
 			name=s.sub(0,s.count()-1);
 		else
 			name=s;
-		return name;
+		return r_move(name);
 	}
 
 	static rstr get_ttype(rstr s)
@@ -310,7 +310,7 @@ struct tsh
 				start=i+1;
 			}
 		}
-		return result;
+		return r_move(result);
 	}
 
 	rbuf<rbuf<rstr> > comma_split(rbuf<rstr> v)
@@ -341,7 +341,7 @@ struct tsh
 				start=i+1;
 			}
 		}
-		return result;
+		return r_move(result);
 	}
 	
 	//允许空元素
@@ -372,7 +372,7 @@ struct tsh
 				start=i+1;
 			}
 		}
-		return result;
+		return r_move(result);
 	}
 
 	//带大括号的split
@@ -400,7 +400,7 @@ struct tsh
 				start=i+1;
 			}
 		}
-		return result;
+		return r_move(result);
 	}
 	
 	//带尖括号的split
@@ -436,7 +436,7 @@ struct tsh
 				start=i+1;
 			}
 		}
-		return result;
+		return r_move(result);
 	}
 
 	int find_symm_sbk(const rbuf<rstr>& v,int begin=0)
@@ -553,7 +553,7 @@ struct tsh
 		rstr ret;
 		for(int i=0;i<v.count();i++)
 			ret+=v[i].val;
-		return ret;
+		return r_move(ret);
 	}
 
 	static rbuf<rstr> vword_to_vstr(const rbuf<tword>& v)
@@ -561,7 +561,7 @@ struct tsh
 		rbuf<rstr> ret;
 		for(int i=0;i<v.count();i++)
 			ret.push(v[i].val);
-		return ret;
+		return r_move(ret);
 	}
 
 	static void push_twi(rbuf<tword>& v,tword& twi,const rstr& val)
@@ -600,7 +600,7 @@ struct tsh
 		ret+="\nsrc_file: "+pos.file->name.torstr();
 		ret+="\nsrc_line: "+rstr(pos.line);
 		ret+="\nsrc_cont: "+pos.file->line_list.get(pos.line);
-		return ret;
+		return r_move(ret);
 	}
 
 	void error(const tword& word,rstr e="")

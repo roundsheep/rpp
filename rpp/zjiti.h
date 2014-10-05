@@ -38,7 +38,7 @@ struct zjiti
 			return "";
 		}
 		*(ushort*)&s[1]=(ushort)ins.first.val;//只有16位的reti，截断
-		return s;
+		return r_move(s);
 	}
 
 	static rstr b_push(const tins& ins)
@@ -161,7 +161,7 @@ struct zjiti
 		s[0]=0x8a;
 		s[1]=0x88;
 		zjitb::set_addr_bit(ins.second.off,&s[1],ins.second.val);
-		return s;
+		return r_move(s);
 	}
 
 	static rstr b_mov1_addr_cl(const tins& ins)
@@ -178,7 +178,7 @@ struct zjiti
 		s[0]=0x88;
 		s[1]=0x88;
 		zjitb::set_addr_bit(ins.first.off,&s[1],ins.first.val);
-		return s;
+		return r_move(s);
 	}
 
 	static rstr b_add(const tins& ins)

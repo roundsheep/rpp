@@ -166,11 +166,11 @@ struct znasm
 		for(int i=0;i<vconst.count();i++)
 		{
 			zbin::trans_cstr(vconst[i]);
-			add_str(sh,result,i,vconst[i]);
+			add_str_one(result,i,vconst[i]);
 		}
 	}
 
-	static void add_str(tsh& sh,rstr& result,int index,const rstr& s)
+	static void add_str_one(rstr& result,int index,const rstr& s)
 	{
 		result+="_RC_"+rstr(index)+": db ";
 		for(int i=0;i<s.count()-1;i++)
@@ -184,11 +184,11 @@ struct znasm
 	{
 		for(tclass* p=sh.m_class.begin();p!=sh.m_class.end();p=sh.m_class.next(p))
 		{
-			add_lambda(sh,result,*p);
+			add_lambda(result,*p);
 		}
 	}
 
-	static void add_lambda(tsh& sh,rstr& result,tclass& tci)
+	static void add_lambda(rstr& result,tclass& tci)
 	{
 		for(tfunc* p=tci.vfunc.begin();p!=tci.vfunc.end();p=tci.vfunc.next(p))
 		{

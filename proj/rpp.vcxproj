@@ -38,7 +38,6 @@
     <ClInclude Include="..\rlib\rstr.h" />
     <ClInclude Include="..\rlib\rstrw.h" />
     <ClInclude Include="..\rlib\rthread.h" />
-    <ClInclude Include="..\rpp\rcocos.h" />
     <ClInclude Include="..\rpp\rpp_def.h" />
     <ClInclude Include="..\rpp\talloc.h" />
     <ClInclude Include="..\rpp\tanalyse.h" />

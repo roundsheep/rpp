@@ -229,7 +229,7 @@ struct zcontrol
 				}
 				else
 				{
-					right=get_low_end(sh,v,left,pos);
+					right=get_low_end(v,left,pos);
 					if(right>=v.count())
 					{
 						sh.error(v[pos]);
@@ -329,7 +329,7 @@ struct zcontrol
 			}
 			if(v[begin].val==rppoptr(c_bbk_l))
 				continue;
-			int end=get_low_end(sh,v,begin,i);
+			int end=get_low_end(v,begin,i);
 			if(end>=v.count())
 			{
 				sh.error(v[i],"miss { or miss tab");
@@ -839,7 +839,7 @@ struct zcontrol
 	}
 
 	//获取低一层结尾语句的位置
-	static int get_low_end(tsh& sh,rbuf<tword>& v,int begin,int head)
+	static int get_low_end(rbuf<tword>& v,int begin,int head)
 	{
 		if(v.get(begin).val.empty())
 			return v.count();

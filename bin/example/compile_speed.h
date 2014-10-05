@@ -1,5 +1,5 @@
-﻿//1.h amd 3.45GHZ cost time 3600ms
-//36_2.h cost time 5375ms (1.83 4985ms)
+﻿//1.h amd 3.45GHZ cost time 3600ms ,new version 2800ms
+//36_2.h cost time 5375ms (1.83 4985ms),new version 4438ms
 main
 {
 	start=rf.tick

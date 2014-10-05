@@ -197,7 +197,7 @@ struct zpre
 					path+=rstrw("/");
 			}
 		}
-		return path;
+		return r_move(path);
 	}
 
 	static rstrw get_abs_path(const rstrw& s)

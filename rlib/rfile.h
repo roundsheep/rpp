@@ -122,7 +122,7 @@ struct rfile
 		{
 			return "";
 		}
-		return ret;
+		return r_move(ret);
 	}
 
 	//直接读一个小文件
@@ -135,7 +135,7 @@ struct rfile
 		{
 			return "";
 		}
-		return ret;
+		return r_move(ret);
 	}
 	
 	//读取一行（跳过空行）
@@ -158,7 +158,7 @@ struct rfile
 			}
 			ret+=c;
 		}
-		return ret;
+		return r_move(ret);
 	}
 	
 	//读取一行，仅用于utf16文件
@@ -181,7 +181,7 @@ struct rfile
 			}
 			ret+=c;
 		}
-		return ret;
+		return r_move(ret);
 	}
 
 	rbool write(int off,int len,const void* buf)

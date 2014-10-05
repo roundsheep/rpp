@@ -175,7 +175,7 @@ struct zsuper
 		{
 			return s.sub(1,s.count()-1);
 		}
-		return s;
+		return r_move(s);
 	}
 
 	static rstr add_quote(rstr s)
