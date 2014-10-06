@@ -283,6 +283,7 @@ struct tsh
 		}
 	}
 
+	//这里的重复代码是为了提高效率
 	rbuf<rbuf<tword> > comma_split(rbuf<tword> v)
 	{
 		rbuf<rbuf<tword> > result;
@@ -477,7 +478,7 @@ struct tsh
 			m_optr[toptr::c_tbk_r],begin);
 	}
 	
-	//未找到返回结束位置
+	//未找到返回结束位置，应该判断count<0，但那样会降低效率
 	static int find_symm_word_e(const rbuf<tword>& v,rstr &left,rstr &right,
 		int begin=0)
 	{
@@ -495,13 +496,9 @@ struct tsh
 			if(right==v[i].val)
 				--count;
 			if(0==count)
-				break;
+				return i;
 		}
-		if(count)
-		{
-			return v.count();
-		}
-		return i;
+		return v.count();
 	}
 
 	//未找到返回结束位置
@@ -522,13 +519,9 @@ struct tsh
 			if(right==v[i])
 				--count;
 			if(0==count)
-				break;
+				return i;
 		}
-		if(count)
-		{
-			return v.count();
-		}
-		return i;
+		return v.count();
 	}
 
 	static int find_symm_word_rev(const rbuf<tword>& v,rstr &left,rstr &right,
@@ -549,13 +542,9 @@ struct tsh
 			if(right==v[i].val)
 				++count;
 			if(0==count)
-				break;
+				return i;
 		}
-		if(count)
-		{
-			return v.count();
-		}
-		return i;
+		return v.count();
 	}
 
 	static rstr vwordtostr(const rbuf<tword>& v)
