@@ -367,8 +367,9 @@ struct zpre
 			}
 			if(vdefine.exist(item))
 			{
-				sh.error(v.get(i+1),"redefined");
-				return false;
+				vdefine.erase(item);
+				/*sh.error(v.get(i+1),"redefined");
+				return false;*/
 			}
 			vdefine.insert(item);
 			v[i+1].clear();

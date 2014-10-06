@@ -42,6 +42,7 @@ struct tsh
 
 	rbool m_is_pack_read;
 	rbool m_is_pack_mode;
+	rbool m_is_pre_mode;
 	rdbint m_db;
 
 	enum
@@ -58,6 +59,7 @@ struct tsh
 		m_mode=c_rvm;
 		m_is_pack_read=false;
 		m_is_pack_mode=false;
+		m_is_pre_mode=false;
 	}
 
 	void print_vclass()
@@ -457,6 +459,12 @@ struct tsh
 			m_optr[toptr::c_mbk_r],begin);
 	}
 
+	int find_symm_bbk(const rbuf<rstr>& v,int begin=0)
+	{
+		return find_symm_word_e(v,m_optr[toptr::c_bbk_l],
+			m_optr[toptr::c_bbk_r],begin);
+	}
+
 	int find_symm_bbk(const rbuf<tword>& v,int begin=0)
 	{
 		return find_symm_word_e(v,m_optr[toptr::c_bbk_l],
@@ -544,7 +552,9 @@ struct tsh
 				break;
 		}
 		if(count)
+		{
 			return v.count();
+		}
 		return i;
 	}
 

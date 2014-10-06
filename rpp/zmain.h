@@ -102,6 +102,26 @@ struct zmain
 		start=end;
 	}
 
+	static rbool output_pre(tsh& sh)
+	{
+		rstrw name=tsh::get_main_name(sh)+".txt";
+		rfile file;
+		file.open_n(name,"rw");
+		for(tfile* p=sh.m_file.begin();p!=sh.m_file.end();p=sh.m_file.next(p))
+		{
+			if(p->name!=sh.m_main_file)
+			{
+				continue;
+			}
+			rbuf<tword>& v=p->vword;
+			for(int i=0;i<v.count();i++)
+			{
+				file.write(rstr(v[i].pos.line)+" "+v[i].val+"\r\n");
+			}
+		}
+		return true;
+	}
+
 	static rbool compile(tsh& sh,tvm& vm,rstrw name)
 	{
 		if(name.empty()&&sh.m_mode==tsh::c_rvm)
@@ -119,6 +139,10 @@ struct zmain
 		{
 			tsh::error("pre process error");
 			return false;
+		}
+		if(sh.m_is_pre_mode)
+		{
+			return output_pre(sh);
 		}
 		if(sh.m_is_pack_mode)
 		{
@@ -197,7 +221,7 @@ struct zmain
 				}
 			}
 		}
-		if(argc==3)
+		if(argc>=3)
 		{
 			name=argv[2];
 			if(argv[1]==rstr("-jit"))
@@ -216,6 +240,10 @@ struct zmain
 			{
 				sh.m_mode=tsh::c_jit;
 				sh.m_is_pack_mode=true;
+			}
+			elif(argv[1]==rstr("-pre"))
+			{
+				sh.m_is_pre_mode=true;
 			}
 			else
 			{

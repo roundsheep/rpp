@@ -36,8 +36,9 @@ struct zsuper
 		mitem.vstr=sh.vword_to_vstr(v.sub(left+1,right));
 		if(vmac.exist(mitem))
 		{
-			sh.error(v.get_bottom(),"mac redefined");
-			return false;
+			vmac.erase(mitem);
+			/*sh.error(v.get_bottom(),"mac redefined");
+			return false;*/
 		}
 		vmac.insert(mitem);
 		i=right;
@@ -90,25 +91,26 @@ struct zsuper
 				arr.pop();
 				return false;
 			}
-			if(reg[0]==src[0])
+			if(reg[0]!=src[0])
 			{
-				if(src[0]==rppoptr(c_sbk_l))
-				{
-					int right_s=sh.find_symm_sbk(src,0);
-					if(right_s>=src.count())
-					{
-						return false;
-					}
-					int right_r=sh.find_symm_sbk(reg,0);
-					if(right_r>=reg.count())
-					{
-						return false;
-					}
-					return match_here(sh,reg.sub(1,right_r),src.sub(1,right_s),arr)&&
-						match_here(sh,reg.sub(right_r+1),src.sub(right_s+1),arr);
-				}
-				return match_here(sh,reg.sub(1),src.sub(1),arr);
+				return false;
 			}
+			if(src[0]==rppoptr(c_sbk_l))
+			{
+				int right_r=sh.find_symm_sbk(reg,0);
+				if(right_r>=reg.count())
+				{
+					return false;
+				}
+				int right_s=sh.find_symm_sbk(src,0);
+				if(right_s>=src.count())
+				{
+					return false;
+				}
+				return match_here(sh,reg.sub(1,right_r),src.sub(1,right_s),arr)&&
+					match_here(sh,reg.sub(right_r+1),src.sub(right_s+1),arr);
+			}
+			return match_here(sh,reg.sub(1),src.sub(1),arr);
 		}
 		return false;
 	}

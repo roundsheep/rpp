@@ -39,6 +39,10 @@ struct zread
 	{
 		ifn(rppconf(c_auto_import))
 			return true;
+		if(sh.m_is_pre_mode)
+		{
+			return true;
+		}
 		if(!read_file(sh,rdir::get_exe_dir()+rstrw("rsrc/basic.h")))
 		{
 			return false;
