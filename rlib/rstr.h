@@ -506,7 +506,7 @@ struct rstr
 			}
 			ret+=v[i].torstr();
 		}
-		return ret;
+		return r_move(ret);
 	}
 };
 

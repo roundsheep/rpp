@@ -96,7 +96,7 @@ public:
 		rstr ret;
 		if(!read(i,ret))
 			null;
-		return ret;
+		return r_move(ret);
 	}
 	
 	rbool read(int i,rstr& data)
