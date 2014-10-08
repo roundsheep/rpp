@@ -27,6 +27,14 @@ struct tword
 		val=s;
 	}
 
+	tword(tword&& a)
+	{
+		pos=a.pos;
+		val=a.val;
+		multi=a.multi;
+		pos_src=a.pos_src;
+	}
+
 	void operator=(tword&& a)
 	{
 		val.m_buf.free();

@@ -567,6 +567,24 @@ struct tasm
 		clear();
 	}
 
+	tasm(tasm&& a)
+	{
+		ins=a.ins;
+		vstr=a.vstr;
+		pos=a.pos;
+		ptfi=a.ptfi;
+		start=a.start;
+	}
+
+	void operator=(tasm&& a)
+	{
+		ins=a.ins;
+		vstr=a.vstr;
+		pos=a.pos;
+		ptfi=a.ptfi;
+		start=a.start;
+	}
+
 	void clear()
 	{
 		ins.clear();
