@@ -401,11 +401,11 @@ struct zcontrol
 			sent.pos=vsent[i].pos;
 			for(int j=0;j<temp.count();j++)
 			{
-				sent.vword=temp[j];
-				result.push(sent);
+				sent.vword=r_move(temp[j]);
+				result.push_move(sent);
 			}
 		}
-		vsent=result;
+		vsent=r_move(result);
 	}
 
 	static rbool need_part(rbuf<tsent>& v)

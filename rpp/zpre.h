@@ -321,15 +321,15 @@ struct zpre
 					word.val=src[i].multi[j];
 					word.pos_src=src[i].pos_src;
 					word.pos=src[i].pos;
-					wlist.push(word);
+					wlist.push_move(word);
 				}
 			}
 			else
 			{
-				wlist.push(src[i]);
+				wlist.push_move(src[i]);
 			}
 		}
-		src=wlist;
+		src=r_move(wlist);
 	}
 
 	static rbool obtain_def(tsh& sh,rset<tmac>& vdefine,rbuf<tword>& v)

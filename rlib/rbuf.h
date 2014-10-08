@@ -245,6 +245,16 @@ struct rbuf
 		m_count++;
 	}
 
+	void push_move(T& a)
+	{
+		if(m_count>=m_cmax)
+		{
+			realloc_not_change(extend_num(m_count));
+		}
+		m_p[count()]=r_move(a);
+		m_count++;
+	}
+
 	T pop()
 	{
 		/*if(0==m_count)

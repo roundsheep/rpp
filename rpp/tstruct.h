@@ -13,7 +13,7 @@ struct tword
 {
 	tpos pos;//跳转定位的位置
 	rstr val;
-	rbuf<rstr> multi;
+	rbuf<rstr> multi;//todo:rstr很难保存行号，用rbuf<tword*>可能更好
 	tpos pos_src;//原始文件位置
 
 	tword()
@@ -25,6 +25,16 @@ struct tword
 	{
 		clear();
 		val=s;
+	}
+
+	void operator=(tword&& a)
+	{
+		val.m_buf.free();
+		multi.free();
+		val=a.val;
+		multi=a.multi;
+		pos=a.pos;
+		pos_src=a.pos_src;
 	}
 
 	void clear()
@@ -285,6 +295,22 @@ struct tsent
 		clear();
 	}
 
+	tsent(tsent&& a)
+	{
+		pos=a.pos;
+		type=a.type;
+		vword=a.vword;
+	}
+
+	void operator=(tsent&& a)
+	{
+		type.m_buf.free();
+		vword.free();
+		pos=a.pos;
+		type=a.type;
+		vword=a.vword;
+	}
+
 	void clear()
 	{
 		pos.clear();
@@ -297,7 +323,7 @@ struct tsent
 		tsent ret;
 		ret.pos=pos;
 		ret.vword=vword.sub(begin,end);//类型信息为空
-		return ret;
+		return r_move(ret);
 	}
 
 	rbool empty() const
