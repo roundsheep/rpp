@@ -11,9 +11,9 @@
 
 struct tword
 {
-	tpos pos;//跳转定位的位置
-	rstr val;
+	rstr val;//最常用的数据成员放在首位可以略微提高效率
 	rbuf<rstr> multi;//todo:rstr很难保存行号，用rbuf<tword*>可能更好
+	tpos pos;//跳转定位的位置
 	tpos pos_src;//原始文件位置
 
 	tword()
@@ -294,9 +294,9 @@ struct tdata
 //表达式和语句几乎没有区别
 struct tsent
 {
-	tpos pos;
-	rstr type;//表达式类型，也可以理解为语句返回值的类型
 	rbuf<tword> vword;
+	rstr type;//表达式类型，也可以理解为语句返回值的类型
+	tpos pos;
 
 	tsent()
 	{
