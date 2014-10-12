@@ -8,20 +8,20 @@ struct zautof
 {
 	static rbool auto_add_func(tsh& sh,tclass& tci)
 	{
-		if(!rppconf(c_auto_addfunc))
+		if (!rppconf(c_auto_addfunc))
 			return true;
-		if(sh.is_basic_type(tci.name)||
+		if (sh.is_basic_type(tci.name)||
 			tci.is_friend)
 			return true;
 		rbool added=false;
 		tpos pos;
 		pos.line=1;
 		pos.file=0;
-		if(!tci.vfunc.empty())
+		if (!tci.vfunc.empty())
 		{
 			pos=tci.vfunc.begin()->first_pos;
 		}
-		if(zfind::destruct_search(tci)==null)
+		if (zfind::destruct_search(tci)==null)
 		{
 			tfunc tfi;
 			tfi.ptci=&tci;
@@ -37,7 +37,7 @@ struct zautof
 			tci.vfunc.insert(tfi);
 			added=true;
 		}
-		if(zfind::emptystruct_search(tci)==null)
+		if (zfind::emptystruct_search(tci)==null)
 		{
 			tfunc tfi;
 			tfi.ptci=&tci;
@@ -54,7 +54,7 @@ struct zautof
 			tci.vfunc.insert(tfi);
 			added=true;
 		}
-		if(zfind::copystruct_search(tci)==null)
+		if (zfind::copystruct_search(tci)==null)
 		{
 			tfunc tfi;
 			tfi.ptci=&tci;
@@ -73,7 +73,7 @@ struct zautof
 			tci.vfunc.insert(tfi);
 			added=true;
 		}
-		if(zfind::func_search(tci,tci.name,tci.name+"&",tci.name)==null)
+		if (zfind::func_search(tci,tci.name,tci.name+"&",tci.name)==null)
 		{
 			tfunc tfi=*zfind::copystruct_search(tci);
 			tfi.ptci=&tci;
@@ -82,7 +82,7 @@ struct zautof
 			tci.vfunc.insert(tfi);
 			added=true;
 		}
-		if(zfind::func_search(tci,"=",tci.name+"&",tci.name+"&")==null)
+		if (zfind::func_search(tci,"=",tci.name+"&",tci.name+"&")==null)
 		{
 			tfunc tfi;
 			tfi.ptci=&tci;
@@ -101,7 +101,7 @@ struct zautof
 			tci.vfunc.insert(tfi);
 			added=true;
 		}
-		if(zfind::func_search(tci,"=",tci.name+"&",tci.name)==null)
+		if (zfind::func_search(tci,"=",tci.name+"&",tci.name)==null)
 		{
 			tfunc tfi=*zfind::func_search(tci,"=",tci.name+"&",tci.name+"&");
 			tfi.ptci=&tci;
@@ -110,7 +110,7 @@ struct zautof
 			tci.vfunc.insert(tfi);
 			added=true;
 		}
-		if(zfind::func_search(tci,"&")==null)
+		if (zfind::func_search(tci,"&")==null)
 		{
 			tfunc tfi;
 			tfi.ptci=&tci;
@@ -131,7 +131,7 @@ struct zautof
 			sh.push_twi(tfi.vword,twi,rppoptr(c_comma));
 			sh.push_twi(tfi.vword,twi,"this");
 			tfi.name_dec=tfi.get_dec();
-			if(zfind::is_class(sh,tfi.retval.type))
+			if (zfind::is_class(sh,tfi.retval.type))
 				tci.vfunc.insert(tfi);
 			added=true;
 		}
@@ -144,9 +144,9 @@ struct zautof
 		tword twi;
 		twi.pos_src=tfi.first_pos;
 		twi.pos=tfi.first_pos;
-		for(int i=0;i<tci.vdata.count();i++)
+		for (int i=0;i<tci.vdata.count();i++)
 		{
-			if(sh.is_basic_type(tci.vdata[i].type)||
+			if (sh.is_basic_type(tci.vdata[i].type)||
 				sh.is_quote(tci.vdata[i].type))
 			{
 				continue;
@@ -164,12 +164,12 @@ struct zautof
 
 	static void op_rstr(tsh& sh)
 	{
-		if(!rppconf(c_op_empty_func))
+		if (!rppconf(c_op_empty_func))
 		{
 			return;
 		}
 		tclass* p=zfind::class_search(sh,"rbuf<char>");
-		if(p!=null)
+		if (p!=null)
 		{
 			op_rstr(p->vword);
 		}
@@ -177,13 +177,13 @@ struct zautof
 
 	static void op_rstr(rbuf<tword>& v)
 	{
-		for(int i=0;i<v.count()-3;i++)
+		for (int i=0;i<v.count()-3;i++)
 		{
-			if(v[i]!="r_new"&&v[i]!="r_delete")
+			if (v[i]!="r_new"&&v[i]!="r_delete")
 			{
 				continue;
 			}
-			if(v[i+1]!="<"||v[i+2]!="char"||v[i+3]!=">")
+			if (v[i+1]!="<"||v[i+2]!="char"||v[i+3]!=">")
 			{
 				continue;
 			}

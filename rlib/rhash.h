@@ -31,7 +31,7 @@ struct rhash
 	T& operator[](const rstr& name)
 	{
 		T* p=(T*)find(name);
-		if(p)
+		if (p)
 			return *p;
 		//找不到则插入一个空值
 		T a;
@@ -44,21 +44,21 @@ struct rhash
 	{
 		//两个字节消耗256K内存，如果用3个字节需要64M内存
 		m_hash.realloc_n(65536);
-		for(int i=0;i<m_hash.count();i++)
+		for (int i=0;i<m_hash.count();i++)
 			m_hash[i]=null;
 		m_count=0;
 	}
 
 	void clear()
 	{
-		if(m_count==0)
+		if (m_count==0)
 			return;
-		for(int i=0;i<m_hash.count();i++)
+		for (int i=0;i<m_hash.count();i++)
 		{
-			if(m_hash[i]!=null)
+			if (m_hash[i]!=null)
 			{
 				rhash_i<T>* p=m_hash[i];
-				while(p!=null)
+				while (p!=null)
 				{
 					rhash_i<T>* temp=p;
 					p=p->next;
@@ -78,9 +78,9 @@ struct rhash
 	{
 		int addr=get_addr(name);
 		rhash_i<T>* p=m_hash[addr];
-		while(p)
+		while (p)
 		{
-			if(p->name==name)
+			if (p->name==name)
 				return (T*)p;
 			p=p->next;
 		}
@@ -90,7 +90,7 @@ struct rhash
 	//如果重复则不插入
 	void insert_c(T& a,rstr name="")
 	{
-		if(exist(name))
+		if (exist(name))
 			return;
 		insert(a,name);
 	}
@@ -103,7 +103,7 @@ struct rhash
 		p->next=m_hash[addr];
 		p->pre=null;
 		p->val=a;
-		if(m_hash[addr]!=null)
+		if (m_hash[addr]!=null)
 			m_hash[addr]->pre=p;
 		m_hash[addr]=p;
 		m_count++;
@@ -112,18 +112,18 @@ struct rhash
 	rbool erase(rstr name="")
 	{
 		rhash_i<T>* p=(rhash_i<T>*)find(name);
-		if(p==null)
+		if (p==null)
 			return false;
-		if(p->pre!=null)
+		if (p->pre!=null)
 		{
 			p->pre->next=p->next;
-			if(p->next!=null)
+			if (p->next!=null)
 				p->next->pre=p->pre;
 		}
 		else
 		{
 			m_hash[get_addr(name)]=p->next;
-			if(p->next!=null)
+			if (p->next!=null)
 				p->next->pre=null;
 		}
 		delete p;
@@ -133,19 +133,19 @@ struct rhash
 
 	T* begin()
 	{
-		for(int i=0;i<m_hash.count();i++)
-			if(m_hash[i]!=null)
+		for (int i=0;i<m_hash.count();i++)
+			if (m_hash[i]!=null)
 				return (T*)m_hash[i];
 		return null;
 	}
 
 	T* rend()
 	{
-		for(int i=m_hash.count()-1;i>=0;i--)
-			if(m_hash[i]!=null)
+		for (int i=m_hash.count()-1;i>=0;i--)
+			if (m_hash[i]!=null)
 			{
 				rhash_i<T>* p=m_hash[i];
-				while(p!=null&&p->next!=null)
+				while (p!=null&&p->next!=null)
 					p=p->next;
 				return (T*)p;
 			}
@@ -156,11 +156,11 @@ struct rhash
 	T* next(T* cur)
 	{
 		rhash_i<T>* p=(rhash_i<T>*)cur;
-		if(p->next!=null)
+		if (p->next!=null)
 			return (T*)p->next;
 		int addr=get_addr(p->name);
-		for(int i=addr+1;i<m_hash.count();i++)
-			if(m_hash[i]!=null)
+		for (int i=addr+1;i<m_hash.count();i++)
+			if (m_hash[i]!=null)
 				return (T*)m_hash[i];
 		return null;
 	}
@@ -174,7 +174,7 @@ struct rhash
 	{
 		uint seed=131; // 31 131 1313 13131 131313 etc..
 		uint hash=0;
-		for(int i=0;i<len;++i)
+		for (int i=0;i<len;++i)
 		{
 			hash=(hash*seed)+((uchar*)data)[i];
 		}

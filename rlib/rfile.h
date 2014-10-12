@@ -33,11 +33,11 @@ struct rfile
 
 	rbool close()
 	{
-		if(null==m_fp)
+		if (null==m_fp)
 		{
 			return false;
 		}
-		if(0!=fclose(m_fp))
+		if (0!=fclose(m_fp))
 		{
 			return false;
 		}
@@ -50,11 +50,11 @@ struct rfile
 	rbool open(rstrw name,rstrw mode="r")
 	{
 		m_fp=null;
-		if(!exist(name))
+		if (!exist(name))
 		{
-			if(rstrw("rw")==mode)
+			if (rstrw("rw")==mode)
 			{
-				if(!create(name))
+				if (!create(name))
 				{
 					return false;
 				}
@@ -62,20 +62,20 @@ struct rfile
 			else
 				return false;
 		}
-		if(rstrw("r")==mode)
+		if (rstrw("r")==mode)
 		{
 			mode=rstrw("rb");
 		}
-		elif(rstrw("w")==mode)
+		elif (rstrw("w")==mode)
 		{
 			mode=rstrw("wb");
 		}
-		elif(rstrw("rw")==mode)
+		elif (rstrw("rw")==mode)
 		{
 			mode=rstrw("rb+");
 		}
 		m_fp=fopen_w(name.cstrw_t(),mode.cstrw_t());
-		if(null==m_fp)
+		if (null==m_fp)
 		{
 			return false;
 		}
@@ -96,7 +96,7 @@ struct rfile
 
 	rbool read(int8 off,int len,void* buf)
 	{
-		if(null==m_fp)
+		if (null==m_fp)
 		{
 			return false;
 		}
@@ -106,7 +106,7 @@ struct rfile
 
 	rbool read(int len,void* buf)
 	{
-		if(null==m_fp)
+		if (null==m_fp)
 		{
 			return false;
 		}
@@ -118,7 +118,7 @@ struct rfile
 	{
 		rstr ret;
 		ret.set_size(size());
-		if(!read(0,size(),ret.begin()))
+		if (!read(0,size(),ret.begin()))
 		{
 			return "";
 		}
@@ -131,7 +131,7 @@ struct rfile
 		rfile file(name);
 		rstr ret;
 		ret.set_size(file.size());
-		if(!file.read(0,file.size(),ret.begin()))
+		if (!file.read(0,file.size(),ret.begin()))
 		{
 			return "";
 		}
@@ -143,11 +143,11 @@ struct rfile
 	{
 		rstr ret;
 		uchar c;
-		while(read(1,&c))
+		while (read(1,&c))
 		{
-			if('\r'==c||'\n'==c)
+			if ('\r'==c||'\n'==c)
 			{
-				if(0==ret.count())
+				if (0==ret.count())
 				{
 					continue;
 				}
@@ -166,11 +166,11 @@ struct rfile
 	{
 		rstrw ret;
 		ushort c;
-		while(read(2,&c))
+		while (read(2,&c))
 		{
-			if('\r'==c||'\n'==c)
+			if ('\r'==c||'\n'==c)
 			{
-				if(0==ret.count())
+				if (0==ret.count())
 				{
 					continue;
 				}
@@ -191,7 +191,7 @@ struct rfile
 
 	rbool write(int8 off,int len,const void* buf)
 	{
-		if(null==m_fp)
+		if (null==m_fp)
 		{
 			return false;
 		}
@@ -201,7 +201,7 @@ struct rfile
 
 	rbool write(int len,const void* buf)
 	{
-		if(null==m_fp)
+		if (null==m_fp)
 		{
 			return false;
 		}
@@ -226,7 +226,7 @@ struct rfile
 	static rbool write_all_n(const rstrw& name,const rstr& cont)
 	{
 		rfile file;
-		ifn(file.open_n(name))
+		ifn (file.open_n(name))
 		{
 			return false;
 		}
@@ -240,7 +240,7 @@ struct rfile
 
 	int8 size8()
 	{
-		if(null==m_fp)
+		if (null==m_fp)
 		{
 			return 0;//返回-1和返回0各有利弊
 		}
@@ -258,7 +258,7 @@ struct rfile
 
 	int8 get_off8()
 	{
-		if(null==m_fp)
+		if (null==m_fp)
 		{
 			return 0;
 		}
@@ -278,7 +278,7 @@ struct rfile
 	static rbool exist(rstrw name)
 	{
 		FILE* fp=fopen_w(name.cstrw_t(),rstrw("rb").cstrw_t());
-		if(null==fp)
+		if (null==fp)
 		{
 			return false;
 		}
@@ -290,14 +290,14 @@ struct rfile
 	static rbool create(rstrw name,int8 size=0)
 	{
 		FILE* fp=fopen_w(name.cstrw_t(),rstrw("wb").cstrw_t());
-		if(null==fp)
+		if (null==fp)
 			return false;
 		fclose(fp);
-		if(size>0)
+		if (size>0)
 		{
 			rfile file(name);
 			file.set_off8(size-1);
-			if(!file.write(1,"\0"))
+			if (!file.write(1,"\0"))
 			{
 				return false;
 			}
@@ -354,7 +354,7 @@ struct rfile
 	static int get_exe_size(char* name)
 	{
 		rstr temp=rfile::read_all_n(name);
-		if(temp.empty())
+		if (temp.empty())
 		{
 			return 0;
 		}
@@ -364,7 +364,7 @@ struct rfile
 		PIMAGE_FILE_HEADER file_head=(PIMAGE_FILE_HEADER)(data+dos_head->e_lfanew+4);
 		PIMAGE_SECTION_HEADER sec=(PIMAGE_SECTION_HEADER)(data+dos_head->e_lfanew+sizeof(IMAGE_NT_HEADERS));
 		int size=op_head->SizeOfHeaders;
-		for(int i=0;i<file_head->NumberOfSections;i++)
+		for (int i=0;i<file_head->NumberOfSections;i++)
 		{
 			size+=sec[i].SizeOfRawData;
 		}
@@ -382,9 +382,9 @@ struct rfile
 			OPEN_EXISTING,
 			FILE_ATTRIBUTE_NORMAL,
 			null);
-		if(hFile == INVALID_HANDLE_VALUE)
+		if (hFile == INVALID_HANDLE_VALUE)
 			return 0;
-		if(!GetFileTime(hFile,null,null,(FILETIME*)&ft))
+		if (!GetFileTime(hFile,null,null,(FILETIME*)&ft))
 			return 0;
 		CloseHandle(hFile);
 		return ft;
@@ -392,7 +392,7 @@ struct rfile
 		return 0;
 		/*struct stat buf;
 		int ret=stat(path,&buf);
-		if(0!=ret)
+		if (0!=ret)
 		{
 			return false;
 		}

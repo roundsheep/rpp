@@ -35,7 +35,7 @@ struct rbuf
 	{
 		init();
 		alloc(num);
-		for(int i=0;i<num;i++)
+		for (int i=0;i<num;i++)
 		{
 			m_p[i]=a;
 		}
@@ -64,7 +64,7 @@ struct rbuf
 	//如果复制指针一定要处理好等于号，不支持自己复制自己
 	void operator=(const rbuf<T>& a)
 	{
-		if(a.m_p==m_p)
+		if (a.m_p==m_p)
 		{
 			return;
 		}
@@ -82,7 +82,7 @@ struct rbuf
 		int total=a.count()+b.count();
 		int max=r_max(a.m_cmax,b.m_cmax);
 		rbuf<T> ret;
-		if(total>max)
+		if (total>max)
 		{
 			ret.alloc_not_change(extend_num(total));
 		}
@@ -91,11 +91,11 @@ struct rbuf
 			ret.alloc_not_change(max);
 		}
 		int i;
-		for(i=0;i<a.count();i++)
+		for (i=0;i<a.count();i++)
 		{
 			ret[i]=a[i];
 		}
-		for(i=0;i<b.count();i++)
+		for (i=0;i<b.count();i++)
 		{
 			ret[i+a.count()]=b[i];
 		}
@@ -106,11 +106,11 @@ struct rbuf
 	void operator+=(const rbuf<T>& a)
 	{
 		int total=a.count()+count();
-		if(total>m_cmax)
+		if (total>m_cmax)
 		{
 			realloc_not_change(extend_num(total));
 		}
-		for(int i=count();i<total;i++)
+		for (int i=count();i<total;i++)
 		{
 			m_p[i]=a[i-count()];
 		}
@@ -129,13 +129,13 @@ struct rbuf
 
 	friend rbool operator==(const rbuf<T>& a,const rbuf<T>& b)
 	{
-		if(a.count()!=b.count())
+		if (a.count()!=b.count())
 		{
 			return false;
 		}
-		for(int i=0;i<a.count();++i)
+		for (int i=0;i<a.count();++i)
 		{
-			if(a[i]!=b[i])
+			if (a[i]!=b[i])
 			{
 				return false;
 			}
@@ -197,7 +197,7 @@ struct rbuf
 
 	T* rbegin() const 
 	{
-		if(0==m_count)
+		if (0==m_count)
 		{
 			return null;
 		}
@@ -209,7 +209,7 @@ struct rbuf
 
 	T* rend() const 
 	{
-		if(0==m_count)
+		if (0==m_count)
 		{
 			return null;
 		}
@@ -237,7 +237,7 @@ struct rbuf
 	//应判断m_count是否太大,否则在64位上m_count++有可能归零
 	void push(const T& a)
 	{
-		if(m_count>=m_cmax)
+		if (m_count>=m_cmax)
 		{
 			realloc_not_change(extend_num(m_count));
 		}
@@ -247,7 +247,7 @@ struct rbuf
 
 	void push_move(T& a)
 	{
-		if(m_count>=m_cmax)
+		if (m_count>=m_cmax)
 		{
 			realloc_not_change(extend_num(m_count));
 		}
@@ -257,7 +257,7 @@ struct rbuf
 
 	T pop()
 	{
-		/*if(0==m_count)
+		/*if (0==m_count)
 			exit(0);*/
 		m_count--;
 		return m_p[count()];
@@ -288,7 +288,7 @@ struct rbuf
 	T get_top() const 
 	{
 		T ret;
-		if(count()>0)
+		if (count()>0)
 		{
 			ret=m_p[count()-1];
 		}
@@ -298,7 +298,7 @@ struct rbuf
 	T get_bottom() const 
 	{
 		T ret;
-		if(count()>0)
+		if (count()>0)
 		{
 			ret=m_p[0];
 		}
@@ -307,11 +307,11 @@ struct rbuf
 
 	rbool erase(int num)
 	{
-		if(num>=count()||num<0)
+		if (num>=count()||num<0)
 		{
 			return false;
 		}
-		for(int i=num;i<count()-1;++i)
+		for (int i=num;i<count()-1;++i)
 		{
 			*(m_p+i)=*(m_p+i+1);
 		}
@@ -321,11 +321,11 @@ struct rbuf
 
 	rbool erase(int begin,int end)
 	{
-		if(begin<0||end>count()||begin>=end)
+		if (begin<0||end>count()||begin>=end)
 		{
 			return false;
 		}
-		for(int i=0;i<count()-end;i++)//count()-(end-begin)-begin
+		for (int i=0;i<count()-end;i++)//count()-(end-begin)-begin
 		{
 			m_p[i+begin]=m_p[end+i];//删除的元素没有析构
 		}
@@ -335,12 +335,12 @@ struct rbuf
 
 	rbool insert(int pos,const T& a)
 	{
-		if(pos>count()||pos<0)
+		if (pos>count()||pos<0)
 		{
 			return false;
 		}
 		this->push(a);
-		for(int i=count()-1;i>pos;--i)
+		for (int i=count()-1;i>pos;--i)
 		{
 			m_p[i]=m_p[i-1];
 		}
@@ -350,19 +350,19 @@ struct rbuf
 
 	rbool insert(int pos,const rbuf<T>& a)
 	{
-		if(pos>count()||pos<0||0==a.count())
+		if (pos>count()||pos<0||0==a.count())
 		{
 			return false;
 		}
-		if(m_cmax<m_count+a.count())
+		if (m_cmax<m_count+a.count())
 		{
 			realloc_not_change(a.count()+count());
 		}
-		for(int i=0;i<count()-pos;i++)
+		for (int i=0;i<count()-pos;i++)
 		{
 			m_p[a.count()+count()-1-i]=m_p[count()-1-i];
 		}
-		for(int i=0;i<a.count();i++)
+		for (int i=0;i<a.count();i++)
 		{
 			m_p[pos+i]=a[i];
 		}
@@ -373,11 +373,11 @@ struct rbuf
 	//这里的重复代码可用宏或者模板简化
 	void alloc(int num)
 	{
-		if(m_p!=null)
+		if (m_p!=null)
 		{
 			return;
 		}
-		if(num<=0)
+		if (num<=0)
 		{
 			init();
 			return;
@@ -389,11 +389,11 @@ struct rbuf
 
 	void alloc_not_change(int num)
 	{
-		if(m_p!=null)
+		if (m_p!=null)
 		{
 			return;
 		}
-		if(num<=0)
+		if (num<=0)
 		{
 			init();
 			return;
@@ -404,19 +404,19 @@ struct rbuf
 
 	void realloc(int num)
 	{
-		if(null==m_p)
+		if (null==m_p)
 		{
 			alloc(num);
 			return;
 		}
-		if(num<=0)
+		if (num<=0)
 		{
 			free();
 			return;
 		}
 		T* p=new T[num];
 		int copy_size=r_min(num,m_count);
-		for(int i=0;i<copy_size;i++)
+		for (int i=0;i<copy_size;i++)
 		{
 			p[i]=m_p[i];
 		}
@@ -428,19 +428,19 @@ struct rbuf
 
 	void realloc_not_change(int num)
 	{
-		if(null==m_p)
+		if (null==m_p)
 		{
 			alloc_not_change(num);
 			return;
 		}
-		if(num<=0)
+		if (num<=0)
 		{
 			free();
 			return;
 		}
 		T* p=new T[num];
 		int copy_size=r_min(num,m_count);
-		for(int i=0;i<copy_size;i++)
+		for (int i=0;i<copy_size;i++)
 		{
 			p[i]=m_p[i];
 		}
@@ -452,12 +452,12 @@ struct rbuf
 	//不复制原有的元素
 	void realloc_n(int num)
 	{
-		if(null==m_p)
+		if (null==m_p)
 		{
 			alloc(num);
 			return;
 		}
-		if(num<=0)
+		if (num<=0)
 		{
 			free();
 			return;
@@ -470,12 +470,12 @@ struct rbuf
 
 	void realloc_n_not_change(int num)
 	{
-		if(null==m_p)
+		if (null==m_p)
 		{
 			alloc_not_change(num);
 			return;
 		}
-		if(num<=0)
+		if (num<=0)
 		{
 			free();
 			return;
@@ -487,7 +487,7 @@ struct rbuf
 
 	void free()
 	{
-		if(null==m_p)
+		if (null==m_p)
 		{
 			return;
 		}
@@ -497,11 +497,11 @@ struct rbuf
 
 	void copy(const rbuf<T>& a)
 	{
-		if(m_cmax<a.count())
+		if (m_cmax<a.count())
 		{
 			realloc_n_not_change(a.m_cmax);
 		}
-		for(int i=0;i<a.count();i++)
+		for (int i=0;i<a.count();i++)
 		{
 			m_p[i]=a[i];
 		}
@@ -511,7 +511,7 @@ struct rbuf
 	T get(int i) const
 	{
 		T t;
-		if((uint)i>=(uint)count())
+		if ((uint)i>=(uint)count())
 		{
 			return t;
 		}
@@ -523,18 +523,18 @@ struct rbuf
 
 	rbuf<T> sub(int begin,int end) const 
 	{
-		if(end>count())
+		if (end>count())
 		{
 			end=count();
 		}
-		if(begin<0)
+		if (begin<0)
 		{
 			begin=0;
 		}
 		rbuf<T> ret;
 		int temp=end-begin;
 		ret.alloc(temp);//这里会判断temp<0的情况，所以不需要判断begin>=end
-		for(int i=0;i<temp;i++)
+		for (int i=0;i<temp;i++)
 		{
 			ret[i]=m_p[begin+i];
 		}
@@ -548,9 +548,9 @@ struct rbuf
 
 	rbool exist(const T& a)
 	{
-		for(int i=0;i<count();i++)
+		for (int i=0;i<count();i++)
 		{
-			if(a==m_p[i])
+			if (a==m_p[i])
 			{
 				return true;
 			}
@@ -560,9 +560,9 @@ struct rbuf
 
 	int find(const T& a,int begin=0) const
 	{
-		for(int i=begin;i<count();i++)
+		for (int i=begin;i<count();i++)
 		{
-			if(a==m_p[i])
+			if (a==m_p[i])
 			{
 				return i;
 			}
@@ -572,9 +572,9 @@ struct rbuf
 
 	int find_last(const T& a) const
 	{
-		for(int i=count()-1;i>=0;i--)
+		for (int i=count()-1;i>=0;i--)
 		{
-			if(a==m_p[i])
+			if (a==m_p[i])
 			{
 				return i;
 			}
@@ -584,7 +584,7 @@ struct rbuf
 
 	void print() const 
 	{
-		for(int i=0;i<count();i++)
+		for (int i=0;i<count();i++)
 		{
 			m_p[i].print();
 		}
@@ -592,7 +592,7 @@ struct rbuf
 
 	void printl() const 
 	{
-		for(int i=0;i<count();i++)
+		for (int i=0;i<count();i++)
 		{
 			m_p[i].printl();
 		}

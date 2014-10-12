@@ -114,8 +114,8 @@ struct rstrw
 
 	friend rbool operator<(const rstrw& a,const rstrw& b)
 	{
-		for(int i=0;i<a.count()&&i<b.count();i++)
-			if(a[i]!=b[i])
+		for (int i=0;i<a.count()&&i<b.count();i++)
+			if (a[i]!=b[i])
 				return a[i]<b[i];
 		return a.count()<b.count();
 	}
@@ -160,7 +160,7 @@ struct rstrw
 		return (int)lstrlenW(p);
 #else
 		int ret=0;
-		while(*p!=0)
+		while (*p!=0)
 		{
 			ret++;
 			p++;
@@ -268,7 +268,7 @@ struct rstrw
 
 	ushort get(int i) const
 	{
-		if(i>=count())
+		if (i>=count())
 			return 0;
 		else 
 			return m_buf[i];
@@ -277,7 +277,7 @@ struct rstrw
 	ushort get_top() const
 	{
 		ushort ret=0;
-		if(count()>0)
+		if (count()>0)
 		{
 			ret=m_buf.m_p[count()-1];
 		}
@@ -287,7 +287,7 @@ struct rstrw
 	ushort get_bottom() const
 	{
 		ushort ret=0;
-		if(count()>0)
+		if (count()>0)
 		{
 			ret=m_buf.m_p[0];
 		}
@@ -296,13 +296,13 @@ struct rstrw
 
 	rbool is_number() const
 	{
-		if(empty())
+		if (empty())
 		{
 			return false;
 		}
-		for(int i=0;i<count();i++)
+		for (int i=0;i<count();i++)
 		{
-			if(!is_number(m_buf[i]))
+			if (!is_number(m_buf[i]))
 			{
 				return false;
 			}

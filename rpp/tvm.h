@@ -30,7 +30,7 @@ struct tvm
 
 	static rbool other_call(int index,tsh* sh,tvm_t* pvmt,treg& reg)
 	{
-		if(index<2000)
+		if (index<2000)
 		{
 			return false;//cocos_call
 		}
@@ -48,10 +48,10 @@ next:
 		//rf::printl();
 		//rf::getch();
 		
-		switch(cur->type)
+		switch (cur->type)
 		{
 		case tins::c_rjit_n:
-			if(!zbin::cp_call_asm(sh,*(tasm*)cur))
+			if (!zbin::cp_call_asm(sh,*(tasm*)cur))
 			{
 				sh.error(((tasm*)cur)->ptfi);
 				return false;
@@ -65,13 +65,13 @@ next:
 			return false;
 
 		case tins::c_calle_i:
-			switch(v_get_imme(cur->first))
+			switch (v_get_imme(cur->first))
 			{
 			case tins::c_eval_txt:
 				return false;
 			case tins::c_cp_txt:
 				pvmt->m_meta.clear();
-				if(!zbin::cp_func_txt(sh,
+				if (!zbin::cp_func_txt(sh,
 					pvmt->m_meta,(char*)v_pto_uint(reg.esp)))
 				{
 					sh.error(((tasm*)cur)->ptfi);
@@ -109,7 +109,7 @@ next:
 				reg.esp+=8;
 				v_next_ins;
 			case tins::c_thr_wait:
-				if(v_pto_uint(reg.esp)!=0)
+				if (v_pto_uint(reg.esp)!=0)
 					rthread::wait_exit(v_pto_uint(reg.esp));
 				reg.esp+=4;
 				v_next_ins;
@@ -394,7 +394,7 @@ next:
 				v_next_ins;
 
 			default:
-				ifn(other_call(v_get_imme(cur->first),&sh,pvmt,reg))
+				ifn (other_call(v_get_imme(cur->first),&sh,pvmt,reg))
 				{
 					return false;
 				}
@@ -506,19 +506,19 @@ next:
 			return false;
 
 		case tins::c_jebxz_i:
-			if(reg.ebx)
+			if (reg.ebx)
 				reg.eip+=r_size(tasm);
 			else
 				reg.eip=v_get_imme(cur->first);
 			goto next;
 		case tins::c_jebxz_r:
-			if(reg.ebx)
+			if (reg.ebx)
 				reg.eip+=r_size(tasm);
 			else
 				reg.eip=v_get_reg(cur->first);
 			goto next;
 		case tins::c_jebxz_a:
-			if(reg.ebx)
+			if (reg.ebx)
 				reg.eip+=r_size(tasm);
 			else
 				reg.eip=v_get_addr(cur->first);
@@ -529,19 +529,19 @@ next:
 			return false;
 
 		case tins::c_jebxnz_i:
-			if(reg.ebx)
+			if (reg.ebx)
 				reg.eip=v_get_imme(cur->first);
 			else
 				reg.eip+=r_size(tasm);
 			goto next;
 		case tins::c_jebxnz_r:
-			if(reg.ebx)
+			if (reg.ebx)
 				reg.eip=v_get_reg(cur->first);
 			else
 				reg.eip+=r_size(tasm);
 			goto next;
 		case tins::c_jebxnz_a:
-			if(reg.ebx)
+			if (reg.ebx)
 				reg.eip=v_get_addr(cur->first);
 			else
 				reg.eip+=r_size(tasm);
@@ -1206,7 +1206,7 @@ next:
 		default:
 			return false;
 		}
-		if(poldreg!=null)
+		if (poldreg!=null)
 		{
 			*poldreg=reg;
 		}
@@ -1216,12 +1216,12 @@ next:
 	//查找DLL中的函数
 	static void* find_dll(tvm_t* pvmt,const char* name)
 	{
-		if(pvmt->m_func.exist(name))
+		if (pvmt->m_func.exist(name))
 		{
 			return pvmt->m_func[name];
 		}
 		void* ret=zjitf::find_dll_full(name);
-		if(ret!=null)
+		if (ret!=null)
 		{
 			pvmt->m_func[name]=ret;
 		}
@@ -1236,7 +1236,7 @@ next:
 		uint addr=v_pto_uint(reg.esp);
 		int count=v_pto_int(reg.esp+4);
 		int tmp;
-		for(int i=count-1;i>=0;i--)
+		for (int i=count-1;i>=0;i--)
 		{
 			tmp=v_pto_int(reg.esp+8+i*4);
 			_asm push tmp
@@ -1257,7 +1257,7 @@ next:
 		uint addr=v_pto_uint(reg.esp);
 		int count=v_pto_int(reg.esp+4);
 		int tmp;
-		for(int i=count-1;i>=0;i--)
+		for (int i=count-1;i>=0;i--)
 		{
 			tmp=v_pto_int(reg.esp+8+i*4);
 			_asm push tmp
@@ -1275,12 +1275,12 @@ next:
 
 	rbool run(tsh& sh)
 	{
-		if(!init(sh))
+		if (!init(sh))
 		{
 			rf::printl("main func init failed");
 			return false;
 		}
-		if(!qrun(sh,&m_list[0],m_list[0].m_reg))
+		if (!qrun(sh,&m_list[0],m_list[0].m_reg))
 		{
 			rstr("undefined ins").print();
 			return false;
@@ -1304,7 +1304,7 @@ next:
 		tvm_t item;
 		m_list.push(item);
 		tvm_t* pitem=&m_list.top();
-		ifn(main_init(sh,pitem->m_vasm))
+		ifn (main_init(sh,pitem->m_vasm))
 			return false;
 		init_reg(sh,pitem);
 		pitem->m_pvm=this;
@@ -1336,7 +1336,7 @@ next:
 		tvm_t item;
 		m_list.push(item);
 		tvm_t* pitem=&m_list.top();
-		ifn(init_thr_ins(sh,pitem->m_vasm,start,param))
+		ifn (init_thr_ins(sh,pitem->m_vasm,start,param))
 		{
 			return 0;
 		}
@@ -1351,7 +1351,7 @@ next:
 	{
 		tvm_t* pvmt=(tvm_t*)param;
 		tvm* pvm=pvmt->m_pvm;
-		ifn(qrun(pvm->m_sh,pvmt,pvmt->m_reg))
+		ifn (qrun(pvm->m_sh,pvmt,pvmt->m_reg))
 		{
 			tsh::error("undefined ins");
 		}

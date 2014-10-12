@@ -22,7 +22,7 @@ struct tanalyse
 
 	static void analyse_add(tfunc* ptfi)
 	{
-		if(ptfi==null)
+		if (ptfi==null)
 		{
 			return;
 		}
@@ -32,11 +32,11 @@ struct tanalyse
 	static void analyse_print(tsh& sh)
 	{
 		rbuf<tanalyse_item> v;
-		for(tclass* p=sh.m_class.begin();p!=sh.m_class.end();p=sh.m_class.next(p))
+		for (tclass* p=sh.m_class.begin();p!=sh.m_class.end();p=sh.m_class.next(p))
 		{
-			for(tfunc* q=p->vfunc.begin();q!=p->vfunc.end();q=p->vfunc.next(q))
+			for (tfunc* q=p->vfunc.begin();q!=p->vfunc.end();q=p->vfunc.next(q))
 			{
-				if(q->count==0)
+				if (q->count==0)
 				{
 					continue;
 				}
@@ -48,7 +48,7 @@ struct tanalyse
 		}
 		r_qsort(v);
 		rf::printl();
-		for(int i=0;i<v.count();i++)
+		for (int i=0;i<v.count();i++)
 		{
 			(rstr(v[i].count)+" "+v[i].name).printl();
 		}

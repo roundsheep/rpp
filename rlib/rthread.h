@@ -25,7 +25,7 @@ struct rthread
 		int tid;
 #ifdef _MSC_VER
 		tid=(int)_beginthreadex(null,0,start,param,0,null);
-		if(0==tid||1==tid)
+		if (0==tid||1==tid)
 		{
 			return 0;
 		}
@@ -34,7 +34,7 @@ struct rthread
 			return tid;
 		}
 #else
-		if(0!=pthread_create((pthread_t*)&tid,null,start,param))
+		if (0!=pthread_create((pthread_t*)&tid,null,start,param))
 		{
 			return 0;
 		}

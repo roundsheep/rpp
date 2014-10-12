@@ -49,7 +49,7 @@ struct rdir
 		rstrw ret;
 		ushort ch='.';
 		int pos=name.find_last(ch);
-		if(pos<name.count())
+		if (pos<name.count())
 			ret=name.sub(pos+1);
 		return ret;
 	}
@@ -57,12 +57,12 @@ struct rdir
 	static rstrw get_prev_dir(rstrw path)
 	{
 		rstrw ret;
-		if(path.empty())
+		if (path.empty())
 			return ret;
 		path.pop();
 		ushort ch='/';
 		int pos=path.find_last(ch);
-		if(pos>=path.count())
+		if (pos>=path.count())
 			return ret;
 		ret=path.sub(0,pos+1);
 		return ret;
@@ -71,11 +71,11 @@ struct rdir
 	static rstrw get_name(const rstrw& path)
 	{
 		rstrw ret;
-		if(path.empty())
+		if (path.empty())
 			return ret;
 		ushort ch='/';
 		int pos=path.find_last(ch);
-		if(pos>=path.count())
+		if (pos>=path.count())
 			return ret;
 		ret=path.sub(pos+1);
 		return ret;
@@ -85,7 +85,7 @@ struct rdir
 	{
 		rstrw ret;
 		wchar buf[MAX_PATH+1];
-		if(GetModuleFileNameW(null,(wchar*)buf,MAX_PATH)==0)
+		if (GetModuleFileNameW(null,(wchar*)buf,MAX_PATH)==0)
 			return ret;
 		ret=buf;
 		ret=dir_std(ret);
@@ -97,7 +97,7 @@ struct rdir
 		rstrw ret;
 #ifndef __COCOS2D_H__
 		wchar buf[MAX_PATH+1];
-		if(GetModuleFileNameW(null,(wchar*)buf,MAX_PATH)==0)
+		if (GetModuleFileNameW(null,(wchar*)buf,MAX_PATH)==0)
 			return ret;
 		ret=buf;
 #else
@@ -114,7 +114,7 @@ struct rdir
 		rstrw ret;
 #ifndef __COCOS2D_H__
 		wchar buf[MAX_PATH+1];
-		if(GetCurrentDirectoryW(MAX_PATH,(wchar*)buf)==0)
+		if (GetCurrentDirectoryW(MAX_PATH,(wchar*)buf)==0)
 			return ret;
 		ret=buf;
 		ret=dir_std(ret);
@@ -131,9 +131,9 @@ struct rdir
 	//非win系统区分大小写
 	static rstrw dir_std(rstrw s)
 	{
-		for(ushort* p=s.begin();p!=s.end();++p)
+		for (ushort* p=s.begin();p!=s.end();++p)
 		{
-			if('\\'==*p)
+			if ('\\'==*p)
 			{
 				*p='/';
 			}
@@ -145,39 +145,39 @@ struct rdir
 	{
 		rbuf<rdir_item> ret;
 #ifndef __COCOS2D_H__
-		if(path.count()>4096||0==path.count())//ubuntu's max path len is 4096
+		if (path.count()>4096||0==path.count())//ubuntu's max path len is 4096
 		{
 			return ret;
 		}
 		path=dir_std(path);
-		if(path.count()>=1&&path[path.count()-1]!='/')
+		if (path.count()>=1&&path[path.count()-1]!='/')
 		{
 			path+=rstr("/");
 		}
 		rlist<rstrw> queue;
 		queue.push(path);
-		while(!queue.empty())
+		while (!queue.empty())
 		{
 			path=queue.pop_front();
 			WIN32_FIND_DATAW wfd; 
 			HANDLE handle=FindFirstFileW((path+rstr("*.*")).cstrw_t(),&wfd); 
-			if(handle==INVALID_HANDLE_VALUE)
+			if (handle==INVALID_HANDLE_VALUE)
 				continue;
-			while(true)
+			while (true)
 			{
 				rdir_item item;
 				rstrw name=dir_std(wfd.cFileName);
-				if(rstr(".")!=name&&rstr("..")!=name)
+				if (rstr(".")!=name&&rstr("..")!=name)
 				{
 					item.path=path+name;
-					if(0!=(wfd.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY))
+					if (0!=(wfd.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY))
 					{
 						item.is_dir=true;
 						queue.push(item.path+rstr("/"));
 					}
 					ret.push(item);
 				}
-				ifn(FindNextFileW(handle,&wfd))
+				ifn (FindNextFileW(handle,&wfd))
 				{
 					break;
 				}

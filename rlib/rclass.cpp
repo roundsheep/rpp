@@ -28,12 +28,12 @@ rclass::rclass()
 
 	wVersionRequested=MAKEWORD(1,1);
 
-	if(0!=WSAStartup(wVersionRequested,&wsaData))
+	if (0!=WSAStartup(wVersionRequested,&wsaData))
 	{
 		return;
 	}	
 
-	if(LOBYTE(wsaData.wVersion)!=1||HIBYTE(wsaData.wVersion)!=1)
+	if (LOBYTE(wsaData.wVersion)!=1||HIBYTE(wsaData.wVersion)!=1)
 	{
 		return;
 	}

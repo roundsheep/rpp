@@ -12,36 +12,36 @@ struct zpre
 {
 	static rbool process(tsh& sh)
 	{
-		if(sh.m_mode==tsh::c_jit)
+		if (sh.m_mode==tsh::c_jit)
 		{
 			sh.m_vdefine.insert_c(tmac(rstr("_JIT")));
 		}
-		elif(sh.m_mode==tsh::c_rvm)
+		elif (sh.m_mode==tsh::c_rvm)
 		{
 			sh.m_vdefine.insert_c(tmac(rppkey(c_rvm)));
 		}
-		elif(sh.m_mode==tsh::c_win)
+		elif (sh.m_mode==tsh::c_win)
 		{
 			sh.m_vdefine.insert_c(tmac(rstr("_WIN")));
 		}
-		elif(sh.m_mode==tsh::c_grub)
+		elif (sh.m_mode==tsh::c_grub)
 		{
 			sh.m_vdefine.insert_c(tmac(rstr("_GRUB")));
 		}
 #ifdef _MSC_VER
 		sh.m_vdefine.insert_c(tmac(rstr("_WIN32")));
 #endif
-		if(!obtain_all_file(sh))
+		if (!obtain_all_file(sh))
 			return false;
-		for(tfile* p=sh.m_file.begin();p!=sh.m_file.end();p=sh.m_file.next(p))
-			if(!obtain_def(sh,sh.m_vdefine,p->vword))
+		for (tfile* p=sh.m_file.begin();p!=sh.m_file.end();p=sh.m_file.next(p))
+			if (!obtain_def(sh,sh.m_vdefine,p->vword))
 				return false;
-		for(tfile* p=sh.m_file.begin();p!=sh.m_file.end();p=sh.m_file.next(p))
-			if(!ifdef_replace(sh,sh.m_vdefine,p->vword))
+		for (tfile* p=sh.m_file.begin();p!=sh.m_file.end();p=sh.m_file.next(p))
+			if (!ifdef_replace(sh,sh.m_vdefine,p->vword))
 				return false;
-		for(tfile* p=sh.m_file.begin();p!=sh.m_file.end();p=sh.m_file.next(p))
+		for (tfile* p=sh.m_file.begin();p!=sh.m_file.end();p=sh.m_file.next(p))
 		{
-			ifn(def_replace(sh,sh.m_vdefine,p->vword))
+			ifn (def_replace(sh,sh.m_vdefine,p->vword))
 			{
 				return false;
 			}
@@ -51,7 +51,7 @@ struct zpre
 
 	static rbool str_analyse(tsh& sh,rstr& src,rbuf<tword>& dst,tfile* pfile)
 	{
-		if(!zread::word_analyse(sh,src,dst,pfile))
+		if (!zread::word_analyse(sh,src,dst,pfile))
 		{
 			return false;
 		}
@@ -63,44 +63,44 @@ struct zpre
 
 	static rbool obtain_all_file(tsh& sh)
 	{
-		while(true)
+		while (true)
 		{
 			int cur=sh.m_file.count();
 			rbuf<rstrw> vname;
-			for(tfile* p=sh.m_file.begin();p!=sh.m_file.end();p=sh.m_file.next(p))
+			for (tfile* p=sh.m_file.begin();p!=sh.m_file.end();p=sh.m_file.next(p))
 			{
 				count_tab(*p);
-				if(!str_analyse(sh,p->cont,p->vword,p))
+				if (!str_analyse(sh,p->cont,p->vword,p))
 				{
 					return false;
 				}
-				ifn(ifdef_replace(sh,sh.m_vdefine,p->vword))//仅编译器内部使用
+				ifn (ifdef_replace(sh,sh.m_vdefine,p->vword))//仅编译器内部使用
 				{
 					return false;
 				}
-				if(!obtain_name(sh,vname,p->vword,*p))
+				if (!obtain_name(sh,vname,p->vword,*p))
 				{
 					sh.error(rstr("obtain error ")+sh.get_file_name(p));
 					return false;
 				}
 			}
-			if(!sh.m_is_pack_read)
+			if (!sh.m_is_pack_read)
 			{
-				if(!import_file(sh,vname))
+				if (!import_file(sh,vname))
 				{
 					sh.error("import error");
 					return false;
 				}
 			}
-			if(cur==sh.m_file.count())
+			if (cur==sh.m_file.count())
 				return true;
 		}
 	}
 
 	static rbool import_file(tsh& sh,rbuf<rstrw>& vname)
 	{
-		for(int i=0;i<vname.count();i++)
-			if(!zread::read_file(sh,vname[i]))
+		for (int i=0;i<vname.count();i++)
+			if (!zread::read_file(sh,vname[i]))
 			{
 				sh.error("can't read file "+vname[i].torstr());
 				return false;
@@ -111,17 +111,17 @@ struct zpre
 	static rbool obtain_name(tsh& sh,rbuf<rstrw>& vname,rbuf<tword>& v,tfile& f)
 	{
 		rstrw exe_dir=rdir::get_exe_dir();
-		for(int i=0;i<v.count();i++)
+		for (int i=0;i<v.count();i++)
 		{
-			if(v[i].val!=rppkey(c_import))
+			if (v[i].val!=rppkey(c_import))
 			{
 				continue;
 			}
-			if(v.get(i-1).val==rppoptr(c_pre))
+			if (v.get(i-1).val==rppoptr(c_pre))
 				v[i-1].clear();
 			v[i].val.clear();
 			rstrw name;
-			if(v.get(i+1).is_cstr())
+			if (v.get(i+1).is_cstr())
 			{
 				name=v.get(i+1).val;
 				v[i+1].clear();
@@ -131,9 +131,9 @@ struct zpre
 				//处理不带引号的import
 				name+=rstrw("\"");
 				int j;
-				for(j=i+1;j<v.count();j++)
+				for (j=i+1;j<v.count();j++)
 				{
-					if(v[j].pos.line!=v[i].pos.line)
+					if (v[j].pos.line!=v[i].pos.line)
 					{
 						break;
 					}
@@ -142,9 +142,9 @@ struct zpre
 				}
 				name+=rstrw("\"");
 			}
-			if(name.count()<3)
+			if (name.count()<3)
 				return false;
-			if(sh.m_is_pack_read)
+			if (sh.m_is_pack_read)
 			{
 				continue;
 			}
@@ -152,24 +152,24 @@ struct zpre
 			name.pop_front();
 			name=rdir::dir_std(name);
 			rstrw temp=get_abs_name(rdir::get_prev_dir(f.name),name);
-			if(vname.exist(temp))
+			if (vname.exist(temp))
 				continue;
-			if(zread::exist(sh,temp))
+			if (zread::exist(sh,temp))
 				continue;
-			if(!zread::file_exist(temp))
+			if (!zread::file_exist(temp))
 			{
 				rstrw dir;
-				if(rdir::get_suffix(name)==rstrw("rp"))
+				if (rdir::get_suffix(name)==rstrw("rp"))
 					dir=rstrw("rp/");
 				else
 					dir=rstrw("rsrc/");
 				temp=get_abs_name(exe_dir+dir,name);
 			}
-			if(vname.exist(temp))
+			if (vname.exist(temp))
 				continue;
-			if(zread::exist(sh,temp))
+			if (zread::exist(sh,temp))
 				continue;
-			if(!zread::file_exist(temp))
+			if (!zread::file_exist(temp))
 				return false;
 			vname.push(temp);
 		}
@@ -179,21 +179,21 @@ struct zpre
 
 	static rstrw get_abs_name(rstrw path,const rstrw& name)
 	{
-		if(path.empty())
+		if (path.empty())
 			return rstrw();
 		rbuf<rstrw> temp=r_split(name,rstrw("/"));
-		if(temp.empty())
+		if (temp.empty())
 			return rstrw();
-		for(int i=0;i<temp.count();i++)
+		for (int i=0;i<temp.count();i++)
 		{
-			if(temp[i]==rstrw(".."))
+			if (temp[i]==rstrw(".."))
 				path=rdir::get_prev_dir(path);
-			elif(temp[i]==rstrw("."))
+			elif (temp[i]==rstrw("."))
 				;
 			else
 			{
 				path+=temp[i];
-				if(i!=temp.count()-1)
+				if (i!=temp.count()-1)
 					path+=rstrw("/");
 			}
 		}
@@ -202,7 +202,7 @@ struct zpre
 
 	static rstrw get_abs_path(const rstrw& s)
 	{
-		if(s.sub(0,2)==rstrw("//")||s.sub(1,3)==rstrw(":/"))
+		if (s.sub(0,2)==rstrw("//")||s.sub(1,3)==rstrw(":/"))
 		{
 			return s;
 		}
@@ -211,30 +211,30 @@ struct zpre
 
 	static void key_replace(tsh& sh,rbuf<tword>& v)
 	{
-		for(int i=0;i<v.count();i++)
+		for (int i=0;i<v.count();i++)
 		{
-			if(v[i].val==rppkey(c_include))
+			if (v[i].val==rppkey(c_include))
 				v[i].val=rppkey(c_import);
 			//这里不能用超级宏实现，因为有带冒号和不带冒号两种
-			if(v[i].val==rppkey(c_private))
+			if (v[i].val==rppkey(c_private))
 			{
 				v[i].clear();
 				tword temp=v.get(i+1);
-				if(rppoptr(c_colon)==temp.val)
+				if (rppoptr(c_colon)==temp.val)
 					v[i+1].clear();
 			}
-			if(v[i].val==rppkey(c_public))
+			if (v[i].val==rppkey(c_public))
 			{
 				v[i].clear();
 				tword temp=v.get(i+1);
-				if(rppoptr(c_colon)==temp.val)
+				if (rppoptr(c_colon)==temp.val)
 					v[i+1].clear();
 			}
-			if(v[i].val==rppkey(c_protected))
+			if (v[i].val==rppkey(c_protected))
 			{
 				v[i].clear();
 				tword temp=v.get(i+1);
-				if(rppoptr(c_colon)==temp.val)
+				if (rppoptr(c_colon)==temp.val)
 					v[i+1].clear();
 			}
 		}
@@ -244,17 +244,17 @@ struct zpre
 	static rbool def_replace_one(tsh& sh,rbuf<tword>& v,rset<tmac>& vmac)
 	{
 		tmac item;
-		for(int i=0;i<v.count();i++)
+		for (int i=0;i<v.count();i++)
 		{
 			item.name=v[i].val;
 			tmac* p=vmac.find(item);
-			if(p==null)
+			if (p==null)
 			{
 				continue;
 			}
-			if(p->is_super)
+			if (p->is_super)
 			{
-				ifn(zsuper::replace_item(sh,v,i,*p))
+				ifn (zsuper::replace_item(sh,v,i,*p))
 				{
 					return false;
 				}
@@ -270,15 +270,15 @@ struct zpre
 
 	static rbool def_replace(tsh& sh,rset<tmac>& vdefine,rbuf<tword>& v)
 	{
-		for(int i=0;i<c_rpp_deep;i++)
+		for (int i=0;i<c_rpp_deep;i++)
 		{
-			ifn(def_replace_one(sh,v,vdefine))
+			ifn (def_replace_one(sh,v,vdefine))
 			{
 				return false;
 			}
 			rbool need;
 			arrange(v,&need);
-			ifn(need)
+			ifn (need)
 			{
 				return true;
 			}
@@ -288,11 +288,11 @@ struct zpre
 
 	static rbool need_arrange(rbuf<tword>& v)
 	{
-		for(int i=0;i<v.count();i++)
+		for (int i=0;i<v.count();i++)
 		{
-			if(v[i].empty())
+			if (v[i].empty())
 				return true;
-			elif(v[i].is_multi())
+			elif (v[i].is_multi())
 				return true;
 		}
 		return false;
@@ -300,22 +300,22 @@ struct zpre
 
 	static void arrange(rbuf<tword>& src,rbool* pneed=null)
 	{
-		if(!need_arrange(src))
+		if (!need_arrange(src))
 		{
-			if(pneed!=null)
+			if (pneed!=null)
 				*pneed=false;
 			return;
 		}
-		if(pneed!=null)
+		if (pneed!=null)
 			*pneed=true;
 		rbuf<tword> wlist;
-		for(int i=0;i<src.count();i++)
+		for (int i=0;i<src.count();i++)
 		{
-			if(src[i].empty())
+			if (src[i].empty())
 				continue;
-			elif(src[i].is_multi())
+			elif (src[i].is_multi())
 			{
-				for(int j=0;j<src[i].multi.count();++j)
+				for (int j=0;j<src[i].multi.count();++j)
 				{
 					tword word;
 					word.val=src[i].multi[j];
@@ -334,18 +334,18 @@ struct zpre
 
 	static rbool obtain_def(tsh& sh,rset<tmac>& vdefine,rbuf<tword>& v)
 	{
-		for(int i=0;i<v.count();i++)
+		for (int i=0;i<v.count();i++)
 		{
-			if(v[i].val!=rppkey(c_define))
+			if (v[i].val!=rppkey(c_define))
 			{
 				continue;
 			}
-			if(v.get(i-1).val==rppoptr(c_pre))
+			if (v.get(i-1).val==rppoptr(c_pre))
 				v[i-1].clear();
-			if(v.get(i+1)=="$")
+			if (v.get(i+1)=="$")
 			{
 				int right=i;
-				ifn(zsuper::add_super_mac(sh,v,right,vdefine))
+				ifn (zsuper::add_super_mac(sh,v,right,vdefine))
 				{
 					return false;
 				}
@@ -355,17 +355,17 @@ struct zpre
 			}
 			tmac item;
 			item.name=v.get(i+1).val;
-			if(item.name.empty())
+			if (item.name.empty())
 			{
 				sh.error(v[i]);
 				return false;
 			}
-			for(int k=i+2;k<v.count()&&v.get(k).pos==v[i].pos;k++)
+			for (int k=i+2;k<v.count()&&v.get(k).pos==v[i].pos;k++)
 			{
 				item.vstr.push(v[k].val);
 				v[k].clear();
 			}
-			if(vdefine.exist(item))
+			if (vdefine.exist(item))
 			{
 				vdefine.erase(item);
 				/*sh.error(v.get(i+1),"redefined");
@@ -382,47 +382,47 @@ struct zpre
 	static rbool ifdef_replace(tsh& sh,rset<tmac>& vdefine,rbuf<tword>& v)
 	{
 		tmac item;
-		for(int i=v.count()-1;i>=0;i--)
+		for (int i=v.count()-1;i>=0;i--)
 		{
-			if(v[i]!=rppoptr(c_pre))
+			if (v[i]!=rppoptr(c_pre))
 			{
 				continue;
 			}
 			rstr key=v.get(i+1).val;
-			if(key!=rppkey(c_ifdef)&&
+			if (key!=rppkey(c_ifdef)&&
 				key!=rppkey(c_ifndef))
 				continue;
-			if(i+2>=v.count())
+			if (i+2>=v.count())
 			{
 				sh.error(v[i],"ifdef");
 				return false;
 			}
 			item.name=v[i+2].val;
 			int endpos=r_find_pos(v,tword(rppkey(c_endif)),i+3);
-			if(endpos>=v.count())
+			if (endpos>=v.count())
 			{
 				sh.error(v[i],"ifdef");
 				return false;
 			}
 			int elsepos=endpos;
-			for(int j=i+3;j<endpos;j++)
-				if(v[j]==rppoptr(c_pre)&&
+			for (int j=i+3;j<endpos;j++)
+				if (v[j]==rppoptr(c_pre)&&
 					v.get(j+1)==rppkey(c_else))
 				{
 					elsepos=j+1;
 					break;
 				}
 			rbool defined=vdefine.exist(item);
-			if(key==rppkey(c_ifdef))
+			if (key==rppkey(c_ifdef))
 			{
-				if(defined)
+				if (defined)
 					sh.clear_word_val(v,elsepos,endpos);
 				else
 					sh.clear_word_val(v,i,elsepos);
 			}
 			else
 			{
-				if(!defined)
+				if (!defined)
 					sh.clear_word_val(v,elsepos,endpos);
 				else
 					sh.clear_word_val(v,i,elsepos);
@@ -441,9 +441,9 @@ struct zpre
 
 	static void double_combine(rbuf<tword>& v)
 	{
-		for(int i=1;i<v.count()-1;i++)
+		for (int i=1;i<v.count()-1;i++)
 		{
-			if(v[i]=="."&&
+			if (v[i]=="."&&
 				v[i-1].val.is_number()&&
 				v[i+1].val.is_number())
 			{
@@ -459,7 +459,7 @@ struct zpre
 
 	static void const_replace(rbuf<tword>& v)
 	{
-		for(int i=0;i<v.count();i++)
+		for (int i=0;i<v.count();i++)
 		{
 			const_replace(v[i]);
 		}
@@ -467,24 +467,24 @@ struct zpre
 
 	static void const_replace(tword& word)
 	{
-		if(word.val.count()>0&&rstr::is_number(word.val[0]))
+		if (word.val.count()>0&&rstr::is_number(word.val[0]))
 		{
-			if(r_find_pos<rstr,uchar>(word.val,'_')<word.val.count())
+			if (r_find_pos<rstr,uchar>(word.val,'_')<word.val.count())
 			{
 				rstr s;
-				for(int i=0;i<word.val.count();i++)
-					if(word.val[i]!='_')
+				for (int i=0;i<word.val.count();i++)
+					if (word.val[i]!='_')
 						s+=word.val[i];
 				word.val=s;
 			}
 		}
-		if(word.val.count()>2)
+		if (word.val.count()>2)
 		{
-			if(word.val[0]=='0'&&word.val[1]=='x')
+			if (word.val[0]=='0'&&word.val[1]=='x')
 			{
 				word.val=rstr::hextodec(word.val.sub(2));
 			}
-			if(word.val[0]=='0'&&word.val[1]=='b')
+			if (word.val[0]=='0'&&word.val[1]=='b')
 			{
 				word.val=rstr::bintodec(word.val.sub(2));
 			}
@@ -494,19 +494,19 @@ struct zpre
 	static int count_tab_line(rstr& s)
 	{
 		int i;
-		for(i=0;i<s.count();i++)
+		for (i=0;i<s.count();i++)
 		{
-			if(s[i]!=' '&&s[i]!=0x9)
+			if (s[i]!=' '&&s[i]!=0x9)
 				break;
 		}
 		int sum=0;
-		for(int k=0;k<i;k++)
+		for (int k=0;k<i;k++)
 		{
-			if(s[k]==' ')
+			if (s[k]==' ')
 			{
 				sum++;
 			}
-			elif(s[k]==0x9)
+			elif (s[k]==0x9)
 			{
 				sum+=4;
 			}
@@ -518,7 +518,7 @@ struct zpre
 	{
 		file.line_list=r_split_e(file.cont,rstr("\n"));
 		file.line_list.push_front("");//行号从1开始
-		for(int i=0;i<file.line_list.count();i++)
+		for (int i=0;i<file.line_list.count();i++)
 		{
 			file.tab_list.push(count_tab_line(file.line_list[i]));
 		}
@@ -526,29 +526,29 @@ struct zpre
 
 	static rbool op_const_eval(tsh& sh,rbuf<tword>& v,rbool clear_sbk)
 	{
-		if(!rppconf(c_op_const_eval))
+		if (!rppconf(c_op_const_eval))
 			return true;
-		for(int i=0;i<v.count();i++)
+		for (int i=0;i<v.count();i++)
 		{
-			if(v[i].val!=rppoptr(c_sbk_l))
+			if (v[i].val!=rppoptr(c_sbk_l))
 				continue;
 			int right=sh.find_symm_sbk(v,i);
-			if(right>=v.count())
+			if (right>=v.count())
 				continue;
 			int pos=i+1;
-			if(pos+1>=right)
+			if (pos+1>=right)
 				continue;
-			if(!zread::is_const_str(sh,v,pos,right))
+			if (!zread::is_const_str(sh,v,pos,right))
 				continue;
 			int dst;
-			if(!zread::const_eval(sh,sh.vword_to_vstr(v.sub(pos,right)),dst))
+			if (!zread::const_eval(sh,sh.vword_to_vstr(v.sub(pos,right)),dst))
 			{
 				sh.error(v[i],"const_eval");
 				return false;
 			}
 			v[pos].val=rstr((uint)dst);
 			sh.clear_word_val(v,pos+1,right);
-			if(clear_sbk)
+			if (clear_sbk)
 			{
 				v[i].val.clear();
 				v[right].val.clear();

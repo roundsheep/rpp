@@ -62,15 +62,15 @@ struct toptr
 		m_optr_s=m_optr;
 		r_qsort(m_optr_s);
 		m_optr_max=0;
-		for(int i=0;i<m_optr_s.count();i++)
-			if(m_optr_s[i].count()>m_optr_max)
+		for (int i=0;i<m_optr_s.count();i++)
+			if (m_optr_s[i].count()>m_optr_max)
 				m_optr_max=m_optr_s[i].count();
 	}
 
 	int get_grade(const rstr& s) const
 	{
 		int* p=m_dic.find(s);
-		if(p==null)
+		if (p==null)
 		{
 			return 0;
 		}
@@ -170,7 +170,7 @@ struct tkey
 	void sort_asm()
 	{
 		m_dic.clear();
-		for(int i=0;i<m_key.count();i++)
+		for (int i=0;i<m_key.count();i++)
 		{
 			m_dic[m_key[i]]=i;
 		}
@@ -179,7 +179,7 @@ struct tkey
 	int get_key_index(const rstr& s)
 	{
 		int* p=m_dic.find(s);
-		if(p==null)
+		if (p==null)
 		{
 			return m_key.count();
 		}
@@ -189,7 +189,7 @@ struct tkey
 	rbool is_asm_ins(const rstr& s) const
 	{
 		int* p=m_dic.find(s);
-		if(p==null)
+		if (p==null)
 		{
 			return false;
 		}
@@ -199,8 +199,8 @@ struct tkey
 
 	rbool is_asm_reg(const rstr& s) const
 	{
-		for(int i=c_eip;i<=c_edi;++i)
-			if(s==m_key[i])
+		for (int i=c_eip;i<=c_edi;++i)
+			if (s==m_key[i])
 				return true;
 		return false;
 	}

@@ -17,13 +17,13 @@ struct rcode
 		rstr result;
 		//即使是英语操作系统应该也安装936代码页
 		int size=MultiByteToWideChar(936,0,s.cstr_t(),-1,null,0);
-		if(size<=0)
+		if (size<=0)
 		{
 			return result;
 		}
 		result.set_size(size*2);
 		size=MultiByteToWideChar(936,0,s.cstr_t(),-1,result.cstrw_t(),size);
-		if(size<=0)
+		if (size<=0)
 		{
 			return "";
 		}
@@ -36,25 +36,25 @@ struct rcode
 		rstr result;
 		ushort temp;
 		ushort wuni;
-		for(int i=0;i<s.count();i++)
+		for (int i=0;i<s.count();i++)
 		{
 			get_first(temp)=s[i];
 			get_second(temp)=0;
 			wuni=gbk(temp);
-			if(wuni!=0)
+			if (wuni!=0)
 			{
 				result+=get_first(wuni);
 				result+=get_second(wuni);
 				continue;
 			}
-			if(i+1>=s.count())
+			if (i+1>=s.count())
 			{
 				continue;
 			}
 			get_first(temp)=s[i];
 			get_second(temp)=s[i+1];
 			wuni=gbk(temp);
-			if(wuni==0)
+			if (wuni==0)
 			{
 				continue;
 			}
@@ -75,11 +75,11 @@ struct rcode
 	{
 		ushort temp;
 		rstr result;
-		for(int i=0;i<s.count();i++)
+		for (int i=0;i<s.count();i++)
 		{
-			if(is_utf8_3(s[i]))
+			if (is_utf8_3(s[i]))
 			{
-				if(i+2>=s.count())
+				if (i+2>=s.count())
 				{
 					continue;
 				}
@@ -91,9 +91,9 @@ struct rcode
 				result.push(get_second(temp));
 				i+=2;
 			}
-			elif(is_utf8_2(s[i]))
+			elif (is_utf8_2(s[i]))
 			{
-				if(i+1>=s.count())
+				if (i+1>=s.count())
 				{
 					continue;
 				}
@@ -118,13 +118,13 @@ struct rcode
 	{
 		rstr result;
 		int size=WideCharToMultiByte(936,0,s.cstrw_t(),-1,null,0,null,null);
-		if(size<=0)
+		if (size<=0)
 		{
 			return result;
 		}
 		result.set_size(size);
 		size=WideCharToMultiByte(936,0,s.cstrw_t(),-1,(char*)result.begin(),size,null,null);
-		if(size<=0)
+		if (size<=0)
 		{
 			return "";
 		}
@@ -135,22 +135,22 @@ struct rcode
 	static rstr utf16_to_gbk(const rstr& s)
 	{
 		rstr result;
-		if(s.count()%2!=0)
+		if (s.count()%2!=0)
 		{
 			return result;
 		}
 		ushort temp;
 		ushort wgbk;
-		for(int i=0;i<s.count();i+=2)
+		for (int i=0;i<s.count();i+=2)
 		{
 			get_first(temp)=s[i];
 			get_second(temp)=s[i+1];
 			wgbk=unicode(temp);
-			if(get_first(wgbk)!=0)
+			if (get_first(wgbk)!=0)
 			{
 				result+=get_first(wgbk);
 			}
-			if(get_second(wgbk)!=0)
+			if (get_second(wgbk)!=0)
 			{
 				result+=get_second(wgbk);
 			}
@@ -162,20 +162,20 @@ struct rcode
 	static rstr utf16_to_utf8(const rstr& s)
 	{
 		rstr result;
-		if(s.count()%2!=0)
+		if (s.count()%2!=0)
 		{
 			return result;
 		}
 		ushort temp;
-		for(int i=0;i<s.count();i+=2)
+		for (int i=0;i<s.count();i+=2)
 		{
-			if(s[i]<=0x7f&&s[i+1]==0)
+			if (s[i]<=0x7f&&s[i+1]==0)
 			{
 				result+=s[i];
 				continue;
 			}
 			temp=*(ushort*)(s.begin()+i);
-			if(s[i]>0x7f&&s[i+1]<=0x7)
+			if (s[i]>0x7f&&s[i+1]<=0x7)
 			{
 				result.push(uchar((temp>>6)|0xc0));
 				result.push(uchar((temp&0x3f)|0x80));
@@ -192,14 +192,14 @@ struct rcode
 
 	static rstr to_utf16_txt(const rstr& s)
 	{
-		if(is_utf16_txt(s))
+		if (is_utf16_txt(s))
 		{
 			return s;
 		}
 		rstr temp;
 		temp.push(0xff);
 		temp.push(0xfe);
-		if(is_utf8_txt(s))
+		if (is_utf8_txt(s))
 		{
 			return temp+utf8_to_utf16(s.sub(3));
 		}
@@ -218,7 +218,7 @@ struct rcode
 
 	static rstr to_utf8_txt(const rstr& s)
 	{
-		if(is_utf8_txt(s))
+		if (is_utf8_txt(s))
 		{
 			return s;
 		}
@@ -226,7 +226,7 @@ struct rcode
 		temp.push(0xef);
 		temp.push(0xbb);
 		temp.push(0xbf);
-		if(is_utf16_txt(s))
+		if (is_utf16_txt(s))
 		{
 			return temp+utf16_to_utf8(s.sub(2));
 		}
@@ -235,11 +235,11 @@ struct rcode
 
 	static rstr to_gbk_txt(const rstr& s)
 	{
-		if(is_utf8_txt(s))
+		if (is_utf8_txt(s))
 		{
 			return utf8_to_gbk(s.sub(3));
 		}
-		if(is_utf16_txt(s))
+		if (is_utf16_txt(s))
 		{
 			return utf16_to_gbk(s.sub(2));
 		}
@@ -270,17 +270,17 @@ struct rcode
 
 	static rbool is_utf32_txt(const rstr& s)
 	{
-		if(s.count()<4)
+		if (s.count()<4)
 		{
 			return false;
 		}
-		if(s[0]==0&&s[1]==0&&
+		if (s[0]==0&&s[1]==0&&
 			s[2]==0xfe&&
 			s[3]==0xff)
 		{
 			return true;
 		}
-		if(s[0]==0xff&&
+		if (s[0]==0xff&&
 			s[1]==0xfe&&
 			s[2]==0&&s[3]==0)
 		{
@@ -339,7 +339,7 @@ struct rcode
 	{
 		rstr s=gbk_to_utf8(src);
 		s.push(0);
-		if(dst!=null)
+		if (dst!=null)
 		{
 			memcpy(dst,s.begin(),s.count());
 		}
@@ -351,7 +351,7 @@ struct rcode
 		rstr s=gbk_to_utf16(src);
 		s.push(0);
 		s.push(0);
-		if(dst!=null)
+		if (dst!=null)
 		{
 			memcpy(dst,s.begin(),s.count());
 		}
@@ -362,7 +362,7 @@ struct rcode
 	{
 		rstr s=utf8_to_gbk(src);
 		s.push(0);
-		if(dst!=null)
+		if (dst!=null)
 		{
 			memcpy(dst,s.begin(),s.count());
 		}
@@ -374,7 +374,7 @@ struct rcode
 		rstr s=utf8_to_utf16(src);
 		s.push(0);
 		s.push(0);
-		if(dst!=null)
+		if (dst!=null)
 		{
 			memcpy(dst,s.begin(),s.count());
 		}
@@ -384,9 +384,9 @@ struct rcode
 	static int utf16_to_gbk_c(uchar* src,uchar* dst)
 	{
 		rstr s;
-		for(uchar* p=src;;p+=2)
+		for (uchar* p=src;;p+=2)
 		{
-			if(*p==0&&*(p+1)==0)
+			if (*p==0&&*(p+1)==0)
 			{
 				s.set_size(p-src);
 				memcpy(s.begin(),src,s.count());
@@ -395,7 +395,7 @@ struct rcode
 		}
 		s=utf16_to_gbk(s);
 		s.push(0);
-		if(dst!=null)
+		if (dst!=null)
 		{
 			memcpy(dst,s.begin(),s.count());
 		}
@@ -405,9 +405,9 @@ struct rcode
 	static int utf16_to_utf8_c(uchar* src,uchar* dst)
 	{
 		rstr s;
-		for(uchar* p=src;;p+=2)
+		for (uchar* p=src;;p+=2)
 		{
-			if(*p==0&&*(p+1)==0)
+			if (*p==0&&*(p+1)==0)
 			{
 				s.set_size(p-src);
 				memcpy(s.begin(),src,s.count());
@@ -416,7 +416,7 @@ struct rcode
 		}
 		s=utf16_to_utf8(s);
 		s.push(0);
-		if(dst!=null)
+		if (dst!=null)
 		{
 			memcpy(dst,s.begin(),s.count());
 		}

@@ -37,7 +37,7 @@ struct rlist
 
 	void clear()
 	{
-		while(m_front)
+		while (m_front)
 		{
 			m_rear=m_front->next;
 			delete m_front;
@@ -67,7 +67,7 @@ struct rlist
 		p->val=a;
 		p->next=null;
 		p->prev=m_rear;
-		if(empty())
+		if (empty())
 		{
 			m_front=p;
 			m_rear=p;
@@ -86,11 +86,11 @@ struct rlist
 		rlist_i<T>* p=m_rear;
 		T ret=p->val;
 		m_rear=p->prev;
-		if(m_rear)
+		if (m_rear)
 		{
 			m_rear->next=null;
 		}
-		if(empty())
+		if (empty())
 		{
 			m_front=null;
 		}
@@ -104,7 +104,7 @@ struct rlist
 		p->val=a;
 		p->next=m_front;
 		p->prev=null;
-		if(empty())
+		if (empty())
 		{
 			m_front=p;
 			m_rear=p;
@@ -123,11 +123,11 @@ struct rlist
 		rlist_i<T>* p=m_front;
 		T ret=p->val;
 		m_front=p->next;
-		if(m_front)
+		if (m_front)
 		{
 			m_front->prev=null;
 		}
-		if(empty())
+		if (empty())
 		{
 			m_rear=null;
 		}
@@ -138,7 +138,7 @@ struct rlist
 	//前插
 	void insert(T* pos,const T& a)
 	{
-		if(pos==null)
+		if (pos==null)
 		{
 			push(a);
 			return;
@@ -148,16 +148,16 @@ struct rlist
 		p->val=a;
 		p->next=cur;
 		p->prev=cur->prev;
-		if(cur->prev)
+		if (cur->prev)
 		{
 			cur->prev->next=p;
 		}
 		cur->prev=p;
-		if(p->prev==null)
+		if (p->prev==null)
 		{
 			m_front=p;
 		}
-		if(p->next==null)
+		if (p->next==null)
 		{
 			m_rear=p;
 		}
@@ -171,24 +171,24 @@ struct rlist
 
 	void erase(T* pos)
 	{
-		if(pos==null)
+		if (pos==null)
 		{
 			return;
 		}
 		rlist_i<T>* cur=(rlist_i<T>*)pos;
-		if(cur->prev==null)
+		if (cur->prev==null)
 		{
 			m_front=cur->next;
 		}
-		if(cur->next==null)
+		if (cur->next==null)
 		{
 			m_rear=cur->prev;
 		}
-		if(cur->prev)
+		if (cur->prev)
 		{
 			cur->prev->next=cur->next;
 		}
-		if(cur->next)
+		if (cur->next)
 		{
 			cur->next->prev=cur->prev;
 		}
@@ -204,9 +204,9 @@ struct rlist
 	T* index(int n)
 	{
 		rlist_i<T>* p=m_front;
-		for(;n;n--)
+		for (;n;n--)
 		{
-			if(p==null)
+			if (p==null)
 			{
 				return null;
 			}

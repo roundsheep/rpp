@@ -75,12 +75,12 @@ rsock::rsock()
 rsock::~rsock()
 {
 #ifdef _MSC_VER
-	if(m_socket!=INVALID_SOCKET)
+	if (m_socket!=INVALID_SOCKET)
 	{
 		close();
 	}
 #else
-	if(m_socket<0)
+	if (m_socket<0)
 	{
 		close();
 	}
@@ -101,7 +101,7 @@ rbool rsock::connect(const char *hostname,int port)
 {
 	struct hostent *hp=gethostbyname(hostname);
 
-	if(null==hp)
+	if (null==hp)
 	{
 		return false;
 	}
@@ -122,12 +122,12 @@ rbool rsock::connect(const char *hostname,int port)
 #ifdef _MSC_VER
 	unsigned long ul=1;
 
-	if(SOCKET_ERROR==ioctlsocket(m_socket,FIONBIO,(unsigned long*)&ul))
+	if (SOCKET_ERROR==ioctlsocket(m_socket,FIONBIO,(unsigned long*)&ul))
 	{
 		return false; 
 	}
 	
-	if(SOCKET_ERROR!=::connect(m_socket,(struct sockaddr *)&addr,r_size(addr)))
+	if (SOCKET_ERROR!=::connect(m_socket,(struct sockaddr *)&addr,r_size(addr)))
 	{
 		return false;
 	}
@@ -139,31 +139,31 @@ rbool rsock::connect(const char *hostname,int port)
 	timeout.tv_sec=c_time_out;//连接超时
 	timeout.tv_usec=0;
 	
-	if(select(0,0,&r,0,&timeout)<=0)
+	if (select(0,0,&r,0,&timeout)<=0)
 	{
 		return false;
 	}
 
 	ul=0; 
 
-	if(SOCKET_ERROR==ioctlsocket(m_socket,FIONBIO,(unsigned long*)&ul))
+	if (SOCKET_ERROR==ioctlsocket(m_socket,FIONBIO,(unsigned long*)&ul))
 	{
 		return false;
 	}
 #else
-	/*if(0!=fcntl(m_socket, F_SETFL, fcntl(m_socket, F_GETFL) | O_NONBLOCK))
+	/*if (0!=fcntl(m_socket, F_SETFL, fcntl(m_socket, F_GETFL) | O_NONBLOCK))
 	{
 		return false;
 	}*/
 
 	unsigned long ul = 1;
 
-	if(0!=ioctl(m_socket, FIONBIO, (unsigned long*)&ul))
+	if (0!=ioctl(m_socket, FIONBIO, (unsigned long*)&ul))
 	{
 		return false; 
 	}
 	
-	if(0<=::connect(m_socket,(struct sockaddr *)&addr,r_size(addr)))
+	if (0<=::connect(m_socket,(struct sockaddr *)&addr,r_size(addr)))
 	{
 		printf("2\n");
 		return false;
@@ -176,14 +176,14 @@ rbool rsock::connect(const char *hostname,int port)
 	timeout.tv_sec = c_time_out;//连接超时
 	timeout.tv_usec =0;
 	
-	if(select(m_socket+1,0,&r,0,&timeout)<=0)
+	if (select(m_socket+1,0,&r,0,&timeout)<=0)
 	{
 		return false;
 	}
 
 	ul=0; 
 
-	if(0!=ioctl(m_socket,FIONBIO,(unsigned long*)&ul))
+	if (0!=ioctl(m_socket,FIONBIO,(unsigned long*)&ul))
 	{
 		return false; 
 	}
@@ -221,7 +221,7 @@ int rsock::send(int size,const void* data)
 #else
 	int ret=::send(m_socket,(char *)data,size,MSG_NOSIGNAL);
 #endif
-	/*if(ret<=0)
+	/*if (ret<=0)
 	{
 		return -1;
 	}*/
@@ -235,7 +235,7 @@ int rsock::recv(int size,void* data)
 #else
 	int ret=::recv(m_socket,(char *)data,size,MSG_NOSIGNAL);
 #endif
-	/*if(ret<=0)
+	/*if (ret<=0)
 	{
 		return -1;
 	}*/
@@ -245,14 +245,14 @@ int rsock::recv(int size,void* data)
 int rsock::send_all(int size,const void* data)
 {
 	int sendBytes=0;
-	while(sendBytes<size)
+	while (sendBytes<size)
 	{
 		int temp=send(size-sendBytes,(char *)data+sendBytes);
-		if(temp<=0)
+		if (temp<=0)
 		{
 			return sendBytes;
 		}
-		elif(temp<size-sendBytes)
+		elif (temp<size-sendBytes)
 		{
 			return sendBytes+temp;
 		}
@@ -291,14 +291,14 @@ rbool rsock::accept(rsocket* socket,char* clientip,int* port)
 #ifdef _MSC_VER
 	*socket=::accept(m_socket,(struct sockaddr *)&addr,&len);
 
-	if(INVALID_SOCKET==*socket)
+	if (INVALID_SOCKET==*socket)
 	{
 		return false;
 	}
 #else
 	*socket=::accept(m_socket,(struct sockaddr *)&addr,(socklen_t *)&len);
 
-	if(*socket<0)
+	if (*socket<0)
 	{
 		return false;
 	}
@@ -318,7 +318,7 @@ rbool rsock::connect_direct(const char *hostname,int port)
 
 rbool rsock::sends(rstr s)
 {
-	if(4!=send(4,&s.m_buf.m_count))
+	if (4!=send(4,&s.m_buf.m_count))
 	{
 		return false;
 	}
@@ -329,27 +329,27 @@ rstr rsock::recvs()
 {
 	rstr ret;
 	int size;
-	if(recv(4,&size)!=4)
+	if (recv(4,&size)!=4)
 	{
 		return ret;
 	}
-	if(size<=0)
+	if (size<=0)
 	{
 		return ret;
 	}
 	ret.m_buf.realloc_n(size);
 	int recvBytes=0;
-	while(recvBytes<size)
+	while (recvBytes<size)
 	{
 		int temp=recv(size-recvBytes,ret.begin()+recvBytes);
-		if(temp<=0)
+		if (temp<=0)
 		{
 			ret.clear();
 			return ret;
 		}
 		recvBytes+=temp;
 	}
-	if(recvBytes!=size)
+	if (recvBytes!=size)
 	{
 		ret.clear();
 	}

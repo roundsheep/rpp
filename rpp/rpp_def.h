@@ -44,7 +44,7 @@
 
 #define rppjcmp(a)                       \
 rstr s;                                  \
-if(znasm::count_mbk_l(vstr)==2)          \
+if (znasm::count_mbk_l(vstr)==2)         \
 {                                        \
 	s+=rppj4(b_mov,"ecx",",",rppjb); \
 	s+=rppj4(b_cmp,rppja,",","ecx"); \
@@ -58,7 +58,7 @@ s+=zjiti::a();                           \
 return r_move(s)
 
 #define rppncmp(a)                                               \
-if(count_mbk_l(vstr)==2)                                         \
+if (count_mbk_l(vstr)==2)                                        \
 {                                                                \
 	result+="	mov ecx , "+get_opnd2(vstr)+"\n";        \
 	result+="	cmp "+get_opnd1(vstr)+" , ecx\n";        \

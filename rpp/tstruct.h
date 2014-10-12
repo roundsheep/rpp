@@ -101,31 +101,31 @@ struct tword
 
 	rbool is_name() const
 	{
-		if(val.empty())
+		if (val.empty())
 			return false;
 		int i=0;
-		if(rstr::is_alpha(val.get(i))||'_'==val.get(i))
+		if (rstr::is_alpha(val.get(i))||'_'==val.get(i))
 			i++;
-		elif(rcode::is_utf8_3(val.get(i))&&val.get(i+1)&&val.get(i+2))
+		elif (rcode::is_utf8_3(val.get(i))&&val.get(i+1)&&val.get(i+2))
 		{
 			i+=3;
 		}
-		elif(rcode::is_utf8_2(val.get(i))&&val.get(i+1))
+		elif (rcode::is_utf8_2(val.get(i))&&val.get(i+1))
 		{
 			i+=2;
 		}
 		else
 			return false;
-		for(;i<val.count();i++)
+		for (;i<val.count();i++)
 		{
-			if(rstr::is_number(val[i])||rstr::is_alpha(val[i])||'_'==val[i]||'.'==val[i])
+			if (rstr::is_number(val[i])||rstr::is_alpha(val[i])||'_'==val[i]||'.'==val[i])
 				continue;
-			elif(rcode::is_utf8_3(val[i])&&val.get(i+1)&&val.get(i+2))
+			elif (rcode::is_utf8_3(val[i])&&val.get(i+1)&&val.get(i+2))
 			{
 				i+=2;
 				continue;
 			}
-			elif(rcode::is_utf8_2(val[i])&&val.get(i+1))
+			elif (rcode::is_utf8_2(val[i])&&val.get(i+1))
 			{
 				i++;
 				continue;
@@ -148,24 +148,24 @@ struct tword
 
 	rbool is_caddr() const
 	{
-		if('&'!=val.get(0)||')'!=val.get_top())
+		if ('&'!=val.get(0)||')'!=val.get_top())
 		{
 			return false;
 		}
-		for(int i=0;i<val.count()-2;i++)
-			if(val[i]=='.')
+		for (int i=0;i<val.count()-2;i++)
+			if (val[i]=='.')
 				return true;
 		return false;
 	}
 
 	rbool is_cdouble() const
 	{
-		if(!rstr::is_number(val.get_bottom())||
+		if (!rstr::is_number(val.get_bottom())||
 			!rstr::is_number(val.get_top()))
 			return false;
 		int count=0;
-		for(int i=1;i<val.count();i++)
-			if(val[i]=='.')
+		for (int i=1;i<val.count();i++)
+			if (val[i]=='.')
 				count++;
 		return count==1;
 	}
@@ -377,7 +377,7 @@ struct tfunc
 
 	~tfunc()
 	{
-		if(code!=null)
+		if (code!=null)
 		{
 			talloc::free_v(code);//注意jit以后不能直接调用默认的拷贝构造函数
 		}
@@ -411,9 +411,9 @@ struct tfunc
 	{
 		rstr s;
 		s+=name+"(";
-		for(int j=0;j<param.count();j++)
+		for (int j=0;j<param.count();j++)
 		{
-			if(j!=0)
+			if (j!=0)
 			{
 				s+=",";
 			}
