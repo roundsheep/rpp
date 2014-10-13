@@ -8,14 +8,14 @@ struct znasm
 	static rbool proc(tsh& sh)
 	{
 		tfunc* ptfi=zfind::func_search(*sh.m_main,"main");
-		if (ptfi==null)
+		if(ptfi==null)
 		{
 			rf::printl("main not find");
 			return false;
 		}
 		rstr result;
 		rbuf<rstr> vconst;
-		ifn (proc_func(sh,*ptfi,result,vconst))
+		ifn(proc_func(sh,*ptfi,result,vconst))
 		{
 			return false;
 		}
@@ -58,12 +58,12 @@ struct znasm
 		head+="endproc\n";
 		rstrw name=tsh::get_main_name(sh)+".asm";
 		rfile file;
-		ifn (file.open_n(name,"rw"))
+		ifn(file.open_n(name,"rw"))
 		{
 			rf::printl("file open error");
 			return false;
 		}
-		ifn (file.write(head.size(),head.begin()))
+		ifn(file.write(head.size(),head.begin()))
 		{
 			rf::printl("file write error");
 			return false;
@@ -74,14 +74,14 @@ struct znasm
 	static rbool proc_grub(tsh& sh)
 	{
 		tfunc* ptfi=zfind::func_search(*sh.m_main,"main");
-		if (ptfi==null)
+		if(ptfi==null)
 		{
 			rf::printl("main not find");
 			return false;
 		}
 		rstr result;
 		rbuf<rstr> vconst;
-		ifn (proc_func(sh,*ptfi,result,vconst))
+		ifn(proc_func(sh,*ptfi,result,vconst))
 		{
 			return false;
 		}
@@ -148,12 +148,12 @@ struct znasm
 
 		rstrw name=tsh::get_main_name(sh)+".asm";
 		rfile file;
-		ifn (file.open_n(name,"rw"))
+		ifn(file.open_n(name,"rw"))
 		{
 			rf::printl("file open error");
 			return false;
 		}
-		ifn (file.write(head.size(),head.begin()))
+		ifn(file.write(head.size(),head.begin()))
 		{
 			rf::printl("file write error");
 			return false;
@@ -163,7 +163,7 @@ struct znasm
 
 	static void add_str(tsh& sh,rstr& result,rbuf<rstr>& vconst)
 	{
-		for (int i=0;i<vconst.count();i++)
+		for(int i=0;i<vconst.count();i++)
 		{
 			zbin::trans_cstr(vconst[i]);
 			add_str_one(result,i,vconst[i]);
@@ -173,7 +173,7 @@ struct znasm
 	static void add_str_one(rstr& result,int index,const rstr& s)
 	{
 		result+="_RC_"+rstr(index)+": db ";
-		for (int i=0;i<s.count()-1;i++)
+		for(int i=0;i<s.count()-1;i++)
 		{
 			result+=rstr((int)s[i])+",";
 		}
@@ -182,7 +182,7 @@ struct znasm
 
 	static void add_lambda(tsh& sh,rstr& result)
 	{
-		for (tclass* p=sh.m_class.begin();p!=sh.m_class.end();p=sh.m_class.next(p))
+		for(tclass* p=sh.m_class.begin();p!=sh.m_class.end();p=sh.m_class.next(p))
 		{
 			add_lambda(result,*p);
 		}
@@ -190,9 +190,9 @@ struct znasm
 
 	static void add_lambda(rstr& result,tclass& tci)
 	{
-		for (tfunc* p=tci.vfunc.begin();p!=tci.vfunc.end();p=tci.vfunc.next(p))
+		for(tfunc* p=tci.vfunc.begin();p!=tci.vfunc.end();p=tci.vfunc.next(p))
 		{
-			if (p->lambda_data.empty())
+			if(p->lambda_data.empty())
 			{
 				continue;
 			}
@@ -203,21 +203,21 @@ struct znasm
 	static tfunc* call_find(tsh& sh,tasm& item)
 	{
 		int i;
-		for (i=1;i<item.vstr.count();i++)
+		for(i=1;i<item.vstr.count();i++)
 		{
-			if (item.vstr[i]=="&")
+			if(item.vstr[i]=="&")
 			{
 				break;
 			}
 		}
 		//一条指令里最多出现一次&,而且 &操作数 只能是最后一个操作数
-		if (i>=item.vstr.count())
+		if(i>=item.vstr.count())
 		{
 			return null;
 		}
 		i++;
 		tclass* ptci=zfind::class_search(sh,item.vstr.get(i));
-		if (ptci==null)
+		if(ptci==null)
 		{
 			return null;
 		}
@@ -229,9 +229,9 @@ struct znasm
 	static rstr symbol_trans(const rstr& s)
 	{
 		rstr ret;
-		for (int i=0;i<s.count();i++)
+		for(int i=0;i<s.count();i++)
 		{
-			if (rstr::is_alpha(s[i])||rstr::is_number(s[i]))
+			if(rstr::is_alpha(s[i])||rstr::is_number(s[i]))
 			{
 				ret+=s[i];
 			}
@@ -256,36 +256,36 @@ struct znasm
 
 	static rbool line_update(tsh& sh,rbuf<tasm>& vasm,rbuf<uchar>& vline)
 	{
-		for (int j=0;j<vasm.count();j++)
+		for(int j=0;j<vasm.count();j++)
 		{
-			if (vasm[j].vstr.count()!=2&&vasm[j].vstr.count()!=3)
+			if(vasm[j].vstr.count()!=2&&vasm[j].vstr.count()!=3)
 			{
 				continue;
 			}
-			ifn (vasm[j].vstr.top().is_number())
+			ifn(vasm[j].vstr.top().is_number())
 			{
 				continue;
 			}
 			int type=sh.m_key.get_key_index(vasm[j].vstr.get_bottom());
-			if (type>tkey::c_rn)
+			if(type>tkey::c_rn)
 			{
 				sh.error(vasm[j]);
 				return false;
 			}
-			ifn (zbin::is_jmp_ins(type)||type==tkey::c_rn&&is_jmp_ins_nasm(vasm[j].vstr[1]))
+			ifn(zbin::is_jmp_ins(type)||type==tkey::c_rn&&is_jmp_ins_nasm(vasm[j].vstr[1]))
 			{
 				continue;
 			}
 			int line=vasm[j].vstr.top().toint();
 			int i;
-			for (i=0;i<vasm.count();i++)
+			for(i=0;i<vasm.count();i++)
 			{
-				if (vasm[i].pos.line>=line)
+				if(vasm[i].pos.line>=line)
 				{
 					break;
 				}
 			}
-			if (i>=vasm.count())
+			if(i>=vasm.count())
 			{
 				sh.error(vasm[j]);
 				return false;
@@ -299,19 +299,19 @@ struct znasm
 	//将一个函数翻译成NASM汇编代码
 	static rbool proc_func(tsh& sh,tfunc& tfi,rstr& result,rbuf<rstr>& vconst,int level=0)
 	{
-		if (level++>300)
+		if(level++>300)
 		{
 			sh.error(tfi,"nasm level overflow");
 			return false;
 		}
-		if (tfi.count==1)
+		if(tfi.count==1)
 		{
 			return true;
 		}
 		tfi.count=1;
-		if (tfi.vasm.empty())
+		if(tfi.vasm.empty())
 		{
-			if (!zbin::cp_vword_to_vasm(sh,tfi))
+			if(!zbin::cp_vword_to_vasm(sh,tfi))
 			{
 				return false;
 			}
@@ -319,24 +319,24 @@ struct znasm
 		
 		rbuf<uchar> vline(tfi.vasm.count());
 		memset(vline.begin(),0,vline.count());
-		ifn (line_update(sh,tfi.vasm,vline))
+		ifn(line_update(sh,tfi.vasm,vline))
 		{
 			sh.error(tfi);
 			return false;
 		}
 		rstr symbol=get_nasm_symbol(tfi);
 		result+="\n"+symbol+":\n";
-		for (int i=0;i<tfi.vasm.count();i++)
+		for(int i=0;i<tfi.vasm.count();i++)
 		{
-			if (i==0||tfi.vasm[i].pos.line!=tfi.vasm[i-1].pos.line)
+			if(i==0||tfi.vasm[i].pos.line!=tfi.vasm[i-1].pos.line)
 			{
-				if (vline[i])
+				if(vline[i])
 				{
 					result+=symbol+"_"+tfi.vasm[i].pos.line+":\n";
 				}
 			}
 			rstr temp;
-			ifn (proc_asm(sh,tfi,tfi.vasm[i],temp,vconst))
+			ifn(proc_asm(sh,tfi,tfi.vasm[i],temp,vconst))
 			{
 				sh.error(tfi.vasm[i]);
 				sh.error(&tfi);
@@ -345,14 +345,14 @@ struct znasm
 			result+=temp;
 		}
 		
-		for (int i=0;i<tfi.vasm.count();i++)
+		for(int i=0;i<tfi.vasm.count();i++)
 		{
 			tfunc* ptfi=call_find(sh,tfi.vasm[i]);
-			if (ptfi==null)
+			if(ptfi==null)
 			{
 				continue;
 			}
-			ifn (proc_func(sh,*ptfi,result,vconst,level))
+			ifn(proc_func(sh,*ptfi,result,vconst,level))
 			{
 				return false;
 			}
@@ -362,9 +362,9 @@ struct znasm
 
 	static void proc_const_str(rbuf<rstr>& vstr,rbuf<rstr>& vconst)
 	{
-		for (int i=0;i<vstr.count();i++)
+		for(int i=0;i<vstr.count();i++)
 		{
-			if (vstr[i].get_bottom()=='"'&&vstr[i].count()>=2)
+			if(vstr[i].get_bottom()=='"'&&vstr[i].count()>=2)
 			{
 				vconst.push(vstr[i]);
 				vstr[i]="_RC_"+rstr(vconst.count()-1);
@@ -374,24 +374,24 @@ struct znasm
 
 	static rbool have_single_esp(tsh& sh,tasm& item)
 	{
-		for (int i=0;i<item.vstr.count();i++)
+		for(int i=0;i<item.vstr.count();i++)
 		{
-			if (item.vstr[i]==rppkey(c_esp)||item.vstr[i]==rppkey(c_ebp))
+			if(item.vstr[i]==rppkey(c_esp)||item.vstr[i]==rppkey(c_ebp))
 			{
-				if (item.vstr.get(i-1)!=rppoptr(c_mbk_l))
+				if(item.vstr.get(i-1)!=rppoptr(c_mbk_l))
 				{
 					return true;
 				}
-				if (item.vstr.get(i+2).toint()<4)
+				if(item.vstr.get(i+2).toint()<4)
 				{
 					return true;
 				}
-				if (item.vstr.get(i+1)!=rppoptr(c_plus))
+				if(item.vstr.get(i+1)!=rppoptr(c_plus))
 				{
 					return true;
 				}
 			}
-			if (item.vstr[i].get_bottom()=='"'&&item.vstr[i].count()>=2)
+			if(item.vstr[i].get_bottom()=='"'&&item.vstr[i].count()>=2)
 			{
 				return true;
 			}
@@ -401,13 +401,13 @@ struct znasm
 
 	static void fix_esp(tsh& sh,tasm& item)
 	{
-		for (int i=0;i<item.vstr.count();i++)
+		for(int i=0;i<item.vstr.count();i++)
 		{
-			if (item.vstr[i]!=rppkey(c_esp)&&item.vstr[i]!=rppkey(c_ebp))
+			if(item.vstr[i]!=rppkey(c_esp)&&item.vstr[i]!=rppkey(c_ebp))
 			{
 				continue;
 			}
-			if (item.vstr.count()>i+2&&item.vstr[i+2].is_number())
+			if(item.vstr.count()>i+2&&item.vstr[i+2].is_number())
 			{
 				item.vstr[i+2]=item.vstr[i+2].toint()-4;
 			}
@@ -418,51 +418,51 @@ struct znasm
 	{
 		is_inline=false;
 		rbuf<tasm>& vasm=ptfi->vasm;
-		if (vasm.empty())
+		if(vasm.empty())
 		{
-			if (!zbin::cp_vword_to_vasm(sh,*ptfi))
+			if(!zbin::cp_vword_to_vasm(sh,*ptfi))
 			{
 				return false;
 			}
 		}
-		if (vasm.count()>10)
+		if(vasm.count()>10)
 		{
 			return true;
 		}
-		for (int i=0;i<vasm.count()-1;i++)
+		for(int i=0;i<vasm.count()-1;i++)
 		{
 			int type=sh.m_key.get_key_index(vasm[i].vstr.get_bottom());
-			if (type>tkey::c_rn)
+			if(type>tkey::c_rn)
 			{
 				sh.error(vasm[i]);
 				return false;
 			}
-			if (zbin::is_jmp_ins(type)||
+			if(zbin::is_jmp_ins(type)||
 				type==tkey::c_rn&&is_jmp_ins_nasm(vasm[i].vstr.get(1)))
 			{
 				return true;
 			}
 			//加入call会陷入无限递归
-			if (type==tkey::c_reti||tkey::c_retn==type||type==tkey::c_call)
+			if(type==tkey::c_reti||tkey::c_retn==type||type==tkey::c_call)
 			{
 				return true;
 			}
-			if (have_single_esp(sh,vasm[i]))
+			if(have_single_esp(sh,vasm[i]))
 			{
 				return true;
 			}
 		}
 		rbuf<tasm> temp=vasm;
 		rbuf<rstr> vconst;//实际上这个vconst没用
-		for (int i=0;i<temp.count()-1;i++)
+		for(int i=0;i<temp.count()-1;i++)
 		{
 			fix_esp(sh,temp[i]);
-			if (!proc_asm(sh,*ptfi,temp[i],result,vconst))
+			if(!proc_asm(sh,*ptfi,temp[i],result,vconst))
 			{
 				return false;
 			}
 		}
-		if (temp.count()>=1&&temp.top().vstr.get(0)==rppkey(c_reti)&&
+		if(temp.count()>=1&&temp.top().vstr.get(0)==rppkey(c_reti)&&
 			temp.top().vstr.get(1).toint()!=0)
 		{
 			result+="	add esp,"+temp.top().vstr.get(1)+"\n";
@@ -475,17 +475,17 @@ struct znasm
 	{
 		rbuf<rstr>& vstr=item.vstr;
 		proc_const_str(vstr,vconst);
-		if (vstr.empty())
+		if(vstr.empty())
 		{
 			return false;
 		}
 		int type=sh.m_key.get_key_index(vstr[0]);
-		switch (type)
+		switch(type)
 		{
 		case tkey::c_call:
 			{
 				tfunc* ptfi=call_find(sh,item);
-				if (ptfi==null)
+				if(ptfi==null)
 				{
 					result+="	call dword "+link_vstr(vstr.sub(1))+"\n";
 					return true;
@@ -506,7 +506,7 @@ struct znasm
 		case tkey::c_push:
 			{
 				tfunc* ptfi=call_find(sh,item);
-				if (ptfi==null)
+				if(ptfi==null)
 				{
 					result+="	push dword "+link_vstr(vstr.sub(1))+"\n";
 				}
@@ -545,7 +545,7 @@ struct znasm
 			}
 		case tkey::c_lea:
 			{
-				if (count_mbk_l(vstr)==2)
+				if(count_mbk_l(vstr)==2)
 				{
 					result+="	lea ecx , "+get_opnd2(vstr)+"\n";
 					result+="	mov "+get_opnd1(vstr)+" , ecx\n";
@@ -558,7 +558,7 @@ struct znasm
 			}
 		case tkey::c_mov:
 			{
-				if (count_mbk_l(vstr)==2)
+				if(count_mbk_l(vstr)==2)
 				{
 					result+="	mov ecx , "+get_opnd2(vstr)+"\n";
 					result+="	mov "+get_opnd1(vstr)+" , ecx\n";
@@ -566,7 +566,7 @@ struct znasm
 				else
 				{
 					tfunc* ptfi=call_find(sh,item);
-					if (ptfi==null)
+					if(ptfi==null)
 					{
 						result+="	mov dword "+link_vstr(vstr.sub(1))+"\n";
 					}
@@ -589,7 +589,7 @@ struct znasm
 			}
 		case tkey::c_add:
 			{
-				if (count_mbk_l(vstr)==2)
+				if(count_mbk_l(vstr)==2)
 				{
 					result+="	mov ecx , "+get_opnd2(vstr)+"\n";
 					result+="	add "+get_opnd1(vstr)+" , ecx\n";
@@ -602,7 +602,7 @@ struct znasm
 			}
 		case tkey::c_sub:
 			{
-				if (count_mbk_l(vstr)==2)
+				if(count_mbk_l(vstr)==2)
 				{
 					result+="	mov ecx , "+get_opnd2(vstr)+"\n";
 					result+="	sub "+get_opnd1(vstr)+" , ecx\n";
@@ -716,7 +716,7 @@ struct znasm
 			}
 		case tkey::c_band:
 			{
-				if (count_mbk_l(vstr)==2)
+				if(count_mbk_l(vstr)==2)
 				{
 					result+="	mov ecx , "+get_opnd2(vstr)+"\n";
 					result+="	and "+get_opnd1(vstr)+" , ecx\n";
@@ -729,7 +729,7 @@ struct znasm
 			}
 		case tkey::c_bor:
 			{
-				if (count_mbk_l(vstr)==2)
+				if(count_mbk_l(vstr)==2)
 				{
 					result+="	mov ecx , "+get_opnd2(vstr)+"\n";
 					result+="	or "+get_opnd1(vstr)+" , ecx\n";
@@ -747,7 +747,7 @@ struct znasm
 			}
 		case tkey::c_bxor:
 			{
-				if (count_mbk_l(vstr)==2)
+				if(count_mbk_l(vstr)==2)
 				{
 					result+="	mov ecx , "+get_opnd2(vstr)+"\n";
 					result+="	xor "+get_opnd1(vstr)+" , ecx\n";
@@ -806,7 +806,7 @@ struct znasm
 			}
 		case tkey::c_rn:
 			{
-				if (vstr.count()==3&&vstr.top().is_number()&&
+				if(vstr.count()==3&&vstr.top().is_number()&&
 					is_jmp_ins_nasm(vstr[1]))
 				{
 					result+="	"+vstr[1]+" "+get_nasm_symbol(tfi)+"_"+vstr.top()+"\n";
@@ -835,17 +835,17 @@ struct znasm
 	{
 		int i;
 		int count=0;
-		for (i=1;i<vstr.count();i++)
+		for(i=1;i<vstr.count();i++)
 		{
-			if ("("==vstr[i])
+			if("("==vstr[i])
 			{
 				count++;
 			}
-			elif (")"==vstr[i])
+			elif(")"==vstr[i])
 			{
 				count--;
 			}
-			elif (count==0&&vstr[i]==",")
+			elif(count==0&&vstr[i]==",")
 				break;
 		}
 		return vstr.sub(1,i);
@@ -860,17 +860,17 @@ struct znasm
 	{
 		int i;
 		int count=0;
-		for (i=1;i<vstr.count();i++)
+		for(i=1;i<vstr.count();i++)
 		{
-			if ("("==vstr[i])
+			if("("==vstr[i])
 			{
 				count++;
 			}
-			elif (")"==vstr[i])
+			elif(")"==vstr[i])
 			{
 				count--;
 			}
-			elif (count==0&&vstr[i]==",")
+			elif(count==0&&vstr[i]==",")
 				break;
 		}
 		return vstr.sub(i+1);
@@ -879,9 +879,9 @@ struct znasm
 	static int count_mbk_l(rbuf<rstr>& vstr)
 	{
 		int sum=0;
-		for (int i=0;i<vstr.count();i++)
+		for(int i=0;i<vstr.count();i++)
 		{
-			if (vstr[i]=="[")
+			if(vstr[i]=="[")
 			{
 				sum++;
 			}

@@ -64,7 +64,7 @@ struct zjitb
 	static rstr build_a(const tins& ins,int one,int two)
 	{
 		rstr s;
-		if (ins.first.off==treg::c_esp)
+		if(ins.first.off==treg::c_esp)
 		{
 			s.set_size(7);
 		}
@@ -132,7 +132,7 @@ struct zjitb
 	static rstr build_ra(const tins& ins,int one,int two)
 	{
 		rstr s;
-		if (ins.second.off==treg::c_esp)
+		if(ins.second.off==treg::c_esp)
 		{
 			s.set_size(7);
 		}
@@ -150,7 +150,7 @@ struct zjitb
 	static rstr build_ai(const tins& ins,int one,int two)
 	{
 		rstr s;
-		if (ins.first.off==treg::c_esp)
+		if(ins.first.off==treg::c_esp)
 		{
 			s.set_size(11);
 			*(int*)&s[7]=ins.second.val;
@@ -169,7 +169,7 @@ struct zjitb
 	static rstr build_ar(const tins& ins,int one,int two)
 	{
 		rstr s;
-		if (ins.first.off==treg::c_esp)
+		if(ins.first.off==treg::c_esp)
 		{
 			s.set_size(7);
 		}
@@ -187,7 +187,7 @@ struct zjitb
 	static rstr build_ra(const tins& ins,int one,int two,int three)
 	{
 		rstr s;
-		if (ins.second.off==treg::c_esp)
+		if(ins.second.off==treg::c_esp)
 		{
 			s.set_size(8);
 		}
@@ -206,7 +206,7 @@ struct zjitb
 	//设置寄存器相对寻址位
 	static void set_addr_bit(int off,uchar* start,int val)
 	{
-		if (off==treg::c_esp)
+		if(off==treg::c_esp)
 		{
 			*start|=0x4;
 			*(start+1)=0x24;
@@ -214,31 +214,31 @@ struct zjitb
 			return;
 		}
 		*(int*)(start+1)=val;
-		if (off==treg::c_ebp)
+		if(off==treg::c_ebp)
 		{
 			*start|=0x5;
 		}
-		elif (off==treg::c_esi)
+		elif(off==treg::c_esi)
 		{
 			*start|=0x6;
 		}
-		elif (off==treg::c_edi)
+		elif(off==treg::c_edi)
 		{
 			*start|=0x7;
 		}
-		elif (off==treg::c_eax)
+		elif(off==treg::c_eax)
 		{
 			*start|=0x0;
 		}
-		elif (off==treg::c_ebx)
+		elif(off==treg::c_ebx)
 		{
 			*start|=0x3;
 		}
-		elif (off==treg::c_ecx)
+		elif(off==treg::c_ecx)
 		{
 			*start|=0x1;
 		}
-		elif (off==treg::c_edx)
+		elif(off==treg::c_edx)
 		{
 			*start|=0x2;
 		}
@@ -246,35 +246,35 @@ struct zjitb
 
 	static void set_reg_bit(int off,uchar* start)
 	{
-		if (off==treg::c_esp)
+		if(off==treg::c_esp)
 		{
 			*start|=0x4;
 		}
-		elif (off==treg::c_ebp)
+		elif(off==treg::c_ebp)
 		{
 			*start|=0x5;
 		}
-		elif (off==treg::c_esi)
+		elif(off==treg::c_esi)
 		{
 			*start|=0x6;
 		}
-		elif (off==treg::c_edi)
+		elif(off==treg::c_edi)
 		{
 			*start|=0x7;
 		}
-		elif (off==treg::c_eax)
+		elif(off==treg::c_eax)
 		{
 			*start|=0x0;
 		}
-		elif (off==treg::c_ebx)
+		elif(off==treg::c_ebx)
 		{
 			*start|=0x3;
 		}
-		elif (off==treg::c_ecx)
+		elif(off==treg::c_ecx)
 		{
 			*start|=0x1;
 		}
-		elif (off==treg::c_edx)
+		elif(off==treg::c_edx)
 		{
 			*start|=0x2;
 		}
@@ -282,35 +282,35 @@ struct zjitb
 
 	static void set_reg_bit_center(int off,uchar* start)
 	{
-		if (off==treg::c_esp)
+		if(off==treg::c_esp)
 		{
 			*start|=0x4<<3;
 		}
-		elif (off==treg::c_ebp)
+		elif(off==treg::c_ebp)
 		{
 			*start|=0x5<<3;
 		}
-		elif (off==treg::c_esi)
+		elif(off==treg::c_esi)
 		{
 			*start|=0x6<<3;
 		}
-		elif (off==treg::c_edi)
+		elif(off==treg::c_edi)
 		{
 			*start|=0x7<<3;
 		}
-		elif (off==treg::c_eax)
+		elif(off==treg::c_eax)
 		{
 			*start|=0x0<<3;
 		}
-		elif (off==treg::c_ebx)
+		elif(off==treg::c_ebx)
 		{
 			*start|=0x3<<3;
 		}
-		elif (off==treg::c_ecx)
+		elif(off==treg::c_ecx)
 		{
 			*start|=0x1<<3;
 		}
-		elif (off==treg::c_edx)
+		elif(off==treg::c_edx)
 		{
 			*start|=0x2<<3;
 		}

@@ -22,7 +22,7 @@ struct talloc
 	~talloc()
 	{
 #ifdef _MSC_VER
-		for (int i=0;i<m_list.count();i++)
+		for(int i=0;i<m_list.count();i++)
 		{
 			VirtualFree(m_list[i].start,0,MEM_RELEASE);
 		}
@@ -32,14 +32,14 @@ struct talloc
 	uchar* alloc(int len)
 	{
 #ifdef _MSC_VER
-		if (len<=0)
+		if(len<=0)
 		{
 			return null;
 		}
-		if (!m_list.empty())
+		if(!m_list.empty())
 		{
 			talloc_i& top=m_list.top();
-			if (top.commit_len+len<=top.max_len)
+			if(top.commit_len+len<=top.max_len)
 			{
 				uchar* ret=top.start+top.commit_len;
 				top.commit_len+=r_ceil_div(len,4)*4;
@@ -50,7 +50,7 @@ struct talloc
 		item.max_len=r_ceil_div(len,c_page_size)*c_page_size;
 		item.commit_len=0;
 		item.start=(uchar*)VirtualAlloc(null,item.max_len,MEM_COMMIT,PAGE_EXECUTE_READWRITE);
-		if (item.start==null)
+		if(item.start==null)
 		{
 			return null;
 		}

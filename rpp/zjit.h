@@ -12,12 +12,12 @@ struct zjit
 		init_addr_list(sh);
 #ifdef _MSC_VER
 		tfunc* ptfi=zfind::func_search(*sh.m_main,"main_c");
-		if (ptfi==null)
+		if(ptfi==null)
 		{
 			rf::printl("main not find");
 			return false;
 		}
-		ifn (func_to_x86(sh,*ptfi))
+		ifn(func_to_x86(sh,*ptfi))
 		{
 			return false;
 		}
@@ -32,38 +32,38 @@ struct zjit
 	static rbool func_to_x86(tsh& sh,tfunc& tfi)
 	{
 #ifdef _MSC_VER
-		if (!tfi.vasm.empty())
+		if(!tfi.vasm.empty())
 			return true;
-		if (!zbin::cp_vword_to_vasm(sh,tfi))
+		if(!zbin::cp_vword_to_vasm(sh,tfi))
 		{
 			return false;
 		}
 		int size=tfi.vasm.count()*6;//todo 估算法并不是最好的方法
 		size=r_ceil_div(size,4096)*4096;
-		if (tfi.code==null)
+		if(tfi.code==null)
 		{
 			tfi.code=talloc::alloc_v(size);
-			if (tfi.code==null)
+			if(tfi.code==null)
 			{
 				return false;
 			}
 		}
 		int cur=0;
-		for (int i=0;i<tfi.vasm.count();i++)
+		for(int i=0;i<tfi.vasm.count();i++)
 		{
 			tfi.vasm[i].ptfi=&tfi;
-			ifn (a_asm(sh,tfi.vasm[i]))
+			ifn(a_asm(sh,tfi.vasm[i]))
 			{
 				return false;
 			}
 			tfi.vasm[i].start=tfi.code+cur;
 			rstr s=asm_to_x86(sh,tfi.vasm[i],tfi.code+cur);
-			if (s.empty())
+			if(s.empty())
 			{
 				sh.error(tfi.vasm[i],"can't build jit ins");
 				return false;
 			}
-			if (cur+s.count()>size)
+			if(cur+s.count()>size)
 			{
 				sh.error(tfi,"func too big");
 				return false;
@@ -71,9 +71,9 @@ struct zjit
 			memcpy(tfi.code+cur,s.begin(),s.count());
 			cur+=s.count();
 		}
-		for (int i=0;i<tfi.vasm.count();i++)
+		for(int i=0;i<tfi.vasm.count();i++)
 		{
-			ifn (fix_addr(sh,tfi.vasm[i],tfi.vasm))
+			ifn(fix_addr(sh,tfi.vasm[i],tfi.vasm))
 			{
 				return false;
 			}
@@ -86,7 +86,7 @@ struct zjit
 
 	static rbool fix_addr(tsh& sh,tasm& oasm,rbuf<tasm>& vasm)
 	{
-		ifn (oasm.vstr.count()==2&&
+		ifn(oasm.vstr.count()==2&&
 			zbin::is_jmp_ins(oasm.ins.type)&&
 			oasm.vstr[1].is_number())
 		{
@@ -94,19 +94,19 @@ struct zjit
 		}
 		int line=oasm.vstr[1].toint();
 		int i;
-		for (i=0;i<vasm.count();i++)
+		for(i=0;i<vasm.count();i++)
 		{
-			if (vasm[i].pos.line>=line)
+			if(vasm[i].pos.line>=line)
 			{
 				break;
 			}
 		}
-		if (i>=vasm.count())
+		if(i>=vasm.count())
 		{
 			sh.error(oasm);
 			return false;
 		}
-		ifn (a_asm(sh,oasm))
+		ifn(a_asm(sh,oasm))
 		{
 			return false;
 		}
@@ -114,7 +114,7 @@ struct zjit
 		oasm.ins.first.val=r_to_uint(vasm[i].start);
 		uchar* real=oasm.start;
 		rstr s=asm_to_x86(sh,oasm,real);
-		if (s.empty())
+		if(s.empty())
 		{
 			return false;
 		}
@@ -126,7 +126,7 @@ struct zjit
 	{
 		tins& ins=item.ins;
 		rbuf<rstr>& vstr=item.vstr;
-		switch (ins.type)
+		switch(ins.type)
 		{
 		case tkey::c_calle:
 			{
@@ -170,7 +170,7 @@ struct zjit
 			}
 		case tkey::c_lea:
 			{
-				if (znasm::count_mbk_l(vstr)==2)
+				if(znasm::count_mbk_l(vstr)==2)
 				{
 					//应该检查b_lea是否返回空串
 					return rppj4(b_lea,"ecx",",",rppjb)+rppj4(b_mov,rppja,",","ecx");
@@ -182,7 +182,7 @@ struct zjit
 			}
 		case tkey::c_mov:
 			{
-				if (znasm::count_mbk_l(vstr)==2)
+				if(znasm::count_mbk_l(vstr)==2)
 				{
 					return rppj4(b_mov,"ecx",",",rppjb)+rppj4(b_mov,rppja,",","ecx");
 				}
@@ -208,7 +208,7 @@ struct zjit
 			}
 		case tkey::c_add:
 			{
-				if (znasm::count_mbk_l(vstr)==2)
+				if(znasm::count_mbk_l(vstr)==2)
 				{
 					return rppj4(b_mov,"ecx",",",rppjb)+rppj4(b_add,rppja,",","ecx");
 				}
@@ -219,7 +219,7 @@ struct zjit
 			}
 		case tkey::c_sub:
 			{
-				if (znasm::count_mbk_l(vstr)==2)
+				if(znasm::count_mbk_l(vstr)==2)
 				{
 					return rppj4(b_mov,"ecx",",",rppjb)+rppj4(b_sub,rppja,",","ecx");
 				}
@@ -308,7 +308,7 @@ struct zjit
 			}
 		case tkey::c_band:
 			{
-				if (znasm::count_mbk_l(vstr)==2)
+				if(znasm::count_mbk_l(vstr)==2)
 				{
 					return rppj4(b_mov,"ecx",",",rppjb)+rppj4(b_and,rppja,",","ecx");
 				}
@@ -319,7 +319,7 @@ struct zjit
 			}
 		case tkey::c_bor:
 			{
-				if (znasm::count_mbk_l(vstr)==2)
+				if(znasm::count_mbk_l(vstr)==2)
 				{
 					return rppj4(b_mov,"ecx",",",rppjb)+rppj4(b_or,rppja,",","ecx");
 				}
@@ -330,7 +330,7 @@ struct zjit
 			}
 		case tkey::c_bxor:
 			{
-				if (znasm::count_mbk_l(vstr)==2)
+				if(znasm::count_mbk_l(vstr)==2)
 				{
 					return rppj4(b_mov,"ecx",",",rppjb)+rppj4(b_xor,rppja,",","ecx");
 				}
@@ -351,15 +351,15 @@ struct zjit
 	{
 		char* name=(char*)ins.first.val;
 		void* temp=null;
-		if (sh.m_jit_f.find(name)!=null)
+		if(sh.m_jit_f.find(name)!=null)
 		{
 			temp=sh.m_jit_f[name];
 		}
-		if (temp==null)
+		if(temp==null)
 		{
 			temp=zjitf::find_dll_full(name);
 		}
-		if (temp==null)
+		if(temp==null)
 		{
 			return "";
 		}
@@ -371,22 +371,22 @@ struct zjit
 	{
 		int i;
 		int count=0;
-		for (i=1;i<item.vstr.count();i++)
+		for(i=1;i<item.vstr.count();i++)
 		{
-			if ("("==item.vstr[i])
+			if("("==item.vstr[i])
 			{
 				count++;
 			}
-			elif (")"==item.vstr[i])
+			elif(")"==item.vstr[i])
 			{
 				count--;
 			}
-			elif (count==0&&item.vstr[i]==",")
+			elif(count==0&&item.vstr[i]==",")
 				break;
 		}
-		if (!a_opnd(sh,item,i-1,item.vstr.sub(1,i),item.ins.first))
+		if(!a_opnd(sh,item,i-1,item.vstr.sub(1,i),item.ins.first))
 			return false;
-		if (!a_opnd(sh,item,i+1,item.vstr.sub(i+1),item.ins.second))
+		if(!a_opnd(sh,item,i+1,item.vstr.sub(i+1),item.ins.second))
 			return false;
 		item.ins.type=sh.m_key.get_key_index(item.vstr.get_bottom());
 		return true;
@@ -394,14 +394,14 @@ struct zjit
 
 	static rbool a_opnd(tsh& sh,tasm& item,int index,const rbuf<rstr>& v,topnd& o)
 	{
-		if (v.count()==5&&v[1]==rppoptr(c_addr))
+		if(v.count()==5&&v[1]==rppoptr(c_addr))
 		{
 			tfunc* ptfi=znasm::call_find(sh,item);
-			if (ptfi==null)
+			if(ptfi==null)
 			{
 				return false;
 			}
-			ifn (func_to_x86(sh,*ptfi))
+			ifn(func_to_x86(sh,*ptfi))
 			{
 				return false;
 			}
@@ -449,11 +449,11 @@ struct zjit
 	static void* find_func(char* name)
 	{
 		tfunc* ptfi=zbin::find_func(*zjitf::get_psh(),name);
-		if (ptfi==null)
+		if(ptfi==null)
 		{
 			return null;
 		}
-		ifn (func_to_x86(*zjitf::get_psh(),*ptfi))
+		ifn(func_to_x86(*zjitf::get_psh(),*ptfi))
 		{
 			return null;
 		}

@@ -123,14 +123,14 @@ struct zjitf
 #ifdef _MSC_VER
 		PBYTE pb=null;
 		MEMORY_BASIC_INFORMATION mbi;
-		while (VirtualQuery(pb,&mbi,r_size(mbi))==r_size(mbi))
+		while(VirtualQuery(pb,&mbi,r_size(mbi))==r_size(mbi))
 		{
-			if (mbi.State==MEM_FREE)
+			if(mbi.State==MEM_FREE)
 				mbi.AllocationBase=mbi.BaseAddress;
-			if (mbi.AllocationBase==mbi.BaseAddress&&mbi.AllocationBase!=null) 
+			if(mbi.AllocationBase==mbi.BaseAddress&&mbi.AllocationBase!=null) 
 			{
 				void* ret=GetProcAddress((HINSTANCE)mbi.AllocationBase,name);
-				if (ret!=null)
+				if(ret!=null)
 				{
 					return ret;
 				}

@@ -8,11 +8,11 @@ struct rindex
 {
 	static void run(int argc, char* argv[])
 	{
-		if (argc==3)
+		if(argc==3)
 		{
-			if (rstr(argv[2]).get_top()=='\\')
+			if(rstr(argv[2]).get_top()=='\\')
 			{
-				if (!build(rcode::gbk_to_utf8(argv[1]),rcode::gbk_to_utf8(argv[2])))
+				if(!build(rcode::gbk_to_utf8(argv[1]),rcode::gbk_to_utf8(argv[2])))
 					rf::error("build error");
 			}
 			else
@@ -20,9 +20,9 @@ struct rindex
 				search(rcode::gbk_to_utf8(argv[1]),rcode::gbk_to_utf8(argv[2]));
 			}
 		}
-		elif (argc==2)
+		elif(argc==2)
 		{
-			if (!check(rcode::gbk_to_utf8(argv[1])))
+			if(!check(rcode::gbk_to_utf8(argv[1])))
 			{
 				rf::error("check error");
 			}
@@ -36,9 +36,9 @@ struct rindex
 	static void search(rstrw name,rstr s)
 	{
 		rdbint db(name);
-		for (int i=0;i<db.count();i+=3)
+		for(int i=0;i<db.count();i+=3)
 		{
-			if (db[i].exist(s))
+			if(db[i].exist(s))
 			{
 				rcode::utf8_to_gbk(db[i]).printl();
 				db[i+1].printl();
@@ -50,7 +50,7 @@ struct rindex
 	static rbool check(rstrw name)
 	{
 		rdbint db(name);
-		for (int i=0;i<db.count();i+=3)
+		for(int i=0;i<db.count();i+=3)
 		{
 			rcode::utf8_to_gbk(db[i]).printl();
 			db[i+1].printl();
@@ -64,17 +64,17 @@ struct rindex
 		rbuf<rdir_item> list=rdir::get_file_bfs(path);
 		r_qsort(list);
 		rdbint db(filename,rstrw("rw"));
-		for (int i=0;i<list.count();i++)
+		for(int i=0;i<list.count();i++)
 		{
-			if (!db.write_new(list[i].path.torstr()))
+			if(!db.write_new(list[i].path.torstr()))
 			{
 				return false;
 			}
-			if (!db.write_new(rfile::get_update_time(list[i].path)))
+			if(!db.write_new(rfile::get_update_time(list[i].path)))
 			{
 				return false;
 			}
-			if (!db.write_new(rfile::get_size8(list[i].path)))
+			if(!db.write_new(rfile::get_size8(list[i].path)))
 			{
 				return false;
 			}

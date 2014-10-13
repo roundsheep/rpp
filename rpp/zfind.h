@@ -9,10 +9,10 @@ struct zfind
 	//获取类型大小
 	static int get_type_size(tsh& sh,const rstr& s)
 	{
-		if (sh.is_point_quote(s))
+		if(sh.is_point_quote(s))
 			return c_point_size;
 		tclass* ptci=class_search_t(sh,s);
-		if (ptci!=null)
+		if(ptci!=null)
 			return ptci->size;
 		return 0;
 	}
@@ -20,7 +20,7 @@ struct zfind
 	static int get_func_local_size(const tfunc& tfi)
 	{
 		int ret=0;
-		for (int i=0;i<tfi.local.count();++i)
+		for(int i=0;i<tfi.local.count();++i)
 			ret+=get_ceil_space(tfi.local[i]);
 		return ret;
 	}
@@ -28,7 +28,7 @@ struct zfind
 	static int get_func_param_size(const tfunc& tfi)
 	{
 		int ret=0;
-		for (int i=0;i<tfi.param.count();++i)
+		for(int i=0;i<tfi.param.count();++i)
 			ret+=get_ceil_space(tfi.param[i]);
 		return ret;
 	}
@@ -66,7 +66,7 @@ struct zfind
 
 	static rbool is_end_part_optr(tsh& sh,const rstr& s)
 	{
-		if (!sh.m_optr.is_optr(s))
+		if(!sh.m_optr.is_optr(s))
 			return false;
 		return s==rppoptr(c_dot)||s==rppoptr(c_sbk_r)||
 			s==rppoptr(c_mbk_r)||s==rppoptr(c_plus);
@@ -119,10 +119,10 @@ struct zfind
 	static tfunc* func_search_empty_param_m(tclass& tci,const rstr& fname,rbool is_friend)
 	{
 		//友元只能调用友元
-		if (is_friend)
+		if(is_friend)
 			return func_search_empty_param_f(tci,fname);
 		tfunc* ptfi=func_search_empty_param_f(tci,fname);
-		if (null==ptfi)
+		if(null==ptfi)
 			ptfi=func_search_empty_param_n(tci,fname);
 		return ptfi;
 	}
@@ -130,10 +130,10 @@ struct zfind
 	//先搜索友元多参，再搜索非友元多参
 	static tfunc* func_search_multi_param_m(tclass& tci,const rstr& fname,rbool is_friend)
 	{
-		if (is_friend)
+		if(is_friend)
 			return func_search_multi_param_f(tci,fname);
 		tfunc* ptfi=func_search_multi_param_f(tci,fname);
-		if (null==ptfi)
+		if(null==ptfi)
 			ptfi=func_search_multi_param_n(tci,fname);
 		return ptfi;
 	}
@@ -141,9 +141,9 @@ struct zfind
 	//搜索非友元参数大于等于1个的函数（实际大于等于2）
 	static tfunc* func_search_multi_param_n(tclass& tci,const rstr& fname)
 	{
-		for (tfunc* p=tci.vfunc.begin();p!=tci.vfunc.end();p=tci.vfunc.next(p))
+		for(tfunc* p=tci.vfunc.begin();p!=tci.vfunc.end();p=tci.vfunc.next(p))
 		{
-			if (fname==p->name&&
+			if(fname==p->name&&
 				!p->is_friend&&
 				p->param.count()>=2&&
 				p->param[0].type==tci.name+rstr("&"))
@@ -155,9 +155,9 @@ struct zfind
 	//搜索非友元空参函数（类成员空参函数）
 	static tfunc* func_search_empty_param_n(tclass& tci,const rstr& fname)
 	{
-		for (tfunc* p=tci.vfunc.begin();p!=tci.vfunc.end();p=tci.vfunc.next(p))
+		for(tfunc* p=tci.vfunc.begin();p!=tci.vfunc.end();p=tci.vfunc.next(p))
 		{
-			if (fname==p->name&&
+			if(fname==p->name&&
 				!p->is_friend&&
 				p->param.count()==1&&
 				p->param[0].type==tci.name+rstr("&"))
@@ -169,9 +169,9 @@ struct zfind
 	//搜索友元参数大于等于1个的函数
 	static tfunc* func_search_multi_param_f(tclass& tci,const rstr& fname)
 	{
-		for (tfunc* p=tci.vfunc.begin();p!=tci.vfunc.end();p=tci.vfunc.next(p))
+		for(tfunc* p=tci.vfunc.begin();p!=tci.vfunc.end();p=tci.vfunc.next(p))
 		{
-			if (fname==p->name&&
+			if(fname==p->name&&
 				p->is_friend&&
 				p->param.count()>=1)
 				return p;
@@ -182,9 +182,9 @@ struct zfind
 	//搜索友元空参函数
 	static tfunc* func_search_empty_param_f(tclass& tci,const rstr& fname)
 	{
-		for (tfunc* p=tci.vfunc.begin();p!=tci.vfunc.end();p=tci.vfunc.next(p))
+		for(tfunc* p=tci.vfunc.begin();p!=tci.vfunc.end();p=tci.vfunc.next(p))
 		{
-			if (fname==p->name&&
+			if(fname==p->name&&
 				p->is_friend&&
 				p->param.empty())
 				return p;
@@ -198,7 +198,7 @@ struct zfind
 	{
 		tfunc tfi;
 		tfi.name=fname;
-		for (int i=0;i<vtype.count();i++)
+		for(int i=0;i<vtype.count();i++)
 		{
 			tfi.param.push(vtype[i]);
 		}
@@ -216,9 +216,9 @@ struct zfind
 	//根据函数名搜索函数
 	static tfunc* func_search(tclass& tci,const rstr& fname)
 	{
-		for (tfunc* p=tci.vfunc.begin();p!=tci.vfunc.end();p=tci.vfunc.next(p))
+		for(tfunc* p=tci.vfunc.begin();p!=tci.vfunc.end();p=tci.vfunc.next(p))
 		{
-			if (fname==p->name)
+			if(fname==p->name)
 				return p;
 		}
 		return null;
@@ -286,21 +286,21 @@ struct zfind
 
 	static tdata* data_member_search(const tclass& tci,const rstr& name)
 	{
-		for (int i=0;i<tci.vdata.count();i++)
-			if (name==tci.vdata[i].name)
+		for(int i=0;i<tci.vdata.count();i++)
+			if(name==tci.vdata[i].name)
 				return &tci.vdata[i];
 		return null;
 	}
 
 	static tdata* local_search(tfunc& tfi,const rstr& name)
 	{
-		for (int i=0;i<tfi.local.count();++i)
-			if (name==tfi.local[i].name)
+		for(int i=0;i<tfi.local.count();++i)
+			if(name==tfi.local[i].name)
 				return &tfi.local[i];
-		for (int i=0;i<tfi.param.count();++i)
-			if (name==tfi.param[i].name)
+		for(int i=0;i<tfi.param.count();++i)
+			if(name==tfi.param[i].name)
 				return &tfi.param[i];
-		if (tfi.retval.name==name)
+		if(tfi.retval.name==name)
 		{
 			return &tfi.retval;
 		}

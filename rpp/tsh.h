@@ -64,7 +64,7 @@ struct tsh
 
 	void print_vclass()
 	{
-		for (tclass* p=m_class.begin();p!=m_class.end();p=m_class.next(p))
+		for(tclass* p=m_class.begin();p!=m_class.end();p=m_class.next(p))
 		{
 			p->name.printl();
 		}
@@ -73,7 +73,7 @@ struct tsh
 	static void print_vword(rbuf<tword>& v)
 	{
 		rf::printl();
-		for (int i=0;i<v.count();i++)
+		for(int i=0;i<v.count();i++)
 		{
 			(v[i].val+" ").print();
 		}
@@ -83,7 +83,7 @@ struct tsh
 	static void print_func_sent(tfunc& tfi)
 	{
 		rf::printl();
-		for (int i=0;i<tfi.vsent.count();i++)
+		for(int i=0;i<tfi.vsent.count();i++)
 		{
 			rf::print(tfi.vsent[i].pos.line);
 			tfi.vsent[i].print();
@@ -94,7 +94,7 @@ struct tsh
 
 	static void print_func_asm(tfunc& tfi)
 	{
-		for (int i=0;i<tfi.vasm.count();i++)
+		for(int i=0;i<tfi.vasm.count();i++)
 		{
 			rf::print(rstr(tfi.vasm[i].pos.line)+" ");
 			tfi.vasm[i].vstr.print();
@@ -105,7 +105,7 @@ struct tsh
 
 	static void print_func_dec(tclass& tci)
 	{
-		for (tfunc* p=tci.vfunc.begin();p!=tci.vfunc.end();p=tci.vfunc.next(p))
+		for(tfunc* p=tci.vfunc.begin();p!=tci.vfunc.end();p=tci.vfunc.next(p))
 		{
 			get_func_declare(tci,*p).printl();
 		}
@@ -115,9 +115,9 @@ struct tsh
 	{
 		rstr s;
 		s+=tci.name+"."+tfi.name+"(";
-		for (int j=0;j<tfi.param.count();j++)
+		for(int j=0;j<tfi.param.count();j++)
 		{
-			if (j!=0)
+			if(j!=0)
 			{
 				s+=",";
 			}
@@ -132,9 +132,9 @@ struct tsh
 	{
 		rstr s;
 		s+=tci.name+"."+tfi.name+"(";
-		for (int j=0;j<tfi.param.count();j++)
+		for(int j=0;j<tfi.param.count();j++)
 		{
-			if (j!=0)
+			if(j!=0)
 			{
 				s+=",";
 			}
@@ -163,13 +163,13 @@ struct tsh
 
 	static void clear_word_val(rbuf<tword>& v,int begin,int end)
 	{
-		if (end>v.count())
+		if(end>v.count())
 			end=v.count();
-		if (begin<0)
+		if(begin<0)
 		{
 			begin=0;
 		}
-		for (int i=begin;i<end;++i)
+		for(int i=begin;i<end;++i)
 			v[i].val.clear();
 	}
 
@@ -184,15 +184,15 @@ struct tsh
 
 	static rstr get_ctype(tsh& sh,const tword& word)
 	{
-		if (word.is_cint())
+		if(word.is_cint())
 			return rppkey(c_int);
-		elif (word.is_cuint())
+		elif(word.is_cuint())
 			return rppkey(c_uint);
-		elif (word.is_cdouble())
+		elif(word.is_cdouble())
 			return rppkey(c_double);
-		elif (word.is_cpoint())
+		elif(word.is_cpoint())
 			return rstr("rp<void>");
-		elif (word.is_cstr())
+		elif(word.is_cstr())
 			return rstr("rp<char>");
 		else
 			return "";
@@ -202,7 +202,7 @@ struct tsh
 	static rstr get_tname(const rstr& s)
 	{
 		rstr name;
-		if (is_quote(s))
+		if(is_quote(s))
 			name=s.sub(0,s.count()-1);
 		else
 			name=s;
@@ -211,7 +211,7 @@ struct tsh
 
 	static rstr get_ttype(rstr s)
 	{
-		if (is_point_quote(s))
+		if(is_point_quote(s))
 		{
 			return s;
 		}
@@ -220,11 +220,11 @@ struct tsh
 
 	rbool is_optr_func(tfunc& tfi)
 	{
-		if (m_optr.is_optr(tfi.name))
+		if(m_optr.is_optr(tfi.name))
 		{
 			return true;
 		}
-		if (tfi.name=="[]")
+		if(tfi.name=="[]")
 		{
 			return true;
 		}
@@ -250,9 +250,9 @@ struct tsh
 
 	static rbool is_point(const rstr& s)
 	{
-		if (s.get_top()=='*')
+		if(s.get_top()=='*')
 			return true;
-		if (s.count()>=5&&s[0]=='r'&&s[1]=='p'&&s[2]=='<'&&s.get_top()=='>')
+		if(s.count()>=5&&s[0]=='r'&&s[1]=='p'&&s[2]=='<'&&s.get_top()=='>')
 			return true;
 		return false;
 	}
@@ -262,7 +262,7 @@ struct tsh
 	{
 		vsent.clear();
 		rbuf<rbuf<tword> > temp=comma_split(v);
-		for (int i=0;i<temp.count();i++)
+		for(int i=0;i<temp.count();i++)
 		{
 			tsent sent;
 			sent.pos=src.pos;
@@ -275,7 +275,7 @@ struct tsh
 	{
 		vsent.clear();
 		rbuf<rbuf<tword> > temp=comma_split(v);
-		for (int i=0;i<temp.count();i++)
+		for(int i=0;i<temp.count();i++)
 		{
 			tsent sent;
 			sent.vword=temp[i];
@@ -292,23 +292,23 @@ struct tsh
 		int count2=0;
 		int count3=0;
 		int start=0;
-		for (int i=0;i<v.count();i++)
+		for(int i=0;i<v.count();i++)
 		{
 			//大括号不可能出现在参数中
-			if (v[i].val==m_optr[toptr::c_sbk_l])
+			if(v[i].val==m_optr[toptr::c_sbk_l])
 				count1++;
-			elif (v[i].val==m_optr[toptr::c_sbk_r])
+			elif(v[i].val==m_optr[toptr::c_sbk_r])
 				count1--;
-			elif (v[i].val==m_optr[toptr::c_mbk_l])
+			elif(v[i].val==m_optr[toptr::c_mbk_l])
 				count2++;
-			elif (v[i].val==m_optr[toptr::c_mbk_r])
+			elif(v[i].val==m_optr[toptr::c_mbk_r])
 				count2--;
-			elif (count1==0&&count2==0&&count3==0&&v[i].val==m_optr[toptr::c_comma])
+			elif(count1==0&&count2==0&&count3==0&&v[i].val==m_optr[toptr::c_comma])
 			{
 				rbuf<tword> temp;
-				for (int j=start;j<i;j++)
+				for(int j=start;j<i;j++)
 					temp.push(v[j]);
-				if (!temp.empty())
+				if(!temp.empty())
 					result.push(temp);
 				start=i+1;
 			}
@@ -324,22 +324,22 @@ struct tsh
 		int count2=0;
 		int count3=0;
 		int start=0;
-		for (int i=0;i<v.count();i++)
+		for(int i=0;i<v.count();i++)
 		{
-			if (v[i]==m_optr[toptr::c_sbk_l])
+			if(v[i]==m_optr[toptr::c_sbk_l])
 				count1++;
-			elif (v[i]==m_optr[toptr::c_sbk_r])
+			elif(v[i]==m_optr[toptr::c_sbk_r])
 				count1--;
-			elif (v[i]==m_optr[toptr::c_mbk_l])
+			elif(v[i]==m_optr[toptr::c_mbk_l])
 				count2++;
-			elif (v[i]==m_optr[toptr::c_mbk_r])
+			elif(v[i]==m_optr[toptr::c_mbk_r])
 				count2--;
-			elif (count1==0&&count2==0&&count3==0&&v[i]==m_optr[toptr::c_comma])
+			elif(count1==0&&count2==0&&count3==0&&v[i]==m_optr[toptr::c_comma])
 			{
 				rbuf<rstr> temp;
-				for (int j=start;j<i;j++)
+				for(int j=start;j<i;j++)
 					temp.push(v[j]);
-				if (!temp.empty())
+				if(!temp.empty())
 					result.push(temp);
 				start=i+1;
 			}
@@ -356,20 +356,20 @@ struct tsh
 		int count2=0;
 		int count3=0;
 		int start=0;
-		for (int i=0;i<v.count();i++)
+		for(int i=0;i<v.count();i++)
 		{
-			if (v[i].val==m_optr[toptr::c_sbk_l])
+			if(v[i].val==m_optr[toptr::c_sbk_l])
 				count1++;
-			elif (v[i].val==m_optr[toptr::c_sbk_r])
+			elif(v[i].val==m_optr[toptr::c_sbk_r])
 				count1--;
-			elif (v[i].val==m_optr[toptr::c_mbk_l])
+			elif(v[i].val==m_optr[toptr::c_mbk_l])
 				count2++;
-			elif (v[i].val==m_optr[toptr::c_mbk_r])
+			elif(v[i].val==m_optr[toptr::c_mbk_r])
 				count2--;
-			elif (count1==0&&count2==0&&count3==0&&v[i].val==m_optr[toptr::c_comma])
+			elif(count1==0&&count2==0&&count3==0&&v[i].val==m_optr[toptr::c_comma])
 			{
 				rbuf<tword> temp;
-				for (int j=start;j<i;j++)
+				for(int j=start;j<i;j++)
 					temp.push(v[j]);
 				result.push(temp);
 				start=i+1;
@@ -387,18 +387,18 @@ struct tsh
 		int count2=0;
 		int count3=0;
 		int start=0;
-		for (int i=0;i<v.count();i++)
+		for(int i=0;i<v.count();i++)
 		{
-			if (v[i]==m_optr[toptr::c_bbk_l])
+			if(v[i]==m_optr[toptr::c_bbk_l])
 				count3++;
-			elif (v[i]==m_optr[toptr::c_bbk_r])
+			elif(v[i]==m_optr[toptr::c_bbk_r])
 				count3--;
-			elif (count1==0&&count2==0&&count3==0&&v[i]==m_optr[toptr::c_comma])
+			elif(count1==0&&count2==0&&count3==0&&v[i]==m_optr[toptr::c_comma])
 			{
 				rbuf<rstr> temp;
-				for (int j=start;j<i;j++)
+				for(int j=start;j<i;j++)
 					temp.push(v[j]);
-				if (!temp.empty())
+				if(!temp.empty())
 					result.push(temp);
 				start=i+1;
 			}
@@ -415,26 +415,26 @@ struct tsh
 		int count2=0;
 		int count3=0;
 		int start=0;
-		for (int i=0;i<v.count();i++)
+		for(int i=0;i<v.count();i++)
 		{
-			if (v[i].val==m_optr[toptr::c_sbk_l])
+			if(v[i].val==m_optr[toptr::c_sbk_l])
 				count1++;
-			elif (v[i].val==m_optr[toptr::c_sbk_r])
+			elif(v[i].val==m_optr[toptr::c_sbk_r])
 				count1--;
-			elif (v[i].val==m_optr[toptr::c_mbk_l])
+			elif(v[i].val==m_optr[toptr::c_mbk_l])
 				count2++;
-			elif (v[i].val==m_optr[toptr::c_mbk_r])
+			elif(v[i].val==m_optr[toptr::c_mbk_r])
 				count2--;
-			elif (v[i].val==m_optr[toptr::c_tbk_l])
+			elif(v[i].val==m_optr[toptr::c_tbk_l])
 				count3++;
-			elif (v[i].val==m_optr[toptr::c_tbk_r])
+			elif(v[i].val==m_optr[toptr::c_tbk_r])
 				count3--;
-			elif (count1==0&&count2==0&&count3==0&&v[i].val==m_optr[toptr::c_comma])
+			elif(count1==0&&count2==0&&count3==0&&v[i].val==m_optr[toptr::c_comma])
 			{
 				tsent temp;
-				for (int j=start;j<i;j++)
+				for(int j=start;j<i;j++)
 					temp.vword.push(v[j]);
-				if (!temp.vword.empty())
+				if(!temp.vword.empty())
 					result.push(temp);
 				start=i+1;
 			}
@@ -483,19 +483,19 @@ struct tsh
 		int begin=0)
 	{
 		int end=v.count();
-		if (begin<0)
+		if(begin<0)
 		{
 			begin=0;
 		}
 		int count=0;
 		int i;
-		for (i=begin;i<end;i++)
+		for(i=begin;i<end;i++)
 		{
-			if (left==v[i].val)
+			if(left==v[i].val)
 				++count;
-			if (right==v[i].val)
+			if(right==v[i].val)
 				--count;
-			if (0==count)
+			if(0==count)
 				return i;
 		}
 		return v.count();
@@ -506,19 +506,19 @@ struct tsh
 		int begin=0)
 	{
 		int end=v.count();
-		if (begin<0)
+		if(begin<0)
 		{
 			begin=0;
 		}
 		int count=0;
 		int i;
-		for (i=begin;i<end;i++)
+		for(i=begin;i<end;i++)
 		{
-			if (left==v[i])
+			if(left==v[i])
 				++count;
-			if (right==v[i])
+			if(right==v[i])
 				--count;
-			if (0==count)
+			if(0==count)
 				return i;
 		}
 		return v.count();
@@ -527,21 +527,21 @@ struct tsh
 	static int find_symm_word_rev(const rbuf<tword>& v,rstr &left,rstr &right,
 		int begin,int end)
 	{
-		if (end>=v.count())
+		if(end>=v.count())
 			end=v.count();
-		if (begin<0)
+		if(begin<0)
 		{
 			begin=0;
 		}
 		int count=0;
 		int i;
-		for (i=end-1;i>=begin;--i)
+		for(i=end-1;i>=begin;--i)
 		{
-			if (left==v[i].val)
+			if(left==v[i].val)
 				--count;
-			if (right==v[i].val)
+			if(right==v[i].val)
 				++count;
-			if (0==count)
+			if(0==count)
 				return i;
 		}
 		return v.count();
@@ -550,7 +550,7 @@ struct tsh
 	static rstr vwordtostr(const rbuf<tword>& v)
 	{
 		rstr ret;
-		for (int i=0;i<v.count();i++)
+		for(int i=0;i<v.count();i++)
 			ret+=v[i].val;
 		return r_move(ret);
 	}
@@ -558,7 +558,7 @@ struct tsh
 	static rbuf<rstr> vword_to_vstr(const rbuf<tword>& v)
 	{
 		rbuf<rstr> ret;
-		for (int i=0;i<v.count();i++)
+		for(int i=0;i<v.count();i++)
 			ret.push(v[i].val);
 		return r_move(ret);
 	}
@@ -571,7 +571,7 @@ struct tsh
 
 	rstr get_file_name(tfile* p)
 	{
-		if (p==null)
+		if(p==null)
 		{
 			return "";
 		}
@@ -591,7 +591,7 @@ struct tsh
 	static rstr get_src_str(const tword& word)
 	{
 		tpos pos=word.pos_src;
-		if (pos.file==null)
+		if(pos.file==null)
 		{
 			return "";
 		}
@@ -634,12 +634,12 @@ struct tsh
 
 	static void error(tfunc* ptfi,rstr e="")
 	{
-		if (ptfi==null)
+		if(ptfi==null)
 		{
 			return;
 		}
 		tclass* ptci=ptfi->ptci;
-		if (ptci==null)
+		if(ptci==null)
 		{
 			return;
 		}

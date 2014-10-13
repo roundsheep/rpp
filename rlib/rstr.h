@@ -34,7 +34,7 @@ struct rstr
 
 	rstr(const void* p,const void* q)
 	{
-		/*if (p>=q)
+		/*if(p>=q)
 		{
 			error("");
 		}*/
@@ -192,7 +192,7 @@ struct rstr
 		int total=a.count()+b.count();
 		int max=r_max(a.m_buf.m_cmax,b.m_buf.m_cmax);
 		rstr ret;
-		if (total>max)
+		if(total>max)
 		{
 			ret.m_buf.alloc_not_change(rbuf<char>::extend_num(total));
 		}
@@ -218,8 +218,8 @@ struct rstr
 
 	friend rbool operator<(const rstr& a,const rstr& b)
 	{
-		for (int i=0;i<a.count()&&i<b.count();i++)
-			if (a[i]!=b[i])
+		for(int i=0;i<a.count()&&i<b.count();i++)
+			if(a[i]!=b[i])
 				return a[i]<b[i];
 		return a.count()<b.count();
 	}
@@ -354,7 +354,7 @@ struct rstr
 
 	uchar get(int i) const
 	{
-		if (i>=count())
+		if(i>=count())
 			return 0;
 		else 
 			return m_buf[i];
@@ -363,7 +363,7 @@ struct rstr
 	uchar get_top() const
 	{
 		uchar ret=0;
-		if (count()>0)
+		if(count()>0)
 		{
 			ret=m_buf.m_p[count()-1];
 		}
@@ -373,7 +373,7 @@ struct rstr
 	uchar get_bottom() const
 	{
 		uchar ret=0;
-		if (count()>0)
+		if(count()>0)
 		{
 			ret=m_buf.m_p[0];
 		}
@@ -382,13 +382,13 @@ struct rstr
 
 	rbool is_number() const
 	{
-		if (empty())
+		if(empty())
 		{
 			return false;
 		}
-		for (int i=0;i<count();i++)
+		for(int i=0;i<count();i++)
 		{
-			if (!is_number(m_buf[i]))
+			if(!is_number(m_buf[i]))
 			{
 				return false;
 			}
@@ -485,9 +485,9 @@ struct rstr
 	{
 		uint sum=0;
 		uint pro=1;
-		for (int i=s.count()-1;i>=0;i--)
+		for(int i=s.count()-1;i>=0;i--)
 		{
-			if (s[i]=='1')
+			if(s[i]=='1')
 				sum+=pro;
 			pro*=2;
 		}
@@ -498,9 +498,9 @@ struct rstr
 	static rstr join(const rbuf<T>& v,const rstr& s)
 	{
 		rstr ret;
-		for (int i=0;i<v.count();i++)
+		for(int i=0;i<v.count();i++)
 		{
-			if (i!=0)
+			if(i!=0)
 			{
 				ret+=s;
 			}

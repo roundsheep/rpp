@@ -52,14 +52,14 @@ struct rf
 
 	static void sleep(int milliseconds)
 	{
-		if (milliseconds<50)
+		if(milliseconds<50)
 		{
 			milliseconds=50;
 		}
 #ifdef _MSC_VER
 		Sleep(milliseconds);
 #else
-		if (milliseconds>2100000000)
+		if(milliseconds>2100000000)
 			::sleep(milliseconds/1000);
 		else
 			usleep(milliseconds*1000);
@@ -126,7 +126,7 @@ struct rf
 		result="";
 		FILE *fp=popen(cmd,"r");
 
-		if (null==fp)
+		if(null==fp)
 		{
 			return false;
 		}
@@ -135,17 +135,17 @@ struct rf
 		buf.m_p[4096]=0;
 		int count;
 
-		while (true)
+		while(true)
 		{
 			count=fread(buf.m_p,1,4096,fp);
 
-			if (count>0)
+			if(count>0)
 			{
 				buf.m_p[count]=0;
 				result+=buf.m_p;
 			}
 
-			if (count<4096)
+			if(count<4096)
 			{
 				break;
 			}

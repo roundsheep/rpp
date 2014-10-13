@@ -66,11 +66,11 @@ struct tvar
 	void copy(const tvar& a)
 	{
 		m_type=a.m_type;
-		if (a.m_type==c_rstr)
+		if(a.m_type==c_rstr)
 		{
 			m_val=(int8)new rstr(v_pto_rstr(a.m_val));
 		}
-		elif (a.m_type==c_dic)
+		elif(a.m_type==c_dic)
 		{
 			m_val=(int8)new tvar_dic;
 			copy_dic(*(tvar_dic*)m_val,*(tvar_dic*)a.m_val);
@@ -83,7 +83,7 @@ struct tvar
 
 	static void copy_dic(tvar_dic& dst,tvar_dic& src)
 	{
-		for (tvar** p=src.begin();p!=src.end();p=src.next(p))
+		for(tvar** p=src.begin();p!=src.end();p=src.next(p))
 		{
 			rdic_i<tvar*>* q=(rdic_i<tvar*>*)p;
 			dst[q->key]=new tvar(**p);
@@ -102,15 +102,15 @@ struct tvar
 
 	rstr torstr()
 	{
-		if (m_type==c_int)
+		if(m_type==c_int)
 		{
 			return rstr((int)m_val);
 		}
-		elif (m_type==c_rstr)
+		elif(m_type==c_rstr)
 		{
 			return *(rstr*)m_val;
 		}
-		elif (m_type==c_double)
+		elif(m_type==c_double)
 		{
 			return rstr(*(double*)&m_val);
 		}
@@ -122,12 +122,12 @@ struct tvar
 
 	tvar* quote_attr(char* name)
 	{
-		if (m_type!=c_dic)
+		if(m_type!=c_dic)
 		{
 			set_dic();
 		}
 		tvar_dic& src=*(tvar_dic*)m_val;
-		if (src.exist(name))
+		if(src.exist(name))
 		{
 			return *src.find(name);
 		}
@@ -179,7 +179,7 @@ struct tvar
 
 	void insert_pair(tvar* name,tvar* val)
 	{
-		if (m_type!=c_dic)
+		if(m_type!=c_dic)
 		{
 			set_dic();
 		}
@@ -189,19 +189,19 @@ struct tvar
 
 	static rbool equal(tvar* a,tvar* b)
 	{
-		if (a==null)
+		if(a==null)
 		{
 			return b==null||b->m_type==c_void;
 		}
-		if (b==null)
+		if(b==null)
 		{
 			return a==null||a->m_type==c_void;
 		}
-		if (a->m_type==c_rstr||b->m_type==c_rstr)
+		if(a->m_type==c_rstr||b->m_type==c_rstr)
 		{
 			return a->torstr()==b->torstr();
 		}
-		elif (a->m_type==c_double||b->m_type==c_double)
+		elif(a->m_type==c_double||b->m_type==c_double)
 		{
 			return a->todouble()==b->todouble();
 		}
@@ -213,15 +213,15 @@ struct tvar
 
 	static rbool less(tvar* a,tvar* b)
 	{
-		if (a==null||b==null)
+		if(a==null||b==null)
 		{
 			return false;
 		}
-		if (a->m_type==c_rstr||b->m_type==c_rstr)
+		if(a->m_type==c_rstr||b->m_type==c_rstr)
 		{
 			return a->torstr()<b->torstr();
 		}
-		elif (a->m_type==c_double||b->m_type==c_double)
+		elif(a->m_type==c_double||b->m_type==c_double)
 		{
 			return a->todouble()<b->todouble();
 		}
@@ -234,11 +234,11 @@ struct tvar
 	static tvar* add(tvar* a,tvar* b)
 	{
 		tvar* p=new tvar;
-		if (a->m_type==c_rstr||b->m_type==c_rstr)
+		if(a->m_type==c_rstr||b->m_type==c_rstr)
 		{
 			p->set_rstr(a->torstr()+b->torstr());
 		}
-		elif (a->m_type==c_double||b->m_type==c_double)
+		elif(a->m_type==c_double||b->m_type==c_double)
 		{
 			p->set_double(a->todouble()+b->todouble());
 		}
@@ -252,7 +252,7 @@ struct tvar
 	static tvar* minus(tvar* a,tvar* b)
 	{
 		tvar* p=new tvar;
-		if (a->m_type==c_double||b->m_type==c_double)
+		if(a->m_type==c_double||b->m_type==c_double)
 		{
 			p->set_double(a->todouble()-b->todouble());
 		}
@@ -266,7 +266,7 @@ struct tvar
 	static tvar* star(tvar* a,tvar* b)
 	{
 		tvar* p=new tvar;
-		if (a->m_type==c_double||b->m_type==c_double)
+		if(a->m_type==c_double||b->m_type==c_double)
 		{
 			p->set_double(a->todouble()*b->todouble());
 		}
@@ -280,7 +280,7 @@ struct tvar
 	static tvar* divide(tvar* a,tvar* b)
 	{
 		tvar* p=new tvar;
-		if (a->m_type==c_double||b->m_type==c_double)
+		if(a->m_type==c_double||b->m_type==c_double)
 		{
 			p->set_double(a->todouble()/b->todouble());
 		}
@@ -301,19 +301,19 @@ struct tvar
 	tvar* sub(int begin,int end)
 	{
 		tvar* p=new tvar;
-		if (m_type==c_rstr)
+		if(m_type==c_rstr)
 		{
 			p->set_rstr(((rstr*)m_val)->sub(begin,end));
 		}
-		elif (m_type==c_dic)
+		elif(m_type==c_dic)
 		{
 			p->set_dic();
 			tvar_dic& src=*(tvar_dic*)m_val;
 			tvar_dic& dst=*(tvar_dic*)p->m_val;
-			for (int i=begin;i<end;i++)
+			for(int i=begin;i<end;i++)
 			{
 				tvar** temp=src.find(rstr(i));
-				if (temp==null)
+				if(temp==null)
 				{
 					continue;
 				}
@@ -326,11 +326,11 @@ struct tvar
 
 	void clear()
 	{
-		if (m_type==c_rstr)
+		if(m_type==c_rstr)
 		{
 			delete r_to_prstr(m_val);
 		}
-		elif (m_type==c_dic)
+		elif(m_type==c_dic)
 		{
 			free_dic(*(tvar_dic*)m_val);
 			delete (tvar_dic*)m_val;
@@ -340,12 +340,12 @@ struct tvar
 
 	int count()
 	{
-		if (m_type==c_dic)
+		if(m_type==c_dic)
 		{
 			tvar_dic& src=*(tvar_dic*)m_val;
 			return src.count();
 		}
-		elif (m_type==c_rstr)
+		elif(m_type==c_rstr)
 		{
 			return ((rstr*)m_val)->count();
 		}
@@ -358,30 +358,30 @@ struct tvar
 	static rstr stringify(tvar& a)
 	{
 		rstr s;
-		if (a.m_type==c_int)
+		if(a.m_type==c_int)
 		{
 			s=a.toint();
 		}
-		elif (a.m_type==c_double)
+		elif(a.m_type==c_double)
 		{
 			s=a.todouble();
 		}
-		elif (a.m_type==c_rstr)
+		elif(a.m_type==c_rstr)
 		{
 			s="\'"+a.torstr()+"\'";
 		}
-		elif (a.m_type==c_func)
+		elif(a.m_type==c_func)
 		{
 			s=a.toint();
 		}
-		elif (a.m_type==c_dic)
+		elif(a.m_type==c_dic)
 		{
 			tvar_dic& src=*(tvar_dic*)a.m_val;
 			s+="{";
 			int i=0;
-			for (tvar** p=src.begin();p!=src.end();p=src.next(p))
+			for(tvar** p=src.begin();p!=src.end();p=src.next(p))
 			{
-				if (src.get_key(p)!=i)
+				if(src.get_key(p)!=i)
 				{
 					s+="\'"+src.get_key(p)+"\'";
 					s+=":";
@@ -390,7 +390,7 @@ struct tvar
 				s+=",";
 				i++;
 			}
-			if (s.get_top()==',')
+			if(s.get_top()==',')
 			{
 				s.pop();
 			}
@@ -401,7 +401,7 @@ struct tvar
 
 	static void free_dic(tvar_dic& src)
 	{
-		for (tvar** p=src.begin();p!=src.end();p=src.next(p))
+		for(tvar** p=src.begin();p!=src.end();p=src.next(p))
 		{
 			delete *p;
 		}
@@ -409,7 +409,7 @@ struct tvar
 
 	rbool have(char* name)
 	{
-		if (m_type!=c_dic)
+		if(m_type!=c_dic)
 		{
 			return false;
 		}
@@ -420,14 +420,14 @@ struct tvar
 
 	void* findf(char* name)
 	{
-		if (m_type!=c_dic)
+		if(m_type!=c_dic)
 		{
 			return null;
 		}
 		tvar_dic& src=*(tvar_dic*)m_val;
 		tvar** p=src.find(name);
 		tvar* q=*p;
-		if (q->m_type!=c_func)
+		if(q->m_type!=c_func)
 		{
 			return null;
 		}

@@ -12,21 +12,21 @@ struct zasm
 {
 	static rbool proc_func(tsh& sh,tfunc& tfi)
 	{
-		for (int i=0;i<tfi.vsent.count();i++)
+		for(int i=0;i<tfi.vsent.count();i++)
 		{
 			rbuf<tasm> vasm;
-			if (!proc_ret(sh,tfi.vsent[i],vasm,tfi))
+			if(!proc_ret(sh,tfi.vsent[i],vasm,tfi))
 			{
 				sh.error(tfi.vsent[i],"build asm error");
 				return false;
 			}
-			if (rppconf(c_op_match))
+			if(rppconf(c_op_match))
 			{
 				zopt::op_match(sh,vasm);
 			}
-			if (rppconf(c_op_merge))
+			if(rppconf(c_op_merge))
 				zopt::op_add_sub(sh,vasm);
-			for (int j=0;j<vasm.count();j++)
+			for(int j=0;j<vasm.count();j++)
 			{
 				vasm[j].pos=tfi.vsent[i].pos;
 			}
@@ -48,7 +48,7 @@ struct zasm
 		tasm item;
 		item.pos=tfi.first_pos;
 		int size=zfind::get_func_local_size(tfi);
-		if (!(rppconf(c_op_zero)&&size==0))
+		if(!(rppconf(c_op_zero)&&size==0))
 		{
 			item.vstr.clear();
 			item.vstr.push(rppkey(c_sub));
@@ -58,7 +58,7 @@ struct zasm
 			vasm.push(item);
 		}
 		rbool b_use_ebp=use_ebp(sh,tfi.vasm);
-		if (b_use_ebp)
+		if(b_use_ebp)
 		{
 			item.vstr.clear();
 			item.vstr.push(rppkey(c_push));
@@ -74,14 +74,14 @@ struct zasm
 		}
 		vasm+=tfi.vasm;
 		item.pos=tfi.last_pos;
-		if (b_use_ebp)
+		if(b_use_ebp)
 		{
 			item.vstr.clear();
 			item.vstr.push(rppkey(c_pop));
 			item.vstr.push(rppkey(c_ebp));
 			vasm.push(item);
 		}
-		if (!(rppconf(c_op_zero)&&size==0))
+		if(!(rppconf(c_op_zero)&&size==0))
 		{
 			item.vstr.clear();
 			item.vstr.push(rppkey(c_add));
@@ -91,7 +91,7 @@ struct zasm
 			vasm.push(item);
 		}
 		size=zfind::get_func_param_size(tfi);
-		if (size>0)
+		if(size>0)
 		{
 			item.vstr.clear();
 			item.vstr.push(rppkey(c_reti));
@@ -110,11 +110,11 @@ struct zasm
 
 	static rbool use_ebp(tsh& sh,rbuf<tasm>& vasm)
 	{
-		if (!rppconf(c_op_ebp))
+		if(!rppconf(c_op_ebp))
 			return true;
-		for (int i=0;i<vasm.count();i++)
-			for (int j=0;j<vasm[i].vstr.count();j++)
-				if (vasm[i].vstr[j]==rppkey(c_ebp))
+		for(int i=0;i<vasm.count();i++)
+			for(int j=0;j<vasm[i].vstr.count();j++)
+				if(vasm[i].vstr[j]==rppkey(c_ebp))
 					return true;
 		return false;
 	}
@@ -123,28 +123,28 @@ struct zasm
 		tfunc& tfi,int level=0)
 	{
 		rstr name=src.vword.get_bottom().val;
-		if (sh.m_key.is_asm_ins(name))
+		if(sh.m_key.is_asm_ins(name))
 		{
 			push_asm(vasm,sh.vword_to_vstr(src.vword));
 			return true;
 		}
 		//返回常量
-		if (src.vword.count()==1)
+		if(src.vword.count()==1)
 		{
-			if (src.vword[0].is_cint())
+			if(src.vword[0].is_cint())
 			{
 				//经测试如果是小程序rppkey(c_mov)比"mov"效率高，但复杂程序反而效率变低
 				push_asm(vasm,rppkey(c_mov),rppkey(c_ebx),rppoptr(c_comma),src.vword[0].val);
 				return true;
 			}
-			elif (sh.m_key.is_asm_reg(src.vword[0].val))
+			elif(sh.m_key.is_asm_reg(src.vword[0].val))
 			{
 				push_asm(vasm,rppkey(c_mov),rppkey(c_ebx),rppoptr(c_comma),src.vword[0].val);
 				return true;
 			}
-			elif (src.vword[0].is_cpoint())
+			elif(src.vword[0].is_cpoint())
 			{
-				if (src.vword[0].is_caddr())
+				if(src.vword[0].is_caddr())
 				{
 					push_asm(vasm,rppkey(c_mov),rppkey(c_ebx),rppoptr(c_comma),
 						src.vword[0].val);
@@ -157,7 +157,7 @@ struct zasm
 				return true;
 			}
 		}
-		if (src.vword.count()==5&&src.vword[1].val==rppoptr(c_addr))
+		if(src.vword.count()==5&&src.vword[1].val==rppoptr(c_addr))
 		{
 			push_asm(vasm,"mov","ebx",",",rppoptr(c_mbk_l),"&",src.vword[2].val,
 				src.vword[3].val,rppoptr(c_mbk_r));
@@ -165,18 +165,18 @@ struct zasm
 		}
 		//返回变量
 		tdata* ptdi=zfind::local_search(tfi,get_src_in(sh,src).vword.get(0).val);
-		if (ptdi!=null)
+		if(ptdi!=null)
 		{
-			if (zfind::is_type_mebx(sh,src.type))
+			if(zfind::is_type_mebx(sh,src.type))
 			{
 				push_asm(vasm,"lea","esi",",",rppoptr(c_mbk_l),"ebp","+",
 					rstr(ptdi->off),rppoptr(c_mbk_r));
 				//这里还可以优化
-				if (!add_esi(sh,ptdi->type,vasm,src))
+				if(!add_esi(sh,ptdi->type,vasm,src))
 					return false;
 				push_asm(vasm,rppkey(c_mov),rppkey(c_ebx),rppoptr(c_comma),
 					rppoptr(c_mbk_l),rppkey(c_esi),rppoptr(c_mbk_r));
-				if (sh.is_quote(src.type)&&(sh.get_tname(src.type)==rppkey(c_int)||
+				if(sh.is_quote(src.type)&&(sh.get_tname(src.type)==rppkey(c_int)||
 					sh.is_point(sh.get_tname(src.type))))
 				{
 					push_asm(vasm,"mov","ebx",",",rppoptr(c_mbk_l),
@@ -193,19 +193,19 @@ struct zasm
 		tfunc& tfi,int level)
 	{
 		tdata retval;
-		if (!a_exp(sh,get_src_in(sh,src),vasm,retval,tfi,level))
+		if(!a_exp(sh,get_src_in(sh,src),vasm,retval,tfi,level))
 		{
 			return false;
 		}
 		int size;
 		//多数函数返回void，因此加上这句判断可以提高效率
-		if (src.type!=rppkey(c_void)&&zfind::is_type_mebx(sh,src.type))
+		if(src.type!=rppkey(c_void)&&zfind::is_type_mebx(sh,src.type))
 		{
 			push_asm(vasm,"mov","esi",",","esp");
 			int cur=vasm.count();
-			if (!add_esi(sh,retval.type,vasm,src))
+			if(!add_esi(sh,retval.type,vasm,src))
 				return false;
-			if (cur==vasm.count())
+			if(cur==vasm.count())
 			{
 				vasm.pop();
 				push_asm(vasm,"mov","ebx",",",rppoptr(c_mbk_l),"esp",rppoptr(c_mbk_r));
@@ -214,13 +214,13 @@ struct zasm
 			{
 				push_asm(vasm,"mov","ebx",",",rppoptr(c_mbk_l),"esi",rppoptr(c_mbk_r));
 			}
-			if (sh.is_quote(src.type)&&(sh.get_tname(src.type)==rppkey(c_int)||
+			if(sh.is_quote(src.type)&&(sh.get_tname(src.type)==rppkey(c_int)||
 				sh.is_point(sh.get_tname(src.type))))
 			{
 				push_asm(vasm,"mov","ebx",",",rppoptr(c_mbk_l),"ebx",rppoptr(c_mbk_r));
 			}
 		}
-		if (!destruct_ret(sh,retval,vasm))
+		if(!destruct_ret(sh,retval,vasm))
 		{
 			return false;
 		}
@@ -233,25 +233,25 @@ struct zasm
 	static rbool a_exp(tsh& sh,const tsent& src,rbuf<tasm>& vasm,tdata& retval,
 		tfunc& tfi,int level=0)
 	{
-		if (level++>c_rpp_deep)
+		if(level++>c_rpp_deep)
 		{
 			return false;
 		}
-		if (src.vword.get_bottom().val!=rppoptr(c_mbk_l)||
+		if(src.vword.get_bottom().val!=rppoptr(c_mbk_l)||
 			src.vword.get_top().val!=rppoptr(c_mbk_r))
 		{
 			return false;
 		}
-		if (src.vword.get(1).val==rppoptr(c_dot))
+		if(src.vword.get(1).val==rppoptr(c_dot))
 		{
 			return false;
 		}
 		int size;
 		rbuf<rbuf<tword> > vlisp;
 		zexp::get_vlisp(sh,src.vword,vlisp);
-		if (src.vword.get(1).val==rppkey(c_pcall))
+		if(src.vword.get(1).val==rppkey(c_pcall))
 		{
-			if (vlisp.count()!=4)
+			if(vlisp.count()!=4)
 			{
 				return false;
 			}
@@ -263,30 +263,30 @@ struct zasm
 			zexp::get_vlisp(sh,vlisp[3],temp_v);
 			rbuf<tsent> vsent;
 			zexp::get_vsent(temp_v,vsent,src);
-			for (int i=vsent.count()-1;i>=0;i--)
+			for(int i=vsent.count()-1;i>=0;i--)
 			{
-				if (!zexp::p_exp(sh,vsent[i],tfi,level))
+				if(!zexp::p_exp(sh,vsent[i],tfi,level))
 				{
 					return false;
 				}
 			}
-			for (int i=vsent.count()-1;i>=0;i--)
+			for(int i=vsent.count()-1;i>=0;i--)
 			{
 				tdata tdi;
 				tdi.type=sh.get_tname(vsent[i].type);
 				tdi.size=zfind::get_type_size(sh,tdi.type);
-				if (!pass_param(sh,vsent[i],tdi,vasm,tfi,level))
+				if(!pass_param(sh,vsent[i],tdi,vasm,tfi,level))
 					return false;
 			}
 			tsent sent=src;
 			sent.vword=vlisp[2];
-			if (!zexp::p_exp(sh,sent,tfi,level))
+			if(!zexp::p_exp(sh,sent,tfi,level))
 			{
 				return false;
 			}
-			if (!proc_ret(sh,sent,vasm,tfi,level))
+			if(!proc_ret(sh,sent,vasm,tfi,level))
 				return false;
-			if (sent.type==rstr("rp<void>"))
+			if(sent.type==rstr("rp<void>"))
 			{
 				push_asm(vasm,"call","ebx");
 			}
@@ -294,16 +294,16 @@ struct zasm
 				return false;
 			return true;
 		}
-		if (vlisp.count()!=3)
+		if(vlisp.count()!=3)
 		{
 			return false;
 		}
 		zexp::get_vlisp(sh,vlisp[2],vlisp);
 		rbuf<tsent> vsent;
 		zexp::get_vsent(vlisp,vsent,src);
-		for (int i=vsent.count()-1;i>=0;i--)
+		for(int i=vsent.count()-1;i>=0;i--)
 		{
-			if (!zexp::p_exp(sh,vsent[i],tfi,level))
+			if(!zexp::p_exp(sh,vsent[i],tfi,level))
 			{
 				return false;
 			}
@@ -311,29 +311,29 @@ struct zasm
 		rstr cname=src.vword.get(1).val;
 		rstr fname=src.vword.get(2).val;
 		tclass* ptci=zfind::class_search(sh,cname);
-		if (null==ptci)
+		if(null==ptci)
 		{
 			return false;
 		}
 		tfunc* ptfi=zfind::func_search_dec(*ptci,fname);
-		if (ptfi==null)
+		if(ptfi==null)
 		{
 			return false;
 		}
 		retval=ptfi->retval;
-		if (rppconf(c_op_empty_func)&&
+		if(rppconf(c_op_empty_func)&&
 			zfind::is_empty_struct_type(sh,ptci->name)&&
 			(zfind::is_destruct(sh,*ptfi)||zfind::is_emptystruct(sh,*ptfi)))
 			return true;
-		if (ptfi->param.count()!=vsent.count())
+		if(ptfi->param.count()!=vsent.count())
 		{
 			return false;
 		}
 		size=zfind::get_ceil_space(retval);
 		push_asm(vasm,rppkey(c_sub),rppkey(c_esp),rppoptr(c_comma),size);
-		for (int i=vsent.count()-1;i>=0;i--)
+		for(int i=vsent.count()-1;i>=0;i--)
 		{
-			if (!pass_param(sh,vsent[i],ptfi->param[i],vasm,tfi,level))
+			if(!pass_param(sh,vsent[i],ptfi->param[i],vasm,tfi,level))
 			{
 				return false;
 			}
@@ -344,20 +344,20 @@ struct zasm
 
 	static tsent get_src_in(tsh& sh,tsent& src)
 	{
-		if (src.vword.get(1).val!=rppoptr(c_dot))
+		if(src.vword.get(1).val!=rppoptr(c_dot))
 		{
 			return src;
 		}
 		tsent temp=src;
 		int start=0;
 		rbuf<tword>& v=src.vword;
-		while (start+2<v.count()&&
+		while(start+2<v.count()&&
 			v[start].val==rppoptr(c_mbk_l)&&
 			v[start+1].val==rppoptr(c_dot))
 		{
 			start+=2;
 		}
-		if (v[start].val==rppoptr(c_mbk_l))
+		if(v[start].val==rppoptr(c_mbk_l))
 		{
 			int right=sh.find_symm_mbk(v,start);
 			temp.vword=v.sub(start,right+1);
@@ -372,11 +372,11 @@ struct zasm
 	static rbool pass_param(tsh& sh,tsent& src,tdata& dst,rbuf<tasm>& vasm,
 		tfunc& tfi,int level)
 	{
-		if (src.vword.empty())
+		if(src.vword.empty())
 			return false;
 		int size;
 		tsent src_in=get_src_in(sh,src);
-		if (src_in.vword.get(1).val==rppkey(c_pcall)||
+		if(src_in.vword.get(1).val==rppkey(c_pcall)||
 			zfind::is_class(sh,src_in.vword.get(1).val))
 		{
 			//先申请参数空间
@@ -384,17 +384,17 @@ struct zasm
 			push_asm(vasm,rppkey(c_sub),rppkey(c_esp),rppoptr(c_comma),size);
 			//递归处理子表达式
 			tdata retval;
-			if (!a_exp(sh,src_in,vasm,retval,tfi,level))
+			if(!a_exp(sh,src_in,vasm,retval,tfi,level))
 				return false;
 			//获取传递参数的地址分别放入esi和edi中，
 			//包括函数返回后再dot，如int.get().m_in
-			if (!obtain_var_addr_f(sh,retval,src,vasm))
+			if(!obtain_var_addr_f(sh,retval,src,vasm))
 				return false;
 			//传递参数
-			if (!copy_param(sh,src.type,dst.type,vasm))
+			if(!copy_param(sh,src.type,dst.type,vasm))
 				return false;
 			//析构返回值
-			if (!destruct_ret(sh,retval,vasm))
+			if(!destruct_ret(sh,retval,vasm))
 			{
 				return false;
 			}
@@ -402,20 +402,20 @@ struct zasm
 			size=zfind::get_ceil_space(retval);
 			push_asm(vasm,rppkey(c_add),rppkey(c_esp),rppoptr(c_comma),size);
 		}
-		elif (src.vword[0].is_cint())
+		elif(src.vword[0].is_cint())
 		{
 			push_asm(vasm,rppkey(c_push),src.vword[0].val);
 		}
-		elif (src.vword[0].is_cuint())
+		elif(src.vword[0].is_cuint())
 		{
 			push_asm(vasm,rppkey(c_push),get_int(src.vword[0].val));
 		}
-		elif (src.vword[0].is_cdouble())
+		elif(src.vword[0].is_cdouble())
 		{
 			double dval=src.vword[0].val.todouble();
 			push_double(sh,vasm,dval);
 		}
-		elif (src.vword.count()==5&&
+		elif(src.vword.count()==5&&
 			src.vword.get(1).val==rppoptr(c_addr)&&
 			src.vword[0].val==rppoptr(c_mbk_l))
 		{
@@ -423,18 +423,18 @@ struct zasm
 			vtemp.push_front(rppkey(c_push));
 			push_asm(vasm,vtemp);
 		}
-		elif (src.vword[0].is_cpoint())
+		elif(src.vword[0].is_cpoint())
 		{
-			if (src.vword.get_bottom().is_caddr())
+			if(src.vword.get_bottom().is_caddr())
 				push_asm(vasm,rppkey(c_push),src.vword[0].val);
 			else
 				push_asm(vasm,rppkey(c_push),get_int(src.vword[0].val));
 		}
-		elif (src.vword[0].is_cstr())
+		elif(src.vword[0].is_cstr())
 		{
 			push_asm(vasm,rppkey(c_push),src.vword[0].val);
 		}
-		elif (sh.m_key.is_asm_reg(src.vword[0].val))
+		elif(sh.m_key.is_asm_reg(src.vword[0].val))
 		{
 			push_asm(vasm,rppkey(c_push),src.vword[0].val);
 		}
@@ -442,28 +442,28 @@ struct zasm
 		{
 			rstr name=src_in.vword.get(0).val;
 			tdata* ptdi=zfind::local_search(tfi,name);
-			if (ptdi==null)
+			if(ptdi==null)
 				return false;
 			int cur=vasm.count()+3;
-			if (!obtain_var_addr_var(sh,src,dst,ptdi,vasm))
+			if(!obtain_var_addr_var(sh,src,dst,ptdi,vasm))
 				return false;
-			if (cur==vasm.count()&&rppconf(c_op_pass))
+			if(cur==vasm.count()&&rppconf(c_op_pass))
 			{
-				if (zfind::is_op_pass_type(sh,dst.type)&&dst.type==src.type)
+				if(zfind::is_op_pass_type(sh,dst.type)&&dst.type==src.type)
 				{
 					vasm.m_count-=3;
 					push_asm(vasm,rppkey(c_push),rppoptr(c_mbk_l),
 						"ebp","+",rstr(ptdi->off),rppoptr(c_mbk_r));
 					return true;
 				}
-				if (sh.is_quote(dst.type)&&sh.is_quote(src.type))
+				if(sh.is_quote(dst.type)&&sh.is_quote(src.type))
 				{
 					vasm.m_count-=3;
 					push_asm(vasm,rppkey(c_push),rppoptr(c_mbk_l),
 						"ebp","+",rstr(ptdi->off),rppoptr(c_mbk_r));
 					return true;
 				}
-				if (sh.is_quote(dst.type))
+				if(sh.is_quote(dst.type))
 				{
 					vasm.m_count-=3;
 					push_asm(vasm,"lea","esi",",",rppoptr(c_mbk_l),
@@ -473,7 +473,7 @@ struct zasm
 				}
 			}
 			//调用拷贝构造函数时还可以优化
-			if (!copy_param(sh,src.type,dst.type,vasm))
+			if(!copy_param(sh,src.type,dst.type,vasm))
 				return false;
 			return true;
 		}
@@ -488,7 +488,7 @@ struct zasm
 		push_asm(vasm,"sub","esp",",",size);
 		push_asm(vasm,"mov","edi",",","esp");
 		push_asm(vasm,"lea","esi",",",rppoptr(c_mbk_l),"ebp","+",rstr(ptdi->off),rppoptr(c_mbk_r));
-		if (!add_esi(sh,ptdi->type,vasm,src))
+		if(!add_esi(sh,ptdi->type,vasm,src))
 			return false;
 		return true;
 	}
@@ -499,7 +499,7 @@ struct zasm
 		size=zfind::get_ceil_space(retval);
 		push_asm(vasm,"lea","edi",",",rppoptr(c_mbk_l),"esp","+",rstr(size),rppoptr(c_mbk_r));
 		push_asm(vasm,"mov","esi",",","esp");
-		if (!add_esi(sh,retval.type,vasm,src))
+		if(!add_esi(sh,retval.type,vasm,src))
 			return false;
 		return true;
 	}
@@ -508,41 +508,41 @@ struct zasm
 	{
 		int start=0;
 		rbuf<tword>& v=src.vword;
-		if (v.get(1).val!=rppoptr(c_dot))
+		if(v.get(1).val!=rppoptr(c_dot))
 		{
 			return true;
 		}
-		while (start+2<v.count()&&
+		while(start+2<v.count()&&
 			v[start].val==rppoptr(c_mbk_l)&&
 			v[start+1].val==rppoptr(c_dot))
 		{
 			start+=2;
 		}
 		int right=start+1;
-		if (v[start].val==rppoptr(c_mbk_l))
+		if(v[start].val==rppoptr(c_mbk_l))
 		{
 			right=sh.find_symm_mbk(v,start);
-			if (right>=v.count())
+			if(right>=v.count())
 			{
 				return false;
 			}
 			right++;
 		}
-		for (int i=0;i<start;i+=2)
+		for(int i=0;i<start;i+=2)
 		{
 			tclass* ptci=zfind::class_search_t(sh,type);
-			if (null==ptci)
+			if(null==ptci)
 			{
 				return false;
 			}
 			tdata* ptdi=zfind::data_member_search(*ptci,v.get(right).val);
-			if (null==ptdi)
+			if(null==ptdi)
 			{
 				return false;
 			}
-			if (sh.is_quote(type))
+			if(sh.is_quote(type))
 				push_asm(vasm,"mov","esi",",",rppoptr(c_mbk_l),"esi",rppoptr(c_mbk_r));
-			if (ptdi->off!=0)
+			if(ptdi->off!=0)
 			{
 				push_asm(vasm,"add","esi",",",ptdi->off);
 			}
@@ -556,7 +556,7 @@ struct zasm
 	static rbool copy_param(tsh& sh,const rstr& src,const rstr& dst,rbuf<tasm>& vasm)
 	{
 		//指针可以随意转换
-		if (sh.is_point(dst)&&sh.is_point(src)||
+		if(sh.is_point(dst)&&sh.is_point(src)||
 			dst==rppkey(c_rd4)&&zfind::get_type_size(sh,src)==4||
 			dst==rppkey(c_rcs)&&sh.is_point(src))
 		{
@@ -565,9 +565,9 @@ struct zasm
 			return true;
 		}
 		//目标是引用
-		if (sh.is_quote(dst))
+		if(sh.is_quote(dst))
 		{
-			if (sh.is_quote(src))
+			if(sh.is_quote(src))
 				push_asm(vasm,"mov",rppoptr(c_mbk_l),"edi",rppoptr(c_mbk_r),
 					",",rppoptr(c_mbk_l),"esi",rppoptr(c_mbk_r));//源是引用
 			else
@@ -575,20 +575,20 @@ struct zasm
 					rppoptr(c_mbk_r),",","esi");//源是对象
 			return true;
 		}
-		if (rppconf(c_op_pass))
+		if(rppconf(c_op_pass))
 		{
-			if (zfind::is_op_pass_type(sh,dst))
+			if(zfind::is_op_pass_type(sh,dst))
 			{
-				if (sh.is_quote(src))
+				if(sh.is_quote(src))
 					push_asm(vasm,"mov","esi",",",rppoptr(c_mbk_l),
 						"esi",rppoptr(c_mbk_r));//源是引用
 				push_asm(vasm,"mov",rppoptr(c_mbk_l),"edi",
 					rppoptr(c_mbk_r),",",rppoptr(c_mbk_l),"esi",rppoptr(c_mbk_r));
 				return true;
 			}
-			if (dst==rppkey(c_double)||dst==rppkey(c_int8))
+			if(dst==rppkey(c_double)||dst==rppkey(c_int8))
 			{
-				if (sh.is_quote(src))
+				if(sh.is_quote(src))
 					push_asm(vasm,"mov","esi",",",rppoptr(c_mbk_l),
 						"esi",rppoptr(c_mbk_r));
 				push_asm(vasm,"mov",rppoptr(c_mbk_l),"edi",
@@ -599,7 +599,7 @@ struct zasm
 			}
 		}
 		//目标是对象需要调用拷贝构造函数
-		if (sh.is_quote(src))
+		if(sh.is_quote(src))
 		{
 			push_asm(vasm,rppkey(c_push),rppoptr(c_mbk_l),"esi",rppoptr(c_mbk_r));//源是引用
 		}
@@ -609,10 +609,10 @@ struct zasm
 		}
 		push_asm(vasm,rppkey(c_push),"edi");
 		tclass* ptci=zfind::class_search_t(sh,src);
-		if (ptci==null)
+		if(ptci==null)
 			return false;
 		tfunc* pcopystruct=zfind::copystruct_search(*ptci);
-		if (pcopystruct==null)
+		if(pcopystruct==null)
 			return false;
 		push_asm(vasm,sh.get_func_declare_call(sh,*ptci,*pcopystruct));
 		return true;
@@ -621,17 +621,17 @@ struct zasm
 	static rbool destruct_ret(tsh& sh,tdata& retval,rbuf<tasm>& vasm)
 	{
 		rstr type=retval.type;
-		if (sh.is_quote(type))
+		if(sh.is_quote(type))
 			return true;
-		if (type==rppkey(c_void))
+		if(type==rppkey(c_void))
 			return true;
 		tclass* ptci=zfind::class_search(sh,type);
-		if (ptci==null)
+		if(ptci==null)
 			return false;
 		tfunc* pdestruct=zfind::destruct_search(*ptci);
-		if (pdestruct==null)
+		if(pdestruct==null)
 			return false;
-		if (rppconf(c_op_empty_func)&&zfind::is_empty_struct_type(sh,type))
+		if(rppconf(c_op_empty_func)&&zfind::is_empty_struct_type(sh,type))
 			return true;
 		push_asm(vasm,"mov","esi",",","esp");
 		push_asm(vasm,rppkey(c_push),"esi");
