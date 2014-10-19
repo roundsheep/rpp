@@ -131,9 +131,7 @@ next:
 				v_next_ins;
 
 			case tins::c_execmd:
-				v_pto_uint(reg.esp+4)=
-					rf::execmd(
-					(char*)v_pto_uint(reg.esp));
+				v_pto_uint(reg.esp+4)=rf::execmd((char*)v_pto_uint(reg.esp));
 				reg.esp+=4;
 				v_next_ins;
 			case tins::c_srand:
@@ -155,8 +153,7 @@ next:
 				reg.esp+=4;
 				v_next_ins;
 			case tins::c_puts_l:
-				printf("%s",rstr(
-					r_to_pchar(v_pto_int(reg.esp)),
+				printf("%s",rstr(r_to_pchar(v_pto_int(reg.esp)),
 					v_pto_int(reg.esp+4)).cstr());
 				reg.esp+=8;
 				v_next_ins;
@@ -222,8 +219,7 @@ next:
 				reg.esp+=8;
 				v_next_ins;
 			case tins::c_strcmp:
-				v_pto_int(reg.esp+8)=
-					strcmp((char*)v_pto_uint(reg.esp),
+				v_pto_int(reg.esp+8)=strcmp((char*)v_pto_uint(reg.esp),
 					(char*)v_pto_uint(reg.esp+4));
 				reg.esp+=8;
 				v_next_ins;
@@ -240,31 +236,27 @@ next:
 				reg.esp+=8;
 				v_next_ins;
 			case tins::c_fopen:
-				v_pto_uint(reg.esp+8)=
-					(uint)fopen(
+				v_pto_uint(reg.esp+8)=(uint)fopen(
 					(char*)v_pto_uint(reg.esp),
 					(char*)v_pto_uint(reg.esp+4));
 				reg.esp+=8;
 				v_next_ins;
 			case tins::c_fclose:
-				v_pto_int(reg.esp+4)=
-					fclose((FILE*)v_pto_uint(reg.esp));
+				v_pto_int(reg.esp+4)=fclose((FILE*)v_pto_uint(reg.esp));
 				reg.esp+=4;
 				v_next_ins;
 			case tins::c_fread:
-				v_pto_uint(reg.esp+16)=
-					fread((void*)v_pto_uint(reg.esp),
-						v_pto_uint(reg.esp+4),
-						v_pto_uint(reg.esp+8),
-						(FILE*)v_pto_uint(reg.esp+12));
+				v_pto_uint(reg.esp+16)=fread((void*)v_pto_uint(reg.esp),
+					v_pto_uint(reg.esp+4),
+					v_pto_uint(reg.esp+8),
+					(FILE*)v_pto_uint(reg.esp+12));
 				reg.esp+=16;
 				v_next_ins;
 			case tins::c_fwrite:
-				v_pto_uint(reg.esp+16)=
-					fwrite((void*)v_pto_uint(reg.esp),
-						v_pto_uint(reg.esp+4),
-						v_pto_uint(reg.esp+8),
-						(FILE*)v_pto_uint(reg.esp+12));
+				v_pto_uint(reg.esp+16)=fwrite((void*)v_pto_uint(reg.esp),
+					v_pto_uint(reg.esp+4),
+					v_pto_uint(reg.esp+8),
+					(FILE*)v_pto_uint(reg.esp+12));
 				reg.esp+=16;
 				v_next_ins;
 			case tins::c_fseek:
@@ -280,67 +272,57 @@ next:
 				reg.esp+=16;
 				v_next_ins;
 			case tins::c_ftell:
-				v_pto_uint(reg.esp+4)=
-					ftell((FILE*)v_pto_uint(reg.esp));
+				v_pto_uint(reg.esp+4)=ftell((FILE*)v_pto_uint(reg.esp));
 				reg.esp+=4;
 				v_next_ins;
 			case tins::c_ftell8:
-				v_pto_int8(reg.esp+4)=
-					rfile::ftell8((FILE*)v_pto_uint(reg.esp));
+				v_pto_int8(reg.esp+4)=rfile::ftell8((FILE*)v_pto_uint(reg.esp));
 				reg.esp+=4;
 				v_next_ins;
 
 			case tins::c_s_socket:
-				v_pto_int(reg.esp+12)=
-					rsock::s_socket(v_pto_int(reg.esp),
-						v_pto_int(reg.esp+4),
-						v_pto_int(reg.esp+8));
+				v_pto_int(reg.esp+12)=rsock::s_socket(v_pto_int(reg.esp),
+					v_pto_int(reg.esp+4),
+					v_pto_int(reg.esp+8));
 				reg.esp+=12;
 				v_next_ins;
 			case tins::c_s_connect:
-				v_pto_int(reg.esp+12)=
-					rsock::s_connect(v_pto_int(reg.esp),
-						(void*)v_pto_int(reg.esp+4),
-						v_pto_int(reg.esp+8));
+				v_pto_int(reg.esp+12)=rsock::s_connect(v_pto_int(reg.esp),
+					(void*)v_pto_int(reg.esp+4),
+					v_pto_int(reg.esp+8));
 				reg.esp+=12;
 				v_next_ins;
 			case tins::c_s_close:
-				v_pto_int(reg.esp+4)=
-					rsock::s_close(v_pto_int(reg.esp));
+				v_pto_int(reg.esp+4)=rsock::s_close(v_pto_int(reg.esp));
 				reg.esp+=4;
 				v_next_ins;
 			case tins::c_s_send:
-				v_pto_int(reg.esp+16)=
-					rsock::s_send(v_pto_int(reg.esp),
+				v_pto_int(reg.esp+16)=rsock::s_send(v_pto_int(reg.esp),
 					(void*)v_pto_int(reg.esp+4),
 					v_pto_int(reg.esp+8),
 					v_pto_int(reg.esp+12));
 				reg.esp+=16;
 				v_next_ins;
 			case tins::c_s_recv:
-				v_pto_int(reg.esp+16)=
-					rsock::s_recv(v_pto_int(reg.esp),
+				v_pto_int(reg.esp+16)=rsock::s_recv(v_pto_int(reg.esp),
 					(void*)v_pto_int(reg.esp+4),
 					v_pto_int(reg.esp+8),
 					v_pto_int(reg.esp+12));
 				reg.esp+=16;
 				v_next_ins;
 			case tins::c_s_bind:
-				v_pto_int(reg.esp+12)=
-					rsock::s_bind(v_pto_int(reg.esp),
+				v_pto_int(reg.esp+12)=rsock::s_bind(v_pto_int(reg.esp),
 					(void*)v_pto_int(reg.esp+4),
 					v_pto_int(reg.esp+8));
 				reg.esp+=12;
 				v_next_ins;
 			case tins::c_s_listen:
-				v_pto_int(reg.esp+8)=
-					rsock::s_listen(v_pto_int(reg.esp),
+				v_pto_int(reg.esp+8)=rsock::s_listen(v_pto_int(reg.esp),
 					v_pto_int(reg.esp+4));
 				reg.esp+=8;
 				v_next_ins;
 			case tins::c_s_accept:
-				v_pto_int(reg.esp+12)=
-					rsock::s_accept(v_pto_int(reg.esp),
+				v_pto_int(reg.esp+12)=rsock::s_accept(v_pto_int(reg.esp),
 					(void*)v_pto_int(reg.esp+4),
 					(int*)v_pto_int(reg.esp+8));
 				reg.esp+=12;
