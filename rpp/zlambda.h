@@ -191,7 +191,7 @@ struct zlambda
 				sh.push_twi(vtemp,word,";");
 			}
 			vtemp+=v[i].vword;
-			v[i].vword=vtemp;
+			v[i].vword=r_move(vtemp);
 		}
 		zcontrol::part_vsent(v);
 	}
@@ -215,7 +215,7 @@ struct zlambda
 		{
 			sent.vword.push(tword(tfi.name+"_C_P_A"));
 		}
-		tfi.vsent.push_front(sent);
+		tfi.vsent.push_front(r_move(sent));
 	}
 
 	static void lambda_var_replace(tsh& sh,tfunc& tfi)

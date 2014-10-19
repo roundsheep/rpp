@@ -391,7 +391,7 @@ struct zbin
 				dst+=src[i];
 			}
 		}
-		src=dst;
+		src=r_move(dst);
 		src.m_buf.pop_front();
 		src.m_buf.top()=0;
 	}

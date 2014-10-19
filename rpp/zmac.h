@@ -97,7 +97,7 @@ struct zmac
 		{
 			return false;
 		}
-		v=result;
+		v=r_move(result);
 		return true;
 	}
 

@@ -401,7 +401,7 @@ struct zclass
 			v+=ptci->vword;
 		}
 		v+=tci.vword;
-		tci.vword=v;
+		tci.vword=r_move(v);
 		return true;
 	}
 };

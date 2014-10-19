@@ -184,7 +184,7 @@ struct zmatch
 		result+=sent.vword;
 		result+=rppoptr(c_mbk_r);
 		result+=rppoptr(c_mbk_r);
-		sent.vword=result;
+		sent.vword=r_move(result);
 		sent.type=type;
 	}
 

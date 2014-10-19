@@ -117,7 +117,26 @@ struct rbuf
 		m_count=total;
 	}
 
+	void operator+=(rbuf<T>&& a)
+	{
+		int total=a.count()+count();
+		if(total>m_cmax)
+		{
+			realloc_not_change(extend_num(total));
+		}
+		for(int i=count();i<total;i++)
+		{
+			m_p[i]=r_move(a[i-count()]);
+		}
+		m_count=total;
+	}
+
 	void operator+=(const T& a)
+	{
+		this->push(a);
+	}
+
+	void operator+=(T&& a)
 	{
 		this->push(a);
 	}
@@ -245,6 +264,16 @@ struct rbuf
 		m_count++;
 	}
 
+	void push(T&& a)
+	{
+		if(m_count>=m_cmax)
+		{
+			realloc_not_change(extend_num(m_count));
+		}
+		m_p[count()]=a;
+		m_count++;
+	}
+
 	void push_move(T& a)
 	{
 		if(m_count>=m_cmax)
@@ -270,6 +299,7 @@ struct rbuf
 		return ret;
 	}
 
+	//todo 增加move版本
 	void push_front(const T& a)
 	{
 		insert(0,a);
@@ -292,7 +322,7 @@ struct rbuf
 		{
 			ret=m_p[count()-1];
 		}
-		return ret;
+		return r_move(ret);
 	}
 
 	T get_bottom() const 
@@ -302,7 +332,7 @@ struct rbuf
 		{
 			ret=m_p[0];
 		}
-		return ret;
+		return r_move(ret);
 	}
 
 	rbool erase(int num)
@@ -510,10 +540,9 @@ struct rbuf
 
 	T get(int i) const
 	{
-		T t;
 		if((uint)i>=(uint)count())
 		{
-			return t;
+			return T();
 		}
 		else 
 		{

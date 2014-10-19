@@ -121,7 +121,7 @@ struct zsuper
 		{
 			tword temp;
 			temp.multi=src.sub(0,i);
-			arr.push(temp);
+			arr.push_move(temp);
 			if(match_here(sh,reg,src.sub(i),arr))
 			{
 				return true;
@@ -209,7 +209,7 @@ struct zsuper
 				{
 					temp=add_quote(temp);
 				}
-				dst.push(temp);
+				dst.push_move(temp);
 				i+=2;
 				ret=true;
 			}
@@ -223,7 +223,7 @@ struct zsuper
 				dst.push(v[i]);
 			}
 		}
-		v=dst;
+		v=r_move(dst);
 		return ret;
 	}
 };

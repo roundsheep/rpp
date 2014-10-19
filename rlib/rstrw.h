@@ -107,6 +107,11 @@ struct rstrw
 		m_buf+=a.m_buf;
 	}
 
+	void operator+=(rstrw&& a)
+	{
+		m_buf+=r_move(a.m_buf);
+	}
+
 	void operator+=(ushort ch)
 	{
 		m_buf+=ch;
@@ -276,22 +281,20 @@ struct rstrw
 
 	ushort get_top() const
 	{
-		ushort ret=0;
 		if(count()>0)
 		{
-			ret=m_buf.m_p[count()-1];
+			return m_buf.m_p[count()-1];
 		}
-		return ret;
+		return 0;
 	}
 
 	ushort get_bottom() const
 	{
-		ushort ret=0;
 		if(count()>0)
 		{
-			ret=m_buf.m_p[0];
+			return m_buf.m_p[0];
 		}
-		return ret;
+		return 0;
 	}
 
 	rbool is_number() const

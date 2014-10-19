@@ -329,7 +329,7 @@ struct zsrep
 				vdst.push(rstr(rppoptr(c_mbk_r)));
 			}
 			v[i].clear();
-			v[i].multi=vdst;
+			v[i].multi=r_move(vdst);
 		}
 		zpre::arrange(v);
 		return true;
@@ -378,8 +378,8 @@ struct zsrep
 		zadd::add_destructor_func(sh,tdi,vtemp);
 		if(!bstruct)
 			zadd::add_structor_func(sh,tdi,vtemp);
-		vtemp+=v;
-		v=vtemp;
+		vtemp+=r_move(v);
+		v=r_move(vtemp);
 		return true;
 	}
 
@@ -430,7 +430,7 @@ struct zsrep
 			vtemp+=vsub;
 		}
 		vtemp.push(tword(rppoptr(c_sbk_r)));
-		v=vtemp;
+		v=r_move(vtemp);
 		return true;
 	}
 };

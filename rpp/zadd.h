@@ -46,7 +46,7 @@ struct zadd
 			add_destructor_func(sh,tfi.param[i],sent.vword);
 		for(int i=0;i<tfi.local.count();i++)
 			add_destructor_func(sh,tfi.local[i],sent.vword);
-		return sent;
+		return r_move(sent);
 	}
 
 	static tsent add_local_init(tsh& sh,tfunc& tfi)
@@ -55,7 +55,7 @@ struct zadd
 		sent.pos=tfi.first_pos;
 		for(int i=0;i<tfi.local.count();i++)
 			add_structor_func(sh,tfi.local[i],sent.vword);
-		return sent;
+		return r_move(sent);
 	}
 
 	static void add_structor_func(tsh& sh,tdata& tdi,rbuf<tword>& v)
@@ -130,7 +130,7 @@ struct zadd
 		}
 		if(!sent.vword.empty())
 		{
-			tfi.vsent.push(sent);
+			tfi.vsent.push_move(sent);
 			zcontrol::part_vsent(tfi.vsent);
 		}
 	}
@@ -154,7 +154,7 @@ struct zadd
 		if(sent.vword.empty())
 			return;
 		sent.pos=tfi.first_pos;
-		tfi.vsent.push_front(sent);
+		tfi.vsent.push_front(r_move(sent));
 		zcontrol::part_vsent(tfi.vsent);
 	}
 };

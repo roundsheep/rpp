@@ -120,7 +120,7 @@ struct zsent
 		{
 			sent.vword.push(tword("_PMAIN_A"));
 		}
-		tfi.vsent.push_front(sent);
+		tfi.vsent.push_front(r_move(sent));
 	}
 
 	//全局变量和成员变量都不能使用类型推断
@@ -282,8 +282,8 @@ struct zsent
 			i=right;
 		}
 		zpre::arrange(v);
-		result+=v;
-		v=result;
+		result+=r_move(v);
+		v=r_move(result);
 		return true;
 	}
 

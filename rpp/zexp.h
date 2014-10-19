@@ -303,7 +303,7 @@ struct zexp
 			tsent sent;
 			sent.pos=src.pos;
 			sent.vword=vlisp[i];
-			vsent.push(sent);
+			vsent.push_move(sent);
 		}
 	}
 
@@ -325,8 +325,8 @@ struct zexp
 			else
 			{
 				rbuf<tword> temp;
-				temp+=v[i];
-				vlisp+=temp;
+				temp+=r_move(v[i]);
+				vlisp+=r_move(temp);
 			}
 		}
 		return true;
@@ -586,7 +586,7 @@ struct zexp
 				outopnd.pos=src.pos;
 				outopnd.vword.push(src.vword[i]);
 				outopnd.type=sh.get_ctype(sh,src.vword[i]);
-				sopnd.push(outopnd);
+				sopnd.push_move(outopnd);
 			}
 			elif(sh.m_key.is_asm_reg(src.vword[i].val))
 			{
@@ -594,7 +594,7 @@ struct zexp
 				outopnd.pos=src.pos;
 				outopnd.vword.push(src.vword[i]);
 				outopnd.type=rppkey(c_int);
-				sopnd.push(outopnd);
+				sopnd.push_move(outopnd);
 			}
 			elif(src.vword[i].val==rppoptr(c_sbk_l))
 			{
@@ -609,7 +609,7 @@ struct zexp
 				outopnd.pos=src.pos;
 				if(!p_exp(sh,src.sub(i+1,right),outopnd,tfi,level))
 					return false;
-				sopnd.push(outopnd);
+				sopnd.push_move(outopnd);
 				i=right;
 			}
 			elif(src.vword.get(i+1)==rppoptr(c_mbk_l)&&
@@ -620,7 +620,7 @@ struct zexp
 				outopnd.pos=src.pos;
 				if(!p_point_call(sh,src,outopnd,tfi,level,i))
 					return false;
-				sopnd.push(outopnd);
+				sopnd.push_move(outopnd);
 			}
 			elif(src.vword[i].val==rppoptr(c_mbk_l))
 			{
@@ -644,7 +644,7 @@ struct zexp
 					if(!p_mbk(sh,sopnd.pop(),src.sub(i+1,right),outopnd,tfi,level))
 						return false;
 				}
-				sopnd.push(outopnd);
+				sopnd.push_move(outopnd);
 				i=right;
 			}
 			elif(src.vword[i].val==rppoptr(c_dot))
@@ -689,7 +689,7 @@ struct zexp
 					if(!p_call(sh,src,&first,outopnd,tfi,level,i,ptci))
 						return false;
 				}
-				sopnd.push(outopnd);
+				sopnd.push_move(outopnd);
 			}
 			elif(src.vword[i].val==rppoptr(c_arrow_r))
 			{
@@ -702,7 +702,7 @@ struct zexp
 				first.vword.push_front(tword(rppoptr(c_star)));
 				if(!p_exp(sh,first,tfi,level))
 					return false;
-				sopnd.push(first);
+				sopnd.push_move(first);
 				src.vword[i].val=rppoptr(c_dot);
 				i--;
 			}
@@ -737,7 +737,7 @@ struct zexp
 					if(ptfi!=null)
 					{
 						set_func(sh,outopnd,vsent,ptfi);
-						sopnd.push(outopnd);
+						sopnd.push_move(outopnd);
 						i--;
 						continue;
 					}
@@ -755,7 +755,7 @@ struct zexp
 					if(ptfi!=null)
 					{
 						set_func(sh,outopnd,vsent,ptfi);
-						sopnd.push(outopnd);
+						sopnd.push_move(outopnd);
 						i--;
 						continue;
 					}
@@ -767,7 +767,7 @@ struct zexp
 					if(ptfi!=null)
 					{
 						set_func(sh,outopnd,vsent,ptfi);
-						sopnd.push(outopnd);
+						sopnd.push_move(outopnd);
 						i--;
 						continue;
 					}
@@ -793,7 +793,7 @@ struct zexp
 					if(!p_class_call(sh,src,outopnd,tfi,level,i))
 						return false;
 				}
-				sopnd.push(outopnd);
+				sopnd.push_move(outopnd);
 			}
 			else
 			{
@@ -805,7 +805,7 @@ struct zexp
 				{
 					outopnd.vword+=src.vword[i];
 					outopnd.type=ptdi->type;
-					sopnd.push(outopnd);
+					sopnd.push_move(outopnd);
 					continue;
 				}
 				if(!tci.is_friend)
@@ -820,7 +820,7 @@ struct zexp
 						outopnd.vword+=src.vword[i];
 						outopnd.vword+=tword(rppoptr(c_mbk_r));
 						outopnd.type=ptdi->type;
-						sopnd.push(outopnd);
+						sopnd.push_move(outopnd);
 						continue;
 					}
 				}
@@ -834,12 +834,12 @@ struct zexp
 					outopnd.vword+=src.vword[i];
 					outopnd.vword+=tword(rppoptr(c_mbk_r));
 					outopnd.type=ptdi->type;
-					sopnd.push(outopnd);
+					sopnd.push_move(outopnd);
 					continue;
 				}
 				if(!p_func_call(sh,src,outopnd,tfi,level,i))
 					return false;
-				sopnd.push(outopnd);
+				sopnd.push_move(outopnd);
 			}
 		}
 		if(sopnd.count()!=1)
@@ -848,7 +848,7 @@ struct zexp
 			sh.error(src,"expression error");
 			return false;
 		}
-		dst=sopnd[0];
+		dst=r_move(sopnd[0]);
 		if(dst.vword.empty()||dst.type.empty()||dst.pos.line==0)
 		{
 			sh.error(src,"expression error");

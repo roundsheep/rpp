@@ -104,7 +104,7 @@ struct zasm
 			item.vstr.push(rppkey(c_retn));
 			vasm.push(item);
 		}
-		tfi.vasm=vasm;
+		tfi.vasm=r_move(vasm);
 		return true;
 	}
 
@@ -371,7 +371,7 @@ struct zasm
 		{
 			temp.vword=v.sub(start,start+1);
 		}
-		return temp;
+		return r_move(temp);
 	}
 
 	static rbool pass_param(tsh& sh,tsent& src,tdata& dst,rbuf<tasm>& vasm,
@@ -674,7 +674,7 @@ struct zasm
 	{
 		tasm item;
 		item.vstr=vstr;
-		vasm.push(item);
+		vasm.push_move(item);
 	}
 
 	//todo 这里无法使用变参函数，可以使用模板元简化代码
@@ -696,7 +696,7 @@ struct zasm
 		item.vstr.push(s10);
 		item.vstr.push(s11);
 		item.vstr.push(s12);
-		vasm.push(item);
+		vasm.push_move(item);
 	}
 
 	static void push_asm(rbuf<tasm>& vasm,const rstr& s1,const rstr& s2,const rstr& s3,
@@ -711,7 +711,7 @@ struct zasm
 		item.vstr.push(s6);
 		item.vstr.push(s7);
 		item.vstr.push(s8);
-		vasm.push(item);
+		vasm.push_move(item);
 	}
 
 	static void push_asm(rbuf<tasm>& vasm,const rstr& s1,const rstr& s2,const rstr& s3,
@@ -725,7 +725,7 @@ struct zasm
 		item.vstr.push(s5);
 		item.vstr.push(s6);
 		item.vstr.push(s7);
-		vasm.push(item);
+		vasm.push_move(item);
 	}
 
 	static void push_asm(rbuf<tasm>& vasm,const rstr& s1,const rstr& s2,
@@ -738,7 +738,7 @@ struct zasm
 		item.vstr.push(s4);
 		item.vstr.push(s5);
 		item.vstr.push(s6);
-		vasm.push(item);
+		vasm.push_move(item);
 	}
 
 	static void push_asm(rbuf<tasm>& vasm,const rstr& s1,const rstr& s2,
@@ -749,7 +749,7 @@ struct zasm
 		item.vstr.push(s2);
 		item.vstr.push(s3);
 		item.vstr.push(s4);
-		vasm.push(item);
+		vasm.push_move(item);
 	}
 
 	static void push_asm(rbuf<tasm>& vasm,const rstr& s1,const rstr& s2)
@@ -757,14 +757,14 @@ struct zasm
 		tasm item;
 		item.vstr.push(s1);
 		item.vstr.push(s2);
-		vasm.push(item);
+		vasm.push_move(item);
 	}
 
 	static void push_asm(rbuf<tasm>& vasm,const rstr& s1)
 	{
 		tasm item;
 		item.vstr.push(s1);
-		vasm.push(item);
+		vasm.push_move(item);
 	}
 };
 

@@ -64,7 +64,7 @@ struct zopt
 				result.push(vasm[i]);
 			}
 		}
-		vasm=result;
+		vasm=r_move(result);
 		return true;
 	}
 
@@ -158,7 +158,7 @@ struct zopt
 				{
 					return false;
 				}
-				result+=temp;
+				result+=r_move(temp);
 				i=i+len-1;
 				break;
 			}
@@ -167,7 +167,7 @@ struct zopt
 				result+=vasm[i];
 			}
 		}
-		vasm=result;
+		vasm=r_move(result);
 		return true;
 	}
 };
