@@ -162,7 +162,7 @@ struct zexp
 			sh.error(first,"can't find func mbk");
 			return false;
 		}
-		set_func(sh,outopnd,vsent,ptfi);
+		set_func(sh,outopnd,r_move(vsent),ptfi);
 		return true;
 	}
 
@@ -198,7 +198,7 @@ struct zexp
 			{
 				return false;
 			}
-			vsent.push(sent);
+			vsent.push_move(sent);
 			j=right;
 		}
 		return true;
@@ -244,7 +244,7 @@ struct zexp
 					return false;
 				}
 			}
-			set_func(sh,outopnd,vsent,ptfi);
+			set_func(sh,outopnd,r_move(vsent),ptfi);
 			return true;
 		}
 		if(cname==rppkey(c_pcall)||cname==rppkey(c_btemp))
@@ -537,7 +537,7 @@ struct zexp
 				return false;
 			}
 		}
-		set_func(sh,outopnd,vsent,ptfi);
+		set_func(sh,outopnd,r_move(vsent),ptfi);
 		i=right;
 		return true;
 	}
@@ -736,7 +736,7 @@ struct zexp
 					ptfi=zmatch::find_replace(sh,*ptci,theta,vsent);
 					if(ptfi!=null)
 					{
-						set_func(sh,outopnd,vsent,ptfi);
+						set_func(sh,outopnd,r_move(vsent),ptfi);
 						sopnd.push_move(outopnd);
 						i--;
 						continue;
@@ -754,7 +754,7 @@ struct zexp
 					ptfi=zmatch::find_replace(sh,*ptci,theta,vsent);
 					if(ptfi!=null)
 					{
-						set_func(sh,outopnd,vsent,ptfi);
+						set_func(sh,outopnd,r_move(vsent),ptfi);
 						sopnd.push_move(outopnd);
 						i--;
 						continue;
@@ -766,7 +766,7 @@ struct zexp
 					ptfi=zmatch::find_replace(sh,*ptci,theta,vsent);
 					if(ptfi!=null)
 					{
-						set_func(sh,outopnd,vsent,ptfi);
+						set_func(sh,outopnd,r_move(vsent),ptfi);
 						sopnd.push_move(outopnd);
 						i--;
 						continue;
@@ -857,7 +857,7 @@ struct zexp
 		return true;
 	}
 
-	static void set_func(tsh& sh,tsent& outopnd,rbuf<tsent>& vsent,tfunc* ptfi)
+	static void set_func(tsh& sh,tsent& outopnd,rbuf<tsent>&& vsent,tfunc* ptfi)
 	{
 		tclass* ptci=ptfi->ptci;
 		outopnd.type=ptfi->retval.type;
@@ -867,7 +867,7 @@ struct zexp
 		outopnd.vword+=tword(rppoptr(c_mbk_l));
 		for(int i=0;i<vsent.count();i++)
 		{
-			outopnd.vword+=vsent[i].vword;
+			outopnd.vword+=r_move(vsent[i].vword);
 		}
 		outopnd.vword+=tword(rppoptr(c_mbk_r));
 		outopnd.vword+=tword(rppoptr(c_mbk_r));
