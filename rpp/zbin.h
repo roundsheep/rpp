@@ -85,7 +85,7 @@ struct zbin
 		int i;
 		for(i=1;i<item.vstr.count();i++)
 		{
-			if(item.vstr[i]=="&")
+			if(item.vstr[i]==rppoptr(c_addr))
 			{
 				break;
 			}
@@ -123,29 +123,6 @@ struct zbin
 			return false;
 		}
 		return true;
-	}
-
-	static rbuf<rstr> part_func_declare(rstr& s)
-	{
-		rbuf<rstr> ret;
-		ret+="&";
-		int dotpos=s.find(".");
-		ret+=s.sub(1,dotpos);
-		ret+=".";
-		int left=s.find("(",dotpos);
-		ret+=s.sub(dotpos+1,left);
-		rbuf<rstr> tmp=r_split(s.sub(left+1,s.count()-1),rstr(","));
-		ret+="(";
-		for(int i=0;i<tmp.count();i++)
-		{
-			if(i!=0)
-			{
-				ret+=",";
-			}
-			ret+=tmp[i];
-		}
-		ret+=")";
-		return r_move(ret);
 	}
 
 	//从函数的词表编译到vasm
@@ -229,15 +206,15 @@ struct zbin
 		int count=0;
 		for(i=1;i<item.vstr.count();i++)
 		{
-			if("("==item.vstr[i])
+			if(rppoptr(c_sbk_l)==item.vstr[i])
 			{
 				count++;
 			}
-			elif(")"==item.vstr[i])
+			elif(rppoptr(c_sbk_r)==item.vstr[i])
 			{
 				count--;
 			}
-			elif(count==0&&item.vstr[i]==",")
+			elif(count==0&&item.vstr[i]==rppoptr(c_comma))
 				break;
 		}
 		if(!a_opnd(sh,item,i-1,item.vstr.sub(1,i),item.ins.first))

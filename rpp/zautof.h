@@ -73,7 +73,7 @@ struct zautof
 			tci.vfunc.insert(tfi);
 			added=true;
 		}
-		if(zfind::func_search(tci,tci.name,tci.name+"&",tci.name)==null)
+		if(zfind::func_search(tci,tci.name,tci.name+rppoptr(c_addr),tci.name)==null)
 		{
 			tfunc tfi=*zfind::copystruct_search(tci);
 			tfi.ptci=&tci;
@@ -82,7 +82,8 @@ struct zautof
 			tci.vfunc.insert(tfi);
 			added=true;
 		}
-		if(zfind::func_search(tci,"=",tci.name+"&",tci.name+"&")==null)
+		if(zfind::func_search(tci,rppoptr(c_equal),tci.name+rppoptr(c_addr),
+			tci.name+rppoptr(c_addr))==null)
 		{
 			tfunc tfi;
 			tfi.ptci=&tci;
@@ -90,7 +91,7 @@ struct zautof
 			tfi.last_pos=pos;
 			tfi.last_pos.line++;
 
-			tfi.name="=";
+			tfi.name=rppoptr(c_equal);
 
 			tfi.param.push(tdata(tci.name+rppoptr(c_addr),rppkey(c_this)));
 			tfi.param.push(tdata(tci.name+rppoptr(c_addr),rppkey(c_rvara)));
@@ -101,16 +102,17 @@ struct zautof
 			tci.vfunc.insert(tfi);
 			added=true;
 		}
-		if(zfind::func_search(tci,"=",tci.name+"&",tci.name)==null)
+		if(zfind::func_search(tci,rppoptr(c_equal),tci.name+rppoptr(c_addr),tci.name)==null)
 		{
-			tfunc tfi=*zfind::func_search(tci,"=",tci.name+"&",tci.name+"&");
+			tfunc tfi=*zfind::func_search(tci,rppoptr(c_equal),tci.name+rppoptr(c_addr),
+				tci.name+rppoptr(c_addr));
 			tfi.ptci=&tci;
 			tfi.param[1].type=tci.name;
 			tfi.name_dec=tfi.get_dec();
 			tci.vfunc.insert(tfi);
 			added=true;
 		}
-		if(zfind::func_search(tci,"&")==null)
+		if(zfind::func_search(tci,rppoptr(c_addr))==null)
 		{
 			tfunc tfi;
 			tfi.ptci=&tci;
@@ -118,7 +120,7 @@ struct zautof
 			tfi.last_pos=pos;
 			tfi.last_pos.line++;
 
-			tfi.name="&";
+			tfi.name=rppoptr(c_addr);
 
 			tfi.param.push(tdata(tci.name+rppoptr(c_addr),rppkey(c_this)));
 			tfi.retval=tdata("rp<"+tci.name+">",rppkey(c_s_ret));
@@ -126,10 +128,10 @@ struct zautof
 			tword twi;
 			twi.pos=tfi.first_pos;
 			twi.pos_src=tfi.first_pos;
-			sh.push_twi(tfi.vword,twi,"mov");
-			sh.push_twi(tfi.vword,twi,"s_ret");
+			sh.push_twi(tfi.vword,twi,rppkey(c_mov));
+			sh.push_twi(tfi.vword,twi,rppkey(c_s_ret));
 			sh.push_twi(tfi.vword,twi,rppoptr(c_comma));
-			sh.push_twi(tfi.vword,twi,"this");
+			sh.push_twi(tfi.vword,twi,rppkey(c_this));
 			tfi.name_dec=tfi.get_dec();
 			if(zfind::is_class(sh,tfi.retval.type))
 				tci.vfunc.insert(tfi);
@@ -171,11 +173,11 @@ struct zautof
 		tclass* p=zfind::class_search(sh,"rbuf<char>");
 		if(p!=null)
 		{
-			op_rstr(p->vword);
+			op_rstr(sh,p->vword);
 		}
 	}
 
-	static void op_rstr(rbuf<tword>& v)
+	static void op_rstr(tsh& sh,rbuf<tword>& v)
 	{
 		for(int i=0;i<v.count()-3;i++)
 		{
@@ -183,7 +185,7 @@ struct zautof
 			{
 				continue;
 			}
-			if(v[i+1]!="<"||v[i+2]!="char"||v[i+3]!=">")
+			if(v[i+1]!=rppoptr(c_tbk_l)||v[i+2]!="char"||v[i+3]!=rppoptr(c_tbk_r))
 			{
 				continue;
 			}

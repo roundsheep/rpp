@@ -39,22 +39,22 @@
 
 #define rppja znasm::get_opnd1_v(vstr)
 #define rppjb znasm::get_opnd2_v(vstr)
-#define rppj4(a,b,c,d) (zjiti::a(build_ins(sh,"nop",b,c,d)))
+#define rppj4(a,b,c,d) (zjiti::a(build_ins(sh,rppkey(c_nop),b,c,d)))
 #define rppjf(a,b) sh.m_jit_f[a]=&b
 
-#define rppjcmp(a)                       \
-rstr s;                                  \
-if(znasm::count_mbk_l(vstr)==2)          \
-{                                        \
-	s+=rppj4(b_mov,"ecx",",",rppjb); \
-	s+=rppj4(b_cmp,rppja,",","ecx"); \
-}                                        \
-else                                     \
-{                                        \
-	s+=zjiti::b_cmp(ins);            \
-}                                        \
-s+=rppj4(b_mov,"ebx",",","0");           \
-s+=zjiti::a();                           \
+#define rppjcmp(a)                                            \
+rstr s;                                                       \
+if(znasm::count_mbk_l(vstr)==2)                               \
+{                                                             \
+	s+=rppj4(b_mov,rppkey(c_ecx),rppoptr(c_comma),rppjb); \
+	s+=rppj4(b_cmp,rppja,rppoptr(c_comma),rppkey(c_ecx)); \
+}                                                             \
+else                                                          \
+{                                                             \
+	s+=zjiti::b_cmp(ins);                                 \
+}                                                             \
+s+=rppj4(b_mov,rppkey(c_ebx),rppoptr(c_comma),"0");           \
+s+=zjiti::a();                                                \
 return r_move(s)
 
 #define rppncmp(a)                                               \

@@ -18,13 +18,13 @@ struct zmatch
 			return false;
 		}
 		tfunc* ptfi=zfind::func_search(*ptci,sh.get_tname(dst),
-			sh.get_tname(dst)+"&",sh.get_tname(src.type)+"&");
+			sh.get_tname(dst)+rppoptr(c_addr),sh.get_tname(src.type)+rppoptr(c_addr));
 		if(ptfi!=null)
 		{
 			return true;
 		}
 		ptfi=zfind::func_search(*ptci,sh.get_tname(dst),
-			sh.get_tname(dst)+"&",sh.get_tname(src.type));
+			sh.get_tname(dst)+rppoptr(c_addr),sh.get_tname(src.type));
 		return ptfi!=null;
 	}
 

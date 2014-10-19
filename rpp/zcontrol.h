@@ -12,7 +12,7 @@ struct zcontrol
 	static rbool proc_func(tsh& sh,tfunc& tfi)
 	{
 		zclass::arrange_format(sh,tfi.vword,&tfi);
-		insert_end_statement(tfi,tfi.vword);
+		insert_end_statement(sh,tfi,tfi.vword);
 		if(!ifn_replace(sh,tfi.vword))
 			return false;
 		if(!switch_replace(sh,tfi.vword))
@@ -439,29 +439,29 @@ struct zcontrol
 		if(1==v.count())
 		{
 			v.clear();
-			sh.push_twi(v,twi,"jmp");
+			sh.push_twi(v,twi,rppkey(c_jmp));
 			sh.push_twi(v,twi,tfi.last_pos.line);
 			return;
 		}
 		if(sh.is_quote(tfi.retval.type))
 		{
 			rbuf<tword> vtemp;
-			sh.push_twi(vtemp,twi,"&");
-			sh.push_twi(vtemp,twi,"(");
+			sh.push_twi(vtemp,twi,rppoptr(c_addr));
+			sh.push_twi(vtemp,twi,rppoptr(c_sbk_l));
 			vtemp+=v.sub(1);
-			sh.push_twi(vtemp,twi,")");
-			sh.push_twi(vtemp,twi,";");
-			sh.push_twi(vtemp,twi,"mov");
+			sh.push_twi(vtemp,twi,rppoptr(c_sbk_r));
+			sh.push_twi(vtemp,twi,rppoptr(c_semi));
+			sh.push_twi(vtemp,twi,rppkey(c_mov));
 			sh.push_twi(vtemp,twi,rppoptr(c_mbk_l));
-			sh.push_twi(vtemp,twi,"ebp");
-			sh.push_twi(vtemp,twi,"+");
+			sh.push_twi(vtemp,twi,rppkey(c_ebp));
+			sh.push_twi(vtemp,twi,rppoptr(c_plus));
 			sh.push_twi(vtemp,twi,rppkey(c_s_off));
 			sh.push_twi(vtemp,twi,tfi.retval.name);
 			sh.push_twi(vtemp,twi,rppoptr(c_mbk_r));
-			sh.push_twi(vtemp,twi,",");
-			sh.push_twi(vtemp,twi,"ebx");
-			sh.push_twi(vtemp,twi,";");
-			sh.push_twi(vtemp,twi,"jmp");
+			sh.push_twi(vtemp,twi,rppoptr(c_comma));
+			sh.push_twi(vtemp,twi,rppkey(c_ebx));
+			sh.push_twi(vtemp,twi,rppoptr(c_semi));
+			sh.push_twi(vtemp,twi,rppkey(c_jmp));
 			sh.push_twi(vtemp,twi,tfi.last_pos.line);
 			v=vtemp;
 		}
@@ -475,7 +475,7 @@ struct zcontrol
 			sh.push_twi(vtemp,twi,rppoptr(c_sbk_r));
 			sh.push_twi(vtemp,twi,rppoptr(c_sbk_r));
 			sh.push_twi(vtemp,twi,rppoptr(c_semi));
-			sh.push_twi(vtemp,twi,"jmp");
+			sh.push_twi(vtemp,twi,rppkey(c_jmp));
 			sh.push_twi(vtemp,twi,tfi.last_pos.line);
 			v=vtemp;
 		}
@@ -532,7 +532,7 @@ struct zcontrol
 			v[left].val.clear();
 			v[right].val.clear();
 			v[right].multi.push(rppoptr(c_semi));
-			v[right].multi.push(rstr("nop"));
+			v[right].multi.push(rppkey(c_nop));
 		}
 		zpre::arrange(v);
 		return true;
@@ -606,7 +606,7 @@ struct zcontrol
 			}
 			if(v.get(right+1).val==rppkey(c_else))
 			{
-				insert_jmp_asm(v[right],v[else_end]);
+				insert_jmp_asm(sh,v[right],v[else_end]);
 				v[right+1].val.clear();
 			}
 			v[left].multi=sh.vword_to_vstr(vcond);
@@ -615,7 +615,7 @@ struct zcontrol
 			v[left].val.clear();
 			v[right].val.clear();
 			v[right].multi.push(rppoptr(c_semi));
-			v[right].multi.push(rstr("nop"));
+			v[right].multi.push(rppkey(c_nop));
 		}
 		return true;
 	}
@@ -673,7 +673,7 @@ struct zcontrol
 				insert_cond_false_asm(sh,v[left].multi,v.get(right+1));
 				v[right].val.clear();
 				v[right].multi=sh.vword_to_vstr(forcond[2]);
-				insert_jmp_asm(v[right],v[left]);
+				insert_jmp_asm(sh,v[right],v[left]);
 				sh.clear_word_val(v,i,cond_end);
 			}
 			else
@@ -681,7 +681,7 @@ struct zcontrol
 				v[left].multi=sh.vword_to_vstr(vcond);
 				insert_cond_false_asm(sh,v[left].multi,v.get(right+1));
 				v[left].val.clear();
-				insert_jmp_asm(v[right],v[left]);
+				insert_jmp_asm(sh,v[right],v[left]);
 				v[right].val.clear();
 				sh.clear_word_val(v,i,cond_end);
 			}
@@ -689,16 +689,10 @@ struct zcontrol
 		return true;
 	}
 
-	static void change_jmp_asm(tword& word,const tword& posword)
+	static void insert_jmp_asm(tsh& sh,tword& word,const tword& posword)
 	{
-		word.val=rstr("jmp ");
-		word.val+=rstr(posword.pos.line);
-	}
-
-	static void insert_jmp_asm(tword& word,const tword& posword)
-	{
-		word.multi.push(rstr(";"));
-		word.multi.push(rstr("jmp"));
+		word.multi.push(rppoptr(c_semi));
+		word.multi.push(rppkey(c_jmp));
 		word.multi.push(rstr(posword.pos.line));
 	}
 
@@ -728,7 +722,7 @@ struct zcontrol
 			int left=get_condition_end(sh,v,j);
 			if(left>=v.count())
 				return -2;
-			if(v[left]!=rstr("{"))
+			if(v[left]!=rppoptr(c_bbk_l))
 				return -2;
 			int right=sh.find_symm_bbk(v,left);
 			if(right>=v.count())
@@ -777,18 +771,18 @@ struct zcontrol
 			{
 				if(v[i].val==rppkey(c_continue))
 				{
-					insert_jmp_asm(v[i],v[right]);
+					insert_jmp_asm(sh,v[i],v[right]);
 					v[i].val.clear();
 				}
 				else
 				{
-					insert_jmp_asm(v[i],v[left]);
+					insert_jmp_asm(sh,v[i],v[left]);
 					v[i].val.clear();
 				}
 			}
 			else
 			{
-				insert_jmp_asm(v[i],v[left]);
+				insert_jmp_asm(sh,v[i],v[left]);
 				v[i].val.clear();
 			}
 		}
@@ -816,7 +810,7 @@ struct zcontrol
 				sh.error(v.get(j),"miss { or }");
 				return false;
 			}
-			insert_jmp_asm(v[i],v[right+1]);
+			insert_jmp_asm(sh,v[i],v[right+1]);
 			v[i].val.clear();
 		}
 		return true;
@@ -963,13 +957,13 @@ struct zcontrol
 		return true;
 	}
 
-	static void insert_end_statement(tfunc& tfi,rbuf<tword>& v)
+	static void insert_end_statement(tsh& sh,tfunc& tfi,rbuf<tword>& v)
 	{
 		tword item;
 		item.pos=tfi.last_pos;
 		item.pos_src=tfi.last_pos;
 		item.pos_src.line=0;
-		item.val=rstr(";");
+		item.val=rppoptr(c_semi);
 		v.push(item);
 	}
 };

@@ -214,7 +214,7 @@ struct zmemb
 				return false;
 			}
 			rbuf<rbuf<rstr> > temp=r_split<rbuf<rstr>,rstr>(
-				sh.vword_to_vstr(v.sub(left+1,right)),rstr(","));
+				sh.vword_to_vstr(v.sub(left+1,right)),rppoptr(c_comma));
 			for(int j=0;j<temp.count();j++)
 			{
 				mitem.param.push(temp[j].get(0));

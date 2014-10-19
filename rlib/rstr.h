@@ -249,6 +249,7 @@ struct rstr
 
 	void set(const void* p)
 	{
+		//todo 如果字符串长度为0没必要分配内存
 		int len=(int)strlen((const char*)p);
 		m_buf.realloc_n_not_change(rbuf<uchar>::extend_num(len));
 		m_buf.m_count=len;

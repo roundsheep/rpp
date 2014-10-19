@@ -90,10 +90,10 @@ struct zself
 		rbuf<tdata> vdata=get_all_tdata(sh,tfi);
 		for(int i=0;i<vdata.count();i++)
 		{
-			v.push(rstr(","));
+			v.push(rppoptr(c_comma));
 			ifn(tsh::is_point(vdata[i].type))
 			{
-				v.push(rstr("&"));
+				v.push(rppoptr(c_addr));
 			}
 			v.push(vdata[i].name);
 		}
