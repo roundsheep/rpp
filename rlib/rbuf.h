@@ -317,22 +317,20 @@ struct rbuf
 
 	T get_top() const 
 	{
-		T ret;
 		if(count()>0)
 		{
-			ret=m_p[count()-1];
+			return m_p[count()-1];
 		}
-		return r_move(ret);
+		return T();
 	}
 
 	T get_bottom() const 
 	{
-		T ret;
 		if(count()>0)
 		{
-			ret=m_p[0];
+			return m_p[0];
 		}
-		return r_move(ret);
+		return T();
 	}
 
 	rbool erase(int num)
@@ -343,7 +341,7 @@ struct rbuf
 		}
 		for(int i=num;i<count()-1;++i)
 		{
-			*(m_p+i)=*(m_p+i+1);
+			*(m_p+i)=r_move(*(m_p+i+1));
 		}
 		m_count--;
 		return true;
@@ -357,7 +355,7 @@ struct rbuf
 		}
 		for(int i=0;i<count()-end;i++)//count()-(end-begin)-begin
 		{
-			m_p[i+begin]=m_p[end+i];//删除的元素没有析构
+			m_p[i+begin]=r_move(m_p[end+i]);//删除的元素没有析构
 		}
 		m_count-=(end-begin);
 		return true;
@@ -372,7 +370,7 @@ struct rbuf
 		this->push(a);
 		for(int i=count()-1;i>pos;--i)
 		{
-			m_p[i]=m_p[i-1];
+			m_p[i]=r_move(m_p[i-1]);
 		}
 		m_p[pos]=a;
 		return true;
@@ -390,7 +388,7 @@ struct rbuf
 		}
 		for(int i=0;i<count()-pos;i++)
 		{
-			m_p[a.count()+count()-1-i]=m_p[count()-1-i];
+			m_p[a.count()+count()-1-i]=r_move(m_p[count()-1-i]);
 		}
 		for(int i=0;i<a.count();i++)
 		{
@@ -448,7 +446,7 @@ struct rbuf
 		int copy_size=r_min(num,m_count);
 		for(int i=0;i<copy_size;i++)
 		{
-			p[i]=m_p[i];
+			p[i]=r_move(m_p[i]);
 		}
 		delete []m_p;
 		m_p=p;
@@ -472,7 +470,7 @@ struct rbuf
 		int copy_size=r_min(num,m_count);
 		for(int i=0;i<copy_size;i++)
 		{
-			p[i]=m_p[i];
+			p[i]=r_move(m_p[i]);
 		}
 		delete []m_p;
 		m_p=p;

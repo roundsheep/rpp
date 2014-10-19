@@ -308,7 +308,8 @@ struct zpre
 		}
 		if(pneed!=null)
 			*pneed=true;
-		rbuf<tword> wlist;
+		rbuf<tword> wlist(src.count()*2);
+		wlist.m_count=0;
 		for(int i=0;i<src.count();i++)
 		{
 			if(src[i].empty())
@@ -318,7 +319,7 @@ struct zpre
 				for(int j=0;j<src[i].multi.count();++j)
 				{
 					tword word;
-					word.val=src[i].multi[j];
+					word.val=r_move(src[i].multi[j]);
 					word.pos_src=src[i].pos_src;
 					word.pos=src[i].pos;
 					wlist.push_move(word);

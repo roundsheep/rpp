@@ -389,7 +389,8 @@ struct zcontrol
 	{
 		if(!need_part(vsent))
 			return;
-		rbuf<tsent> result;
+		rbuf<tsent> result(vsent.count()*2);
+		result.m_count=0;
 		for(int i=0;i<vsent.count();++i)
 		{
 			rbuf<rbuf<tword> > temp=r_split(vsent[i].vword,tword(rstr(";")));

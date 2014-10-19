@@ -181,7 +181,7 @@ rbuf<V> r_split(const V& v,const V& m,int start=0)
 	for(i=start;i<v.count();i++)
 		temp+=v[i];
 	if(!temp.empty())
-		result.push(temp);
+		result.push_move(temp);
 	return r_move(result);
 }
 
