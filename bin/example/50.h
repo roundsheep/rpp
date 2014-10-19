@@ -6,6 +6,7 @@ main
 	test3
 	test4
 	test5
+	test6
 }
 
 //浮点测试
@@ -60,4 +61,11 @@ test5
 {
 	if (2)==2
 		putsl('ok',,,)
+}
+
+test6
+{
+	putsl ORM[1,2]
+	putsl ORM[1,2,4,8]
+	putsl ORM[1]
 }
