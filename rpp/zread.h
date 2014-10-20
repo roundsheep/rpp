@@ -625,7 +625,7 @@ struct zread
 	static void push_word(rbuf<tword>& result,tword word)
 	{
 		word.pos_src=word.pos;
-		result.push(word);
+		result.push_move(word);
 	}
 
 	static int get_optr_s_len(tsh& sh,const uchar* s,int len,rstr& stemp)

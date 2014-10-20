@@ -463,7 +463,7 @@ struct zmemb
 			sh.error(v.get(0),"miss func name");
 			return false;
 		}
-		rbuf<tword> param;
+		rbuf<rbuf<tword> > list;
 		int right;
 		if(v.get(start).val==rppoptr(c_sbk_l))
 		{
@@ -473,13 +473,12 @@ struct zmemb
 				sh.error(v.get(0),"miss )");
 				return false;
 			}
-			param=v.sub(start+1,right);
+			list=sh.comma_split(v.sub(start+1,right));
 		}
 		else
 		{
-			param=v.sub(start);
+			list=sh.comma_split(v.sub(start));
 		}
-		rbuf<rbuf<tword> > list=sh.comma_split(param);
 		for(int i=0;i<list.count();i++)
 		{
 			if(list[i].empty())
@@ -691,8 +690,8 @@ struct zmemb
 				twi.val=rppoptr(c_semi);
 				vtemp.push(twi);
 			}
-			vtemp+=ftemp.vword;
-			ftemp.vword=vtemp;
+			vtemp+=r_move(ftemp.vword);
+			ftemp.vword=r_move(vtemp);
 			for(int j=0;j<ftemp.param.count();j++)
 				ftemp.param[j].param.free();
 			ftemp.name_dec=ftemp.get_dec();

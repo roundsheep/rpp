@@ -219,22 +219,19 @@ struct zpre
 			if(v[i].val==rppkey(c_private))
 			{
 				v[i].clear();
-				tword temp=v.get(i+1);
-				if(rppoptr(c_colon)==temp.val)
+				if(rppoptr(c_colon)==v.get(i+1).val)
 					v[i+1].clear();
 			}
 			if(v[i].val==rppkey(c_public))
 			{
 				v[i].clear();
-				tword temp=v.get(i+1);
-				if(rppoptr(c_colon)==temp.val)
+				if(rppoptr(c_colon)==v.get(i+1).val)
 					v[i+1].clear();
 			}
 			if(v[i].val==rppkey(c_protected))
 			{
 				v[i].clear();
-				tword temp=v.get(i+1);
-				if(rppoptr(c_colon)==temp.val)
+				if(rppoptr(c_colon)==v.get(i+1).val)
 					v[i+1].clear();
 			}
 		}
@@ -476,7 +473,7 @@ struct zpre
 				for(int i=0;i<word.val.count();i++)
 					if(word.val[i]!='_')
 						s+=word.val[i];
-				word.val=s;
+				word.val=r_move(s);
 			}
 		}
 		if(word.val.count()>2)

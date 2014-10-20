@@ -240,7 +240,7 @@ struct znasm
 				ret+=rstr::format("%02X",(int)s[i]);
 			}
 		}
-		return ret;
+		return r_move(ret);
 	}
 
 	static rstr get_nasm_symbol(tfunc& tfi)

@@ -226,8 +226,8 @@ struct zsent
 			rbuf<tword> vtemp;
 			zadd::add_destructor_func(sh,tdi,vtemp);
 			zadd::add_structor_func(sh,tdi,vtemp);
-			vtemp+=sent.vword;
-			sent.vword=vtemp;
+			vtemp+=r_move(sent.vword);
+			sent.vword=r_move(vtemp);
 		}
 		return true;
 	}

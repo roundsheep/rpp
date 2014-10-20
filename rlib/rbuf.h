@@ -276,12 +276,7 @@ struct rbuf
 
 	void push_move(T& a)
 	{
-		if(m_count>=m_cmax)
-		{
-			realloc_not_change(extend_num(m_count));
-		}
-		m_p[count()]=r_move(a);
-		m_count++;
+		push(r_move(a));
 	}
 
 	T pop()
@@ -294,12 +289,12 @@ struct rbuf
 
 	T pop_front()
 	{
-		T ret=m_p[0];
+		T ret=r_move(m_p[0]);
 		erase(0);
-		return ret;
+		return r_move(ret);
 	}
 
-	//todo 增加move版本
+	//没必要增加push_front的move版本
 	void push_front(const T& a)
 	{
 		insert(0,a);
@@ -355,9 +350,9 @@ struct rbuf
 		}
 		for(int i=0;i<count()-end;i++)//count()-(end-begin)-begin
 		{
-			m_p[i+begin]=r_move(m_p[end+i]);//删除的元素没有析构
+			m_p[i+begin]=r_move(m_p[end+i]);//删除的元素稍后析构
 		}
-		m_count-=(end-begin);
+		m_count-=end-begin;
 		return true;
 	}
 
@@ -367,12 +362,16 @@ struct rbuf
 		{
 			return false;
 		}
-		this->push(a);
-		for(int i=count()-1;i>pos;--i)
+		if(m_count>=m_cmax)
+		{
+			realloc_not_change(extend_num(m_count));
+		}
+		for(int i=count();i>pos;--i)
 		{
 			m_p[i]=r_move(m_p[i-1]);
 		}
 		m_p[pos]=a;
+		m_count++;
 		return true;
 	}
 

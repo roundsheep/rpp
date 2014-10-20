@@ -152,9 +152,9 @@ struct tsh
 	static rbuf<rstr> get_func_declare_call(tsh& sh,tclass& tci,tfunc& tfi)
 	{
 		rbuf<rstr> ret;
-		ret+="call";
+		ret+=rppkey(c_call);
 		ret+=rppoptr(c_mbk_l);
-		ret+="&";
+		ret+=rppoptr(c_addr);
 		ret+=tci.name;
 		ret+=tfi.name_dec;
 		ret+=rppoptr(c_mbk_r);
@@ -201,12 +201,10 @@ struct tsh
 	//获取类型名称，忽略引用
 	static rstr get_tname(const rstr& s)
 	{
-		rstr name;
 		if(is_quote(s))
-			name=s.sub(0,s.count()-1);
+			return s.sub(0,s.count()-1);
 		else
-			name=s;
-		return r_move(name);
+			return s;
 	}
 
 	static rstr get_ttype(rstr s)
@@ -266,8 +264,8 @@ struct tsh
 		{
 			tsent sent;
 			sent.pos=src.pos;
-			sent.vword=temp[i];
-			vsent.push(sent);
+			sent.vword=r_move(temp[i]);
+			vsent.push_move(sent);
 		}
 	}
 
@@ -278,8 +276,8 @@ struct tsh
 		for(int i=0;i<temp.count();i++)
 		{
 			tsent sent;
-			sent.vword=temp[i];
-			vsent.push(sent);
+			sent.vword=r_move(temp[i]);
+			vsent.push_move(sent);
 		}
 	}
 
@@ -307,9 +305,9 @@ struct tsh
 			{
 				rbuf<tword> temp;
 				for(int j=start;j<i;j++)
-					temp.push(v[j]);
+					temp.push_move(v[j]);
 				if(!temp.empty())
-					result.push(temp);
+					result.push_move(temp);
 				start=i+1;
 			}
 		}
@@ -338,9 +336,9 @@ struct tsh
 			{
 				rbuf<rstr> temp;
 				for(int j=start;j<i;j++)
-					temp.push(v[j]);
+					temp.push_move(v[j]);
 				if(!temp.empty())
-					result.push(temp);
+					result.push_move(temp);
 				start=i+1;
 			}
 		}
@@ -370,8 +368,8 @@ struct tsh
 			{
 				rbuf<tword> temp;
 				for(int j=start;j<i;j++)
-					temp.push(v[j]);
-				result.push(temp);
+					temp.push_move(v[j]);
+				result.push_move(temp);
 				start=i+1;
 			}
 		}
@@ -397,9 +395,9 @@ struct tsh
 			{
 				rbuf<rstr> temp;
 				for(int j=start;j<i;j++)
-					temp.push(v[j]);
+					temp.push_move(v[j]);
 				if(!temp.empty())
-					result.push(temp);
+					result.push_move(temp);
 				start=i+1;
 			}
 		}
@@ -433,9 +431,9 @@ struct tsh
 			{
 				tsent temp;
 				for(int j=start;j<i;j++)
-					temp.vword.push(v[j]);
+					temp.vword.push_move(v[j]);
 				if(!temp.vword.empty())
-					result.push(temp);
+					result.push_move(temp);
 				start=i+1;
 			}
 		}
@@ -545,14 +543,6 @@ struct tsh
 				return i;
 		}
 		return v.count();
-	}
-
-	static rstr vwordtostr(const rbuf<tword>& v)
-	{
-		rstr ret;
-		for(int i=0;i<v.count();i++)
-			ret+=v[i].val;
-		return r_move(ret);
 	}
 
 	static rbuf<rstr> vword_to_vstr(const rbuf<tword>& v)

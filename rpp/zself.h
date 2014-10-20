@@ -55,7 +55,7 @@ struct zself
 			self_push_param(sh,tfi,vstr);
 			vstr.push(rppoptr(c_mbk_r));
 			sh.clear_word_val(v,i,right+1);
-			v[i].multi=vstr;
+			v[i].multi=r_move(vstr);
 			i=right;
 		}
 		zpre::arrange(v);

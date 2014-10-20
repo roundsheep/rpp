@@ -83,7 +83,7 @@ struct zsuper
 			{
 				tword temp;
 				temp.multi+=src[0];
-				arr.push(temp);
+				arr.push_move(temp);
 				if(match_here(sh,reg.sub(1),src.sub(1),arr))
 				{
 					return true;

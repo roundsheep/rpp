@@ -74,7 +74,7 @@ struct zexp
 		outopnd.vword+=rppoptr(c_mbk_l);
 		for(int j=1;j<vsent.count();j++)
 		{
-			outopnd.vword+=vsent[j].vword;
+			outopnd.vword+=r_move(vsent[j].vword);
 		}
 		outopnd.vword+=rppoptr(c_mbk_r);
 		outopnd.vword+=rppoptr(c_mbk_r);
@@ -109,7 +109,7 @@ struct zexp
 		outopnd.vword+=rppoptr(c_mbk_l);
 		for(int j=0;j<vsent.count();j++)
 		{
-			outopnd.vword+=vsent[j].vword;
+			outopnd.vword+=r_move(vsent[j].vword);
 		}
 		outopnd.vword+=rppoptr(c_mbk_r);
 		outopnd.vword+=rppoptr(c_mbk_r);
@@ -391,7 +391,7 @@ struct zexp
 		outopnd.vword+=tword(rppoptr(c_mbk_l));
 		for(int j=0;j<vsent.count();j++)
 		{
-			outopnd.vword+=vsent[j].vword;
+			outopnd.vword+=r_move(vsent[j].vword);
 		}
 		outopnd.vword+=tword(rppoptr(c_mbk_r));
 		outopnd.vword+=tword(rppoptr(c_mbk_r));
@@ -442,14 +442,14 @@ struct zexp
 			if(!param.empty())
 			{
 				outopnd.vword.push(tword(rppoptr(c_comma)));
-				outopnd.vword+=param.vword;
+				outopnd.vword+=r_move(param.vword);
 			}
 		}
 		else
 		{
 			if(!param.empty())
 			{
-				outopnd.vword+=param.vword;
+				outopnd.vword+=r_move(param.vword);
 			}
 		}
 		outopnd.vword.push(tword(rppoptr(c_sbk_r)));

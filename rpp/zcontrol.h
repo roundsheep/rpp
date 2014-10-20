@@ -464,7 +464,7 @@ struct zcontrol
 			sh.push_twi(vtemp,twi,rppoptr(c_semi));
 			sh.push_twi(vtemp,twi,rppkey(c_jmp));
 			sh.push_twi(vtemp,twi,tfi.last_pos.line);
-			v=vtemp;
+			v=r_move(vtemp);
 		}
 		else
 		{
@@ -478,7 +478,7 @@ struct zcontrol
 			sh.push_twi(vtemp,twi,rppoptr(c_semi));
 			sh.push_twi(vtemp,twi,rppkey(c_jmp));
 			sh.push_twi(vtemp,twi,tfi.last_pos.line);
-			v=vtemp;
+			v=r_move(vtemp);
 		}
 	}
 
@@ -494,7 +494,7 @@ struct zcontrol
 				if(!sent.vword.empty())
 				{
 					sent.pos=sent.vword.get_bottom().pos;
-					vsent.push(sent);
+					vsent.push_move(sent);
 				}
 				start=i+1;
 			}
@@ -505,7 +505,7 @@ struct zcontrol
 				if(!sent.vword.empty())
 				{
 					sent.pos=sent.vword.get_bottom().pos;
-					vsent.push(sent);
+					vsent.push_move(sent);
 				}
 				v[i-1].pos.line=v[i].pos.line;
 				start=i;
@@ -864,7 +864,7 @@ struct zcontrol
 		{
 			if(pret!=null)
 			{
-				*pret=ret;
+				*pret=r_move(ret);
 			}
 			return v.count();
 		}
@@ -876,7 +876,7 @@ struct zcontrol
 				ret.pop_front();
 				ret.pop();
 			}
-			*pret=ret;
+			*pret=r_move(ret);
 		}
 		return i;
 	}
@@ -965,7 +965,7 @@ struct zcontrol
 		item.pos_src=tfi.last_pos;
 		item.pos_src.line=0;
 		item.val=rppoptr(c_semi);
-		v.push(item);
+		v.push_move(item);
 	}
 };
 
