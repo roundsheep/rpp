@@ -52,7 +52,7 @@ void r_reverse(V& v,int begin=0,int end=0)
 	int i=end-1;
 	int j=0;
 	for(;i>=begin;--i,++j)
-		v[i]=temp[j];
+		v[i]=r_move(temp[j]);
 }
 
 template <class V,class T>
@@ -174,7 +174,7 @@ rbuf<V> r_split(const V& v,const V& m,int start=0)
 		for(i=start;i<pos;i++)
 			temp+=v[i];
 		if(!temp.empty())
-			result.push(temp);
+			result.push_move(temp);
 		start=pos+m.count();
 	}
 	temp.clear();
@@ -188,8 +188,7 @@ rbuf<V> r_split(const V& v,const V& m,int start=0)
 template <class V,class T>
 rbuf<V> r_split(const V& v,const T& a,int start=0)
 {
-	V m(1,a);
-	return r_split(v,m,start);
+	return r_split(v,V(1,a),start);
 }
 
 //允许空元素
@@ -207,21 +206,20 @@ rbuf<V> r_split_e(const V& v,const V& m,int start=0)
 		temp.clear();
 		for(i=start;i<pos;i++)
 			temp+=v[i];
-		result.push(temp);
+		result.push_move(temp);
 		start=pos+m.count();
 	}
 	temp.clear();
 	for(i=start;i<v.count();i++)
 		temp+=v[i];
-	result.push(temp);
+	result.push_move(temp);
 	return r_move(result);
 }
 
 template <class V,class T>
 rbuf<V> r_split_e(const V& v,const T& a,int start=0)
 {
-	V m(1,a);
-	return r_split_e(v,m,start);
+	return r_split_e(v,V(1,a),start);
 }
 
 #endif
