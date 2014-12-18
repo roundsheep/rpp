@@ -8,7 +8,7 @@
 //#define r_round(d) ((uint)(d+0.5))
 //#define r_log(a,b) (log(b)/log(a))
 
-template <typename T>
+template<typename T>
 struct rbuf
 {
 	T* m_p;

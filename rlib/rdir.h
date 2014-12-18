@@ -46,50 +46,42 @@ struct rdir
 
 	static rstrw get_suffix(const rstrw& name)
 	{
-		rstrw ret;
 		ushort ch='.';
 		int pos=name.find_last(ch);
 		if(pos<name.count())
-			ret=name.sub(pos+1);
-		return ret;
+			return name.sub(pos+1);
+		return rstrw();
 	}
 	
 	static rstrw get_prev_dir(rstrw path)
 	{
-		rstrw ret;
 		if(path.empty())
-			return ret;
+			return rstrw();
 		path.pop();
 		ushort ch='/';
 		int pos=path.find_last(ch);
 		if(pos>=path.count())
-			return ret;
-		ret=path.sub(0,pos+1);
-		return ret;
+			return rstrw();
+		return path.sub(0,pos+1);
 	}
 
 	static rstrw get_name(const rstrw& path)
 	{
-		rstrw ret;
 		if(path.empty())
-			return ret;
+			return rstrw();
 		ushort ch='/';
 		int pos=path.find_last(ch);
 		if(pos>=path.count())
-			return ret;
-		ret=path.sub(pos+1);
-		return ret;
+			return rstrw();
+		return path.sub(pos+1);
 	}
 
 	static rstrw get_exe_name()
 	{
-		rstrw ret;
 		wchar buf[MAX_PATH+1];
 		if(GetModuleFileNameW(null,(wchar*)buf,MAX_PATH)==0)
-			return ret;
-		ret=buf;
-		ret=dir_std(ret);
-		return ret;
+			return rstrw();
+		return dir_std(rstrw(buf));
 	}
 
 	static rstrw get_exe_dir()

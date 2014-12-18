@@ -6,7 +6,7 @@
 #define rdbint rdb<int,int>
 
 //TL是数据长度，TA是地址
-template <class TA,class TL>//uchar,ushort,uint,uint64
+template<class TA,class TL>//uchar,ushort,uint,uint64
 class rdb
 {
 public:

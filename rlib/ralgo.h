@@ -4,7 +4,7 @@
 #include "rbuf.h"
 
 //binary search
-template <class V, class T>
+template<class V, class T>
 int r_find_pos_b(const V& v,const T& a)
 {
 	int left=0;
@@ -37,7 +37,7 @@ void r_swap(T& a,T& b)
 	b=r_move(temp);
 }
 
-template <class V>
+template<class V>
 void r_reverse(V& v,int begin=0,int end=0)
 {
 	if(end<=0)
@@ -55,7 +55,7 @@ void r_reverse(V& v,int begin=0,int end=0)
 		v[i]=r_move(temp[j]);
 }
 
-template <class V,class T>
+template<class V,class T>
 rbool r_is_all_element(const V& v,const T& a)
 {
 	for(int i=0;i<v.count();i++)
@@ -64,29 +64,28 @@ rbool r_is_all_element(const V& v,const T& a)
 	return true;
 }
 
-template <class T>
+template<class T>
 void r_qsort_in(rbuf<T>& v,int left,int right)
 {
 	if(left<right)
 	{
 		T pivot=v[right];
-		int i=left-1;
+		int i=left;
 		for(int j=left;j<right;j++)
 		{
 			if(v[j]<=pivot)
 			{
-				i++;
 				r_swap<T>(v[i],v[j]);
+				i++;
 			}
 		}
-		i++;
 		r_swap<T>(v[i],v[right]);
 		r_qsort_in<T>(v,left,i-1);
 		r_qsort_in<T>(v,i+1,right);
 	}
 }
 
-template <class T>
+template<class T>
 void r_qsort(rbuf<T>& v,int begin=0,int end=0)
 {
 	if(end<=0)
@@ -101,7 +100,7 @@ void r_qsort(rbuf<T>& v,int begin=0,int end=0)
 		r_qsort_in(v,begin,end-1);
 }
 
-template <class V,class T>
+template<class V,class T>
 T* r_find(const V& v,const T& a)
 {
 	T* p;
@@ -111,7 +110,7 @@ T* r_find(const V& v,const T& a)
 	return null;
 }
 
-template <class V,class T>
+template<class V,class T>
 int r_find_pos(const V& v,T a,int start=0)
 {
 	T* p;
@@ -121,7 +120,7 @@ int r_find_pos(const V& v,T a,int start=0)
 	return v.count();
 }
 
-template <class V,class T>
+template<class V,class T>
 int r_find_pos_rev(const V& v,const T& a)
 {
 	for(int i=v.count()-1;i>=0;--i)
@@ -130,7 +129,7 @@ int r_find_pos_rev(const V& v,const T& a)
 	return v.count();
 }
 
-template <class V>
+template<class V>
 int r_find_pos(const V& v,const V& m,int start=0)
 {
 	if(m.empty()||start>=v.count())
@@ -159,7 +158,7 @@ int r_find_pos(const V& v,const V& m,int start=0)
 	return v.count();
 }
 
-template <class V>
+template<class V>
 rbuf<V> r_split(const V& v,const V& m,int start=0)
 {
 	rbuf<V> result;
@@ -185,14 +184,14 @@ rbuf<V> r_split(const V& v,const V& m,int start=0)
 	return r_move(result);
 }
 
-template <class V,class T>
+template<class V,class T>
 rbuf<V> r_split(const V& v,const T& a,int start=0)
 {
 	return r_split(v,V(1,a),start);
 }
 
 //允许空元素
-template <class V>
+template<class V>
 rbuf<V> r_split_e(const V& v,const V& m,int start=0)
 {
 	rbuf<V> result;
@@ -216,7 +215,7 @@ rbuf<V> r_split_e(const V& v,const V& m,int start=0)
 	return r_move(result);
 }
 
-template <class V,class T>
+template<class V,class T>
 rbuf<V> r_split_e(const V& v,const T& a,int start=0)
 {
 	return r_split_e(v,V(1,a),start);
