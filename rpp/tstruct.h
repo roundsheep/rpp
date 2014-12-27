@@ -225,7 +225,7 @@ struct tfile
 	rstr cont;
 	rbuf<tword> vword;
 	rbuf<rstr> line_list;
-	rbuf<int> tab_list;//前面tab个数，一个tab等于4个空格
+	rbuf<int> tab_list;//前面tab个数，1个tab等于4个空格（todo:改成8个空格）
 
 	tfile()
 	{
