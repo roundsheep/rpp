@@ -58,7 +58,7 @@ struct rbuf
 		m_p=a.m_p;
 		m_count=a.m_count;
 		m_cmax=a.m_cmax;
-		a.m_p=null;
+		a.init();//如果move后对象不再使用可以只置空a.m_p
 	}
 
 	//如果复制指针一定要处理好等于号，不支持自己复制自己
@@ -400,7 +400,7 @@ struct rbuf
 	//这里的重复代码可用宏或者模板简化
 	void alloc(int num)
 	{
-		if(m_p!=null)
+		if(m_p!=null)//指针为空时必须保证m_count和m_cmax也为空
 		{
 			return;
 		}
@@ -514,7 +514,7 @@ struct rbuf
 
 	void free()
 	{
-		if(null==m_p)
+		if(null==m_p)//m_p为空时rbuf必须保证m_count和m_cmax也为空
 		{
 			return;
 		}

@@ -87,6 +87,7 @@ struct rstr
 		m_buf.move(s.m_buf);
 	}
 
+	//todo:改为const
 	int toint()
 	{
 		int result;
@@ -442,7 +443,7 @@ struct rstr
 
 	void print()
 	{
-		printf("%s ",cstr());
+		printf("%s ",cstr());//todo:多了一个空格
 	}
 
 	void printl()
