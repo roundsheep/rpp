@@ -139,8 +139,8 @@ struct zexp
 		return true;
 	}
 
-	static rbool p_mbk(tsh& sh,const tsent& first,const tsent& second,tsent& outopnd,
-		tfunc& tfi,int level)
+	static rbool p_mbk(tsh& sh,const tsent& first,const tsent& second,
+		tsent& outopnd,tfunc& tfi,int level)
 	{
 		rbuf<tsent> vsent;
 		sh.split_param(vsent,second.vword,first);
@@ -226,14 +226,16 @@ struct zexp
 			rbuf<tsent> vsent;
 			if(ptfi!=null)
 			{
-				if(!p_lisp_param(sh,src.sub(3,src.vword.count()-1),vsent,tfi,level))
+				if(!p_lisp_param(sh,src.sub(
+					3,src.vword.count()-1),vsent,tfi,level))
 				{
 					return false;
 				}
 			}
 			else
 			{
-				if(!p_lisp_param(sh,src.sub(3,src.vword.count()-1),vsent,tfi,level))
+				if(!p_lisp_param(sh,src.sub(
+					3,src.vword.count()-1),vsent,tfi,level))
 				{
 					return false;
 				}
@@ -275,7 +277,8 @@ struct zexp
 				sh.error(src,"lisp exp miss");
 				return false;
 			}
-			tdata* ptdi=zfind::data_member_search(*ptci,vlisp[2].get(0).val);
+			tdata* ptdi=zfind::data_member_search(
+				*ptci,vlisp[2].get(0).val);
 			if(ptdi==null)
 			{
 				sh.error(src,"lisp exp miss");
@@ -295,7 +298,8 @@ struct zexp
 		return false;
 	}
 
-	static void get_vsent(rbuf<rbuf<tword> >& vlisp,rbuf<tsent>& vsent,const tsent& src)
+	static void get_vsent(rbuf<rbuf<tword> >& vlisp,rbuf<tsent>& vsent,
+		const tsent& src)
 	{
 		vsent.clear();
 		for(int i=0;i<vlisp.count();i++)
@@ -411,7 +415,8 @@ struct zexp
 		if(i+1==src.vword.count()-1||
 			zfind::is_end_part_optr(sh,src.vword.get(i+1).val))
 		{
-			ptfi=zfind::func_search_empty_param_m(*ptci,fname,pfirst==null);
+			ptfi=zfind::func_search_empty_param_m(
+				*ptci,fname,pfirst==null);
 			if(ptfi==null)
 			{
 				sh.error(src,"can't find call");
@@ -420,9 +425,11 @@ struct zexp
 		}
 		else
 		{
-			ptfi=zfind::func_search_multi_param_m(*ptci,fname,pfirst==null);
+			ptfi=zfind::func_search_multi_param_m(
+				*ptci,fname,pfirst==null);
 			if(ptfi==null)
-				ptfi=zfind::func_search_empty_param_m(*ptci,fname,pfirst==null);
+				ptfi=zfind::func_search_empty_param_m(
+					*ptci,fname,pfirst==null);
 			else
 				right=src.vword.count()-1;
 			if(ptfi==null)
@@ -636,12 +643,14 @@ struct zexp
 					src.vword.get(i+1).val==rppoptr(c_addr)&&
 					zfind::is_class(sh,src.vword.get(i+2).val))
 				{
-					if(!p_lisp(sh,src.sub(i,right+1),outopnd,tfi,level))
+					if(!p_lisp(sh,src.sub(
+						i,right+1),outopnd,tfi,level))
 						return false;
 				}
 				else
 				{
-					if(!p_mbk(sh,sopnd.pop(),src.sub(i+1,right),outopnd,tfi,level))
+					if(!p_mbk(sh,sopnd.pop(),src.sub(i+1,right),
+						outopnd,tfi,level))
 						return false;
 				}
 				sopnd.push_move(outopnd);
@@ -681,12 +690,14 @@ struct zexp
 				if(src.vword.get(i+1)==rppoptr(c_tbk_l)&&
 					zfind::ftl_search(*ptci,name)!=null)
 				{
-					if(!p_ftl(sh,src,&first,outopnd,tfi,level,i,ptci))
+					if(!p_ftl(sh,src,&first,
+						outopnd,tfi,level,i,ptci))
 						return false;
 				}
 				else
 				{
-					if(!p_call(sh,src,&first,outopnd,tfi,level,i,ptci))
+					if(!p_call(sh,src,&first,
+						outopnd,tfi,level,i,ptci))
 						return false;
 				}
 				sopnd.push_move(outopnd);
@@ -733,10 +744,12 @@ struct zexp
 				outopnd.pos=src.pos;
 				if(ptci!=null)
 				{
-					ptfi=zmatch::find_replace(sh,*ptci,theta,vsent);
+					ptfi=zmatch::find_replace(sh,
+						*ptci,theta,vsent);
 					if(ptfi!=null)
 					{
-						set_func(sh,outopnd,r_move(vsent),ptfi);
+						set_func(sh,outopnd,
+							r_move(vsent),ptfi);
 						sopnd.push_move(outopnd);
 						i--;
 						continue;
@@ -751,10 +764,12 @@ struct zexp
 				ptci=zfind::class_search_t(sh,vsent[0].type);
 				if(ptci!=null)
 				{
-					ptfi=zmatch::find_replace(sh,*ptci,theta,vsent);
+					ptfi=zmatch::find_replace(sh,
+						*ptci,theta,vsent);
 					if(ptfi!=null)
 					{
-						set_func(sh,outopnd,r_move(vsent),ptfi);
+						set_func(sh,outopnd,
+							r_move(vsent),ptfi);
 						sopnd.push_move(outopnd);
 						i--;
 						continue;
@@ -763,10 +778,12 @@ struct zexp
 				ptci=zfind::class_search_t(sh,vsent[1].type);
 				if(ptci!=null)
 				{
-					ptfi=zmatch::find_replace(sh,*ptci,theta,vsent);
+					ptfi=zmatch::find_replace(sh,
+						*ptci,theta,vsent);
 					if(ptfi!=null)
 					{
-						set_func(sh,outopnd,r_move(vsent),ptfi);
+						set_func(sh,outopnd,
+							r_move(vsent),ptfi);
 						sopnd.push_move(outopnd);
 						i--;
 						continue;
@@ -813,7 +830,8 @@ struct zexp
 					ptdi=zfind::data_member_search(tci,name);
 					if(ptdi!=null)
 					{
-						//类成员变量增加this，如 m_a -> this.m_a 
+						//类成员变量增加this
+						//如 m_a -> this.m_a 
 						outopnd.vword+=tword(rppoptr(c_mbk_l));
 						outopnd.vword+=tword(rppoptr(c_dot));
 						outopnd.vword+=tword(rppkey(c_this));

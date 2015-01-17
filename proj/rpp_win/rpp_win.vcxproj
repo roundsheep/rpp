@@ -13,7 +13,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\rlib\rclass.cpp" />
     <ClCompile Include="..\..\rlib\rsock.cpp" />
-    <ClCompile Include="..\..\rpp_win.cpp" />
+    <ClCompile Include="..\..\rpp\rpp_win.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D95F2BD0-54D7-4544-9902-FDFBEBBFFF5C}</ProjectGuid>

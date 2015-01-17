@@ -78,7 +78,7 @@
   <ItemGroup>
     <ClCompile Include="..\rlib\rclass.cpp" />
     <ClCompile Include="..\rlib\rsock.cpp" />
-    <ClCompile Include="..\rpp.cpp" />
+    <ClCompile Include="..\rpp\rpp.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E00D615C-3C55-4D01-B2EB-0064CFBAA91E}</ProjectGuid>

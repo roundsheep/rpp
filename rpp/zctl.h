@@ -15,7 +15,8 @@ struct zctl
 	static rbool process(tsh& sh)
 	{
 		rbuf<tclass*> vtmp;
-		for(tclass* p=sh.m_class.begin();p!=sh.m_class.end();p=sh.m_class.next(p))
+		for(tclass* p=sh.m_class.begin();
+			p!=sh.m_class.end();p=sh.m_class.next(p))
 		{
 			zclass::combine_multi_class_name(sh,p->vword);
 			vtmp.push(p);
@@ -29,7 +30,8 @@ struct zctl
 		}
 		vtmp.clear();
 		zautof::op_rstr(sh);
-		for(tclass* p=sh.m_class.begin();p!=sh.m_class.end();p=sh.m_class.next(p))
+		for(tclass* p=sh.m_class.begin();
+			p!=sh.m_class.end();p=sh.m_class.next(p))
 		{
 			vtmp.push(p);
 		}
@@ -40,12 +42,14 @@ struct zctl
 				return false;
 			}
 		}
-		for(tclass* p=sh.m_class.begin();p!=sh.m_class.end();p=sh.m_class.next(p))
+		for(tclass* p=sh.m_class.begin();
+			p!=sh.m_class.end();p=sh.m_class.next(p))
 			if(!a_class(sh,*p))
 			{
 				return false;
 			}
-		for(tclass* p=sh.m_class.begin();p!=sh.m_class.end();p=sh.m_class.next(p))
+		for(tclass* p=sh.m_class.begin();
+			p!=sh.m_class.end();p=sh.m_class.next(p))
 		{
 			if(!zmemb::recursion_get_size(sh,*p))
 				return false;
@@ -55,7 +59,8 @@ struct zctl
 			}
 		}
 		//简便起见，重复获取参数大小也没关系
-		for(tclass* p=sh.m_class.begin();p!=sh.m_class.end();p=sh.m_class.next(p))
+		for(tclass* p=sh.m_class.begin();
+			p!=sh.m_class.end();p=sh.m_class.next(p))
 			zmemb::obtain_size_func(sh,*p);
 		return true;
 	}
@@ -215,7 +220,8 @@ struct zctl
 			}
 			for(int j=left+1;j<=right;j++)
 			{
-				v[j].pos_src=v[left].pos_src;//必须归于一行，导致提示行号不准确
+				//必须归于一行，导致提示行号不准确
+				v[j].pos_src=v[left].pos_src;
 				v[j].pos=v[left].pos;
 			}
 			i=right;

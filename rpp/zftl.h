@@ -90,7 +90,8 @@ struct zftl
 		}
 		if(sh.m_class.count()>cur)
 		{
-			for(tclass* p=sh.m_class.begin();p!=sh.m_class.end();p=sh.m_class.next(p))
+			for(tclass* p=sh.m_class.begin();
+				p!=sh.m_class.end();p=sh.m_class.next(p))
 			{
 				if(!f_proc_class(sh,*p))
 				{

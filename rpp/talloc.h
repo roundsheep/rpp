@@ -49,7 +49,8 @@ struct talloc
 		talloc_i item;
 		item.max_len=r_ceil_div(len,c_page_size)*c_page_size;
 		item.commit_len=0;
-		item.start=(uchar*)VirtualAlloc(null,item.max_len,MEM_COMMIT,PAGE_EXECUTE_READWRITE);
+		item.start=(uchar*)VirtualAlloc(null,item.max_len,
+			MEM_COMMIT,PAGE_EXECUTE_READWRITE);
 		if(item.start==null)
 		{
 			return null;
@@ -64,7 +65,8 @@ struct talloc
 	static uchar* alloc_v(int len)
 	{
 #ifdef _MSC_VER
-		return (uchar*)VirtualAlloc(null,len,MEM_COMMIT,PAGE_EXECUTE_READWRITE);
+		return (uchar*)VirtualAlloc(null,len,
+			MEM_COMMIT,PAGE_EXECUTE_READWRITE);
 #endif
 	}
 

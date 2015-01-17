@@ -176,12 +176,14 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\rpp.cpp" />
     <ClCompile Include="..\rlib\rclass.cpp">
       <Filter>rlib</Filter>
     </ClCompile>
     <ClCompile Include="..\rlib\rsock.cpp">
       <Filter>rlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\rpp\rpp.cpp">
+      <Filter>rpp</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

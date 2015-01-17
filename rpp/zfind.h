@@ -116,7 +116,8 @@ struct zfind
 	}
 
 	//先搜索友元空参，再搜索非友元空参
-	static tfunc* func_search_empty_param_m(tclass& tci,const rstr& fname,rbool is_friend)
+	static tfunc* func_search_empty_param_m(tclass& tci,
+		const rstr& fname,rbool is_friend)
 	{
 		//友元只能调用友元
 		if(is_friend)
@@ -128,7 +129,8 @@ struct zfind
 	}
 	
 	//先搜索友元多参，再搜索非友元多参
-	static tfunc* func_search_multi_param_m(tclass& tci,const rstr& fname,rbool is_friend)
+	static tfunc* func_search_multi_param_m(tclass& tci,
+		const rstr& fname,rbool is_friend)
 	{
 		if(is_friend)
 			return func_search_multi_param_f(tci,fname);
@@ -224,7 +226,8 @@ struct zfind
 		return null;
 	}
 
-	static tfunc* func_search(tclass& tci,const rstr& fname,const rstr& a,const rstr& b)
+	static tfunc* func_search(tclass& tci,const rstr& fname,
+		const rstr& a,const rstr& b)
 	{
 		tfunc item;
 		item.name=fname;

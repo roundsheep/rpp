@@ -67,7 +67,8 @@ struct zsuper
 	}
 
 	//todo 限制递归深度
-	static rbool match_here(tsh& sh,const rbuf<rstr>& reg,const rbuf<rstr>& src,rbuf<tword>& arr)
+	static rbool match_here(tsh& sh,const rbuf<rstr>& reg,
+		const rbuf<rstr>& src,rbuf<tword>& arr)
 	{
 		if(reg.empty())
 		{
@@ -107,15 +108,18 @@ struct zsuper
 				{
 					return false;
 				}
-				return match_here(sh,reg.sub(1,right_r),src.sub(1,right_s),arr)&&
-					match_here(sh,reg.sub(right_r+1),src.sub(right_s+1),arr);
+				return match_here(sh,reg.sub(1,right_r),
+					src.sub(1,right_s),arr)&&
+					match_here(sh,reg.sub(right_r+1),
+					src.sub(right_s+1),arr);
 			}
 			return match_here(sh,reg.sub(1),src.sub(1),arr);
 		}
 		return false;
 	}
 
-	static rbool match_multi(tsh& sh,const rbuf<rstr>& reg,const rbuf<rstr>& src,rbuf<tword>& arr)
+	static rbool match_multi(tsh& sh,const rbuf<rstr>& reg,
+		const rbuf<rstr>& src,rbuf<tword>& arr)
 	{
 		for(int i=0;i<=src.count();i++)
 		{

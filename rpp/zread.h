@@ -28,7 +28,8 @@ struct zread
 			auto_import(sh);
 			if(!read_file(sh,sh.m_main_file))
 			{
-				sh.error("can't read main file "+sh.m_main_file.torstr());
+				sh.error("can't read main file "+
+					sh.m_main_file.torstr());
 				return false;
 			}
 		}
@@ -211,7 +212,8 @@ struct zread
 			rstrw temp=vstr[i].cstrw_t();
 			if(temp.is_number())
 			{
-				sh.m_optr.m_dic[sh.m_optr.m_optr.get_top()]=temp.toint();
+				sh.m_optr.m_dic[sh.m_optr.m_optr.get_top()]=
+					temp.toint();
 			}
 			else
 				sh.m_optr.m_optr.push(temp.torstr());
@@ -448,7 +450,8 @@ struct zread
 					}
 					if(count)
 					{
-						sh.error(rstr(cur_word.pos.line)+rstr("miss */"));
+						sh.error(rstr(cur_word.pos.line)+
+							rstr("miss */"));
 						return false;
 					}
 					p++;
@@ -481,11 +484,13 @@ struct zread
 			{
 				for(;*p;++p)
 				{
-					if(rstr::is_number(*p)||rstr::is_alpha(*p)||'_'==*p)
+					if(rstr::is_number(*p)||
+						rstr::is_alpha(*p)||'_'==*p)
 						continue;
 					elif(rcode::is_utf8_3(*p)&&*(p+1)&&*(p+2))
 					{
-						//todo 应该只能以汉字开头不能以特殊符号开头
+						//todo
+						//应该只能以汉字开头不能以特殊符号开头
 						p+=2;
 						continue;
 					}
@@ -542,7 +547,8 @@ struct zread
 				}
 				else
 				{
-					sh.error(rstr(cur_word.pos.line)+rstr("miss \""));
+					sh.error(rstr(cur_word.pos.line)+
+						rstr("miss \""));
 					return false;
 				}
 			}
@@ -576,7 +582,8 @@ struct zread
 					cur_word.val=rstr(start,p+1);
 					if(cur_word.val.count()<2)
 					{
-						sh.error(rstr(cur_word.pos.line)+rstr("miss '"));
+						sh.error(rstr(cur_word.pos.line)+
+							rstr("miss '"));
 						return false;
 					}
 					cur_word.val[0]='"';
@@ -585,7 +592,8 @@ struct zread
 				}
 				else
 				{
-					sh.error(rstr(cur_word.pos.line)+rstr("miss '"));
+					sh.error(rstr(cur_word.pos.line)+
+						rstr("miss '"));
 					return false;
 				}
 			}
@@ -611,7 +619,8 @@ struct zread
 			{
 				if(*(p+1)==0)
 				{
-					sh.error(rstr(cur_word.pos.line)+rstr("miss `"));
+					sh.error(rstr(cur_word.pos.line)+
+						rstr("miss `"));
 					return false;
 				}
 				p++;

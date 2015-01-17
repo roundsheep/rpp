@@ -19,7 +19,7 @@ struct tvm_t
 	int m_thread;
 	rbuf<tasm> m_vasm;//一组初始化指令
 	tfunc m_meta;//元函数
-	rdic<void*> m_func;//外部函数字典，每个线程一个虽然浪费了一点空间，但不需要使用互斥体
+	rdic<void*> m_func;//外部函数字典，每个线程一个则不需要使用互斥体
 	tvm* m_pvm;
 };
 
@@ -131,7 +131,8 @@ next:
 				v_next_ins;
 
 			case tins::c_execmd:
-				v_pto_uint(reg.esp+4)=rf::execmd((char*)v_pto_uint(reg.esp));
+				v_pto_uint(reg.esp+4)=rf::execmd(
+					(char*)v_pto_uint(reg.esp));
 				reg.esp+=4;
 				v_next_ins;
 			case tins::c_srand:
@@ -193,7 +194,8 @@ next:
 				v_next_ins;
 
 			case tins::c_malloc:
-				v_pto_uint(reg.esp+4)=r_to_uint(malloc(v_pto_uint(reg.esp)));
+				v_pto_uint(reg.esp+4)=r_to_uint(
+					malloc(v_pto_uint(reg.esp)));
 				reg.esp+=4;
 				v_next_ins;
 			case tins::c_mfree:
@@ -219,7 +221,8 @@ next:
 				reg.esp+=8;
 				v_next_ins;
 			case tins::c_strcmp:
-				v_pto_int(reg.esp+8)=strcmp((char*)v_pto_uint(reg.esp),
+				v_pto_int(reg.esp+8)=strcmp(
+					(char*)v_pto_uint(reg.esp),
 					(char*)v_pto_uint(reg.esp+4));
 				reg.esp+=8;
 				v_next_ins;
@@ -242,18 +245,21 @@ next:
 				reg.esp+=8;
 				v_next_ins;
 			case tins::c_fclose:
-				v_pto_int(reg.esp+4)=fclose((FILE*)v_pto_uint(reg.esp));
+				v_pto_int(reg.esp+4)=fclose(
+					(FILE*)v_pto_uint(reg.esp));
 				reg.esp+=4;
 				v_next_ins;
 			case tins::c_fread:
-				v_pto_uint(reg.esp+16)=fread((void*)v_pto_uint(reg.esp),
+				v_pto_uint(reg.esp+16)=fread(
+					(void*)v_pto_uint(reg.esp),
 					v_pto_uint(reg.esp+4),
 					v_pto_uint(reg.esp+8),
 					(FILE*)v_pto_uint(reg.esp+12));
 				reg.esp+=16;
 				v_next_ins;
 			case tins::c_fwrite:
-				v_pto_uint(reg.esp+16)=fwrite((void*)v_pto_uint(reg.esp),
+				v_pto_uint(reg.esp+16)=fwrite(
+					(void*)v_pto_uint(reg.esp),
 					v_pto_uint(reg.esp+4),
 					v_pto_uint(reg.esp+8),
 					(FILE*)v_pto_uint(reg.esp+12));
@@ -272,57 +278,67 @@ next:
 				reg.esp+=16;
 				v_next_ins;
 			case tins::c_ftell:
-				v_pto_uint(reg.esp+4)=ftell((FILE*)v_pto_uint(reg.esp));
+				v_pto_uint(reg.esp+4)=ftell(
+					(FILE*)v_pto_uint(reg.esp));
 				reg.esp+=4;
 				v_next_ins;
 			case tins::c_ftell8:
-				v_pto_int8(reg.esp+4)=rfile::ftell8((FILE*)v_pto_uint(reg.esp));
+				v_pto_int8(reg.esp+4)=rfile::ftell8(
+					(FILE*)v_pto_uint(reg.esp));
 				reg.esp+=4;
 				v_next_ins;
 
 			case tins::c_s_socket:
-				v_pto_int(reg.esp+12)=rsock::s_socket(v_pto_int(reg.esp),
+				v_pto_int(reg.esp+12)=rsock::s_socket(
+					v_pto_int(reg.esp),
 					v_pto_int(reg.esp+4),
 					v_pto_int(reg.esp+8));
 				reg.esp+=12;
 				v_next_ins;
 			case tins::c_s_connect:
-				v_pto_int(reg.esp+12)=rsock::s_connect(v_pto_int(reg.esp),
+				v_pto_int(reg.esp+12)=rsock::s_connect(
+					v_pto_int(reg.esp),
 					(void*)v_pto_int(reg.esp+4),
 					v_pto_int(reg.esp+8));
 				reg.esp+=12;
 				v_next_ins;
 			case tins::c_s_close:
-				v_pto_int(reg.esp+4)=rsock::s_close(v_pto_int(reg.esp));
+				v_pto_int(reg.esp+4)=rsock::s_close(
+					v_pto_int(reg.esp));
 				reg.esp+=4;
 				v_next_ins;
 			case tins::c_s_send:
-				v_pto_int(reg.esp+16)=rsock::s_send(v_pto_int(reg.esp),
+				v_pto_int(reg.esp+16)=rsock::s_send(
+					v_pto_int(reg.esp),
 					(void*)v_pto_int(reg.esp+4),
 					v_pto_int(reg.esp+8),
 					v_pto_int(reg.esp+12));
 				reg.esp+=16;
 				v_next_ins;
 			case tins::c_s_recv:
-				v_pto_int(reg.esp+16)=rsock::s_recv(v_pto_int(reg.esp),
+				v_pto_int(reg.esp+16)=rsock::s_recv(
+					v_pto_int(reg.esp),
 					(void*)v_pto_int(reg.esp+4),
 					v_pto_int(reg.esp+8),
 					v_pto_int(reg.esp+12));
 				reg.esp+=16;
 				v_next_ins;
 			case tins::c_s_bind:
-				v_pto_int(reg.esp+12)=rsock::s_bind(v_pto_int(reg.esp),
+				v_pto_int(reg.esp+12)=rsock::s_bind(
+					v_pto_int(reg.esp),
 					(void*)v_pto_int(reg.esp+4),
 					v_pto_int(reg.esp+8));
 				reg.esp+=12;
 				v_next_ins;
 			case tins::c_s_listen:
-				v_pto_int(reg.esp+8)=rsock::s_listen(v_pto_int(reg.esp),
+				v_pto_int(reg.esp+8)=rsock::s_listen(
+					v_pto_int(reg.esp),
 					v_pto_int(reg.esp+4));
 				reg.esp+=8;
 				v_next_ins;
 			case tins::c_s_accept:
-				v_pto_int(reg.esp+12)=rsock::s_accept(v_pto_int(reg.esp),
+				v_pto_int(reg.esp+12)=rsock::s_accept(
+					v_pto_int(reg.esp),
 					(void*)v_pto_int(reg.esp+4),
 					(int*)v_pto_int(reg.esp+8));
 				reg.esp+=12;
@@ -330,38 +346,45 @@ next:
 
 			case tins::c_gbk_to_utf8:
 				v_pto_int(reg.esp+8)=rcode::gbk_to_utf8_c(
-					(uchar*)v_pto_uint(reg.esp),(uchar*)v_pto_uint(reg.esp+4));
+					(uchar*)v_pto_uint(reg.esp),
+					(uchar*)v_pto_uint(reg.esp+4));
 				reg.esp+=8;
 				v_next_ins;
 			case tins::c_gbk_to_utf16:
 				v_pto_int(reg.esp+8)=rcode::gbk_to_utf16_c(
-					(uchar*)v_pto_uint(reg.esp),(uchar*)v_pto_uint(reg.esp+4));
+					(uchar*)v_pto_uint(reg.esp),
+					(uchar*)v_pto_uint(reg.esp+4));
 				reg.esp+=8;
 				v_next_ins;
 			case tins::c_utf8_to_gbk:
 				v_pto_int(reg.esp+8)=rcode::utf8_to_gbk_c(
-					(uchar*)v_pto_uint(reg.esp),(uchar*)v_pto_uint(reg.esp+4));
+					(uchar*)v_pto_uint(reg.esp),
+					(uchar*)v_pto_uint(reg.esp+4));
 				reg.esp+=8;
 				v_next_ins;
 			case tins::c_utf8_to_utf16:
 				v_pto_int(reg.esp+8)=rcode::utf8_to_utf16_c(
-					(uchar*)v_pto_uint(reg.esp),(uchar*)v_pto_uint(reg.esp+4));
+					(uchar*)v_pto_uint(reg.esp),
+					(uchar*)v_pto_uint(reg.esp+4));
 				reg.esp+=8;
 				v_next_ins;
 			case tins::c_utf16_to_gbk:
 				v_pto_int(reg.esp+8)=rcode::utf16_to_gbk_c(
-					(uchar*)v_pto_uint(reg.esp),(uchar*)v_pto_uint(reg.esp+4));
+					(uchar*)v_pto_uint(reg.esp),
+					(uchar*)v_pto_uint(reg.esp+4));
 				reg.esp+=8;
 				v_next_ins;
 			case tins::c_utf16_to_utf8:
 				v_pto_int(reg.esp+8)=rcode::utf16_to_utf8_c(
-					(uchar*)v_pto_uint(reg.esp),(uchar*)v_pto_uint(reg.esp+4));
+					(uchar*)v_pto_uint(reg.esp),
+					(uchar*)v_pto_uint(reg.esp+4));
 				reg.esp+=8;
 				v_next_ins;
 			
 			case tins::c_CloseHandle:
 #ifdef _MSC_VER
-				v_pto_int(reg.esp+4)=CloseHandle((HANDLE)v_pto_int(reg.esp));
+				v_pto_int(reg.esp+4)=CloseHandle(
+					(HANDLE)v_pto_int(reg.esp));
 #endif
 				reg.esp+=4;
 				v_next_ins;
@@ -1297,7 +1320,8 @@ next:
 	static rbool main_init(tsh& sh,rbuf<tasm>& vasm)
 	{
 		zasm::push_asm(vasm,"sub","esp",",","4");
-		zasm::push_asm(vasm,"call",rppoptr(c_mbk_l),"&","main","main()",rppoptr(c_mbk_r));
+		zasm::push_asm(vasm,"call",rppoptr(c_mbk_l),
+			"&","main","main()",rppoptr(c_mbk_r));
 		zasm::push_asm(vasm,"add","esp",",","4");
 		zasm::push_asm(vasm,"halt");
 		return zbin::proc_vasm(sh,vasm);

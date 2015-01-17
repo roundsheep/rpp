@@ -181,29 +181,25 @@ public:
 
 	rbool extend()
 	{
-		if(m_file.size()<128*1024*1024)
-		{
-			rbuf<uchar> temp;
-			temp.alloc(m_file.size()-get_data_off());
-			if(!m_file.read(get_data_off(),temp.size(),temp.begin()))
-				return false;
-			int cmax=m_index.m_cmax;
-			m_index.realloc_not_change(m_index.extend_num(m_index.count()));
-			for(int i=0;i<m_index.count();i++)
-				m_index[i]+=(m_index.m_cmax-cmax)*r_size(TA);
-
-			if(!m_file.write(r_size(TL),r_size(TL),&m_index.m_cmax))
-				return false;
-			//这里必须用m_cmax,不能用m_count，因为刚开始只有8个字节
-			if(!m_file.write(r_size(TL)*2,m_index.m_cmax*r_size(TA),m_index.begin()))
-				return false;
-			if(!m_file.write(get_data_off(),temp.size(),temp.begin()))
-				return false;
-		}
-		else
-		{
+		if(m_file.size()>=128*1024*1024)
 			return false;
-		}
+		rbuf<uchar> temp;
+		temp.alloc(m_file.size()-get_data_off());
+		if(!m_file.read(get_data_off(),temp.size(),temp.begin()))
+			return false;
+		int cmax=m_index.m_cmax;
+		m_index.realloc_not_change(m_index.extend_num(m_index.count()));
+		for(int i=0;i<m_index.count();i++)
+			m_index[i]+=(m_index.m_cmax-cmax)*r_size(TA);
+
+		if(!m_file.write(r_size(TL),r_size(TL),&m_index.m_cmax))
+			return false;
+		//这里必须用m_cmax,不能用m_count，因为刚开始只有8个字节
+		if(!m_file.write(r_size(TL)*2,
+			m_index.m_cmax*r_size(TA),m_index.begin()))
+			return false;
+		if(!m_file.write(get_data_off(),temp.size(),temp.begin()))
+			return false;
 		return true;
 	}
 

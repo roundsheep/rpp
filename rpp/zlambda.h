@@ -9,8 +9,8 @@
 struct zlambda
 {
 	//闭包处理，todo:闭包暂时不能使用类型推断,不是线程安全
-	static void lambda_pack(tsh& sh,const rbuf<tword>& vhead,const rbuf<tword>& vbody,
-		tfunc& tfi,tfunc& lambda)
+	static void lambda_pack(tsh& sh,const rbuf<tword>& vhead,
+		const rbuf<tword>& vbody,tfunc& tfi,tfunc& lambda)
 	{
 		tclass item;
 		for(int i=0;i<vbody.count();i++)
@@ -106,7 +106,8 @@ struct zlambda
 			tfunc* ptfi=zfind::func_search(tci,v[i].val);
 			if(ptfi!=null)
 			{
-				lambda_pack(sh,v.sub(0,i),v.sub(left+1,right),tfi,*ptfi);
+				lambda_pack(sh,v.sub(0,i),
+					v.sub(left+1,right),tfi,*ptfi);
 			}
 			v[i].multi.push("(");
 			v[i].multi.push("&");
@@ -174,7 +175,8 @@ struct zlambda
 			sh.push_twi(vtemp,word,",");
 			if(sh.m_mode==tsh::c_rvm||sh.m_mode==tsh::c_jit)
 			{
-				sh.push_twi(vtemp,word,rstr((uint)ptfi->lambda_data.begin()));
+				sh.push_twi(vtemp,word,
+					rstr((uint)ptfi->lambda_data.begin()));
 			}
 			else
 			{

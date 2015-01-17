@@ -123,7 +123,8 @@ struct rcode
 			return result;
 		}
 		result.set_size(size);
-		size=WideCharToMultiByte(936,0,s.cstrw_t(),-1,(char*)result.begin(),size,null,null);
+		size=WideCharToMultiByte(936,0,s.cstrw_t(),-1,
+			(char*)result.begin(),size,null,null);
 		if(size<=0)
 		{
 			return "";

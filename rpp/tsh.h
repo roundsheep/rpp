@@ -301,7 +301,8 @@ struct tsh
 				count2++;
 			elif(v[i].val==m_optr[toptr::c_mbk_r])
 				count2--;
-			elif(count1==0&&count2==0&&count3==0&&v[i].val==m_optr[toptr::c_comma])
+			elif(count1==0&&count2==0&&count3==0&&
+				v[i].val==m_optr[toptr::c_comma])
 			{
 				rbuf<tword> temp;
 				for(int j=start;j<i;j++)
@@ -332,7 +333,8 @@ struct tsh
 				count2++;
 			elif(v[i]==m_optr[toptr::c_mbk_r])
 				count2--;
-			elif(count1==0&&count2==0&&count3==0&&v[i]==m_optr[toptr::c_comma])
+			elif(count1==0&&count2==0&&count3==0&&
+				v[i]==m_optr[toptr::c_comma])
 			{
 				rbuf<rstr> temp;
 				for(int j=start;j<i;j++)
@@ -364,7 +366,8 @@ struct tsh
 				count2++;
 			elif(v[i].val==m_optr[toptr::c_mbk_r])
 				count2--;
-			elif(count1==0&&count2==0&&count3==0&&v[i].val==m_optr[toptr::c_comma])
+			elif(count1==0&&count2==0&&count3==0&&
+				v[i].val==m_optr[toptr::c_comma])
 			{
 				rbuf<tword> temp;
 				for(int j=start;j<i;j++)
@@ -391,7 +394,8 @@ struct tsh
 				count3++;
 			elif(v[i]==m_optr[toptr::c_bbk_r])
 				count3--;
-			elif(count1==0&&count2==0&&count3==0&&v[i]==m_optr[toptr::c_comma])
+			elif(count1==0&&count2==0&&count3==0&&
+				v[i]==m_optr[toptr::c_comma])
 			{
 				rbuf<rstr> temp;
 				for(int j=start;j<i;j++)
@@ -427,7 +431,8 @@ struct tsh
 				count3++;
 			elif(v[i].val==m_optr[toptr::c_tbk_r])
 				count3--;
-			elif(count1==0&&count2==0&&count3==0&&v[i].val==m_optr[toptr::c_comma])
+			elif(count1==0&&count2==0&&count3==0&&
+				v[i].val==m_optr[toptr::c_comma])
 			{
 				tsent temp;
 				for(int j=start;j<i;j++)

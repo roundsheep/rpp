@@ -49,7 +49,8 @@ struct zsent
 			return false;
 		if(!zsrep::typeof_replace(sh,tfi))
 			return false;
-		//变量构造函数替换如a(1) -> int.int(a,1)，这个变量必须是已定义的，不能是类型推断
+		//变量构造函数替换如a(1) -> int.int(a,1)
+		//这个变量必须是已定义的，不能是类型推断
 		if(!zsrep::var_struct_replace(sh,tfi))
 			return false;
 		//元函数替换
@@ -97,7 +98,8 @@ struct zsent
 			int i;
 			for(i=0;i<tfi.local.count();i++)
 			{
-				if(tfi.local[i].type=="main&"&&tfi.local[i].name==rppkey(c_pmain))
+				if(tfi.local[i].type=="main&"&&
+					tfi.local[i].name==rppkey(c_pmain))
 				{
 					break;
 				}
@@ -132,7 +134,8 @@ struct zsent
 			int i;
 			for(i=0;i<tfi.vword.count();i++)
 			{
-				if(zfind::data_member_search(*sh.m_main,tfi.vword[i].val)!=null)
+				if(zfind::data_member_search(
+					*sh.m_main,tfi.vword[i].val)!=null)
 				{
 					break;
 				}

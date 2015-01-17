@@ -20,8 +20,10 @@ struct znasm
 			return false;
 		}
 		rstr head;
-		head+="%include '"+rcode::utf8_to_gbk(rdir::get_exe_dir().torstr())+"nasm/windemos.inc'\n";
-		head+="%include '"+rcode::utf8_to_gbk(rdir::get_exe_dir().torstr())+"nasm/dec.inc'\n";
+		head+="%include '"+rcode::utf8_to_gbk(
+			rdir::get_exe_dir().torstr())+"nasm/windemos.inc'\n";
+		head+="%include '"+rcode::utf8_to_gbk(
+			rdir::get_exe_dir().torstr())+"nasm/dec.inc'\n";
 		//head+="IMPORT _getch\n"; nasm的一个bug?
 
 		head+="entry demo11\n";
@@ -182,7 +184,8 @@ struct znasm
 
 	static void add_lambda(tsh& sh,rstr& result)
 	{
-		for(tclass* p=sh.m_class.begin();p!=sh.m_class.end();p=sh.m_class.next(p))
+		for(tclass* p=sh.m_class.begin();
+			p!=sh.m_class.end();p=sh.m_class.next(p))
 		{
 			add_lambda(result,*p);
 		}
@@ -272,7 +275,8 @@ struct znasm
 				sh.error(vasm[j]);
 				return false;
 			}
-			ifn(zbin::is_jmp_ins(type)||type==tkey::c_rn&&is_jmp_ins_nasm(vasm[j].vstr[1]))
+			ifn(zbin::is_jmp_ins(type)||
+				type==tkey::c_rn&&is_jmp_ins_nasm(vasm[j].vstr[1]))
 			{
 				continue;
 			}
@@ -297,7 +301,8 @@ struct znasm
 	}
 
 	//将一个函数翻译成NASM汇编代码
-	static rbool proc_func(tsh& sh,tfunc& tfi,rstr& result,rbuf<rstr>& vconst,int level=0)
+	static rbool proc_func(tsh& sh,tfunc& tfi,rstr& result,
+		rbuf<rstr>& vconst,int level=0)
 	{
 		if(level++>300)
 		{
@@ -471,7 +476,8 @@ struct znasm
 		return true;
 	}
 
-	static rbool proc_asm(tsh& sh,tfunc& tfi,tasm& item,rstr& result,rbuf<rstr>& vconst)
+	static rbool proc_asm(tsh& sh,tfunc& tfi,tasm& item,
+		rstr& result,rbuf<rstr>& vconst)
 	{
 		rbuf<rstr>& vstr=item.vstr;
 		proc_const_str(vstr,vconst);
@@ -487,7 +493,8 @@ struct znasm
 				tfunc* ptfi=call_find(sh,item);
 				if(ptfi==null)
 				{
-					result+="	call dword "+link_vstr(vstr.sub(1))+"\n";
+					result+="	call dword "+
+						link_vstr(vstr.sub(1))+"\n";
 					return true;
 				}
 				result+="	call "+get_nasm_symbol(*ptfi)+"\n";
@@ -508,34 +515,40 @@ struct znasm
 				tfunc* ptfi=call_find(sh,item);
 				if(ptfi==null)
 				{
-					result+="	push dword "+link_vstr(vstr.sub(1))+"\n";
+					result+="	push dword "+
+						link_vstr(vstr.sub(1))+"\n";
 				}
 				else
 				{
-					result+="	push "+get_nasm_symbol(*ptfi)+"\n";
+					result+="	push "+
+						get_nasm_symbol(*ptfi)+"\n";
 				}
 				return true;
 			}
 		case tkey::c_pop:
 			{
-				result+="	pop dword "+link_vstr(vstr.sub(1))+"\n";
+				result+="	pop dword "+
+					link_vstr(vstr.sub(1))+"\n";
 				return true;
 			}
 		case tkey::c_jmp:
 			{
-				result+="	jmp "+get_nasm_symbol(tfi)+"_"+vstr.get(1)+"\n";
+				result+="	jmp "+get_nasm_symbol(tfi)+"_"+
+					vstr.get(1)+"\n";
 				return true;
 			}
 		case tkey::c_jebxz:
 			{
 				result+="	cmp ebx , 0\n";
-				result+="	jz "+get_nasm_symbol(tfi)+"_"+vstr.get(1)+"\n";
+				result+="	jz "+get_nasm_symbol(tfi)+"_"+
+					vstr.get(1)+"\n";
 				return true;
 			}
 		case tkey::c_jebxnz:
 			{
 				result+="	cmp ebx , 0\n";
-				result+="	jnz "+get_nasm_symbol(tfi)+"_"+vstr.get(1)+"\n";
+				result+="	jnz "+get_nasm_symbol(tfi)+"_"+
+					vstr.get(1)+"\n";
 				return true;
 			}
 		case tkey::c_nop:
@@ -547,12 +560,15 @@ struct znasm
 			{
 				if(count_mbk_l(vstr)==2)
 				{
-					result+="	lea ecx , "+get_opnd2(vstr)+"\n";
-					result+="	mov "+get_opnd1(vstr)+" , ecx\n";
+					result+="	lea ecx , "+
+						get_opnd2(vstr)+"\n";
+					result+="	mov "+get_opnd1(vstr)+
+						" , ecx\n";
 				}
 				else
 				{
-					result+="	lea dword "+link_vstr(vstr.sub(1))+"\n";
+					result+="	lea dword "+
+						link_vstr(vstr.sub(1))+"\n";
 				}
 				return true;
 			}
@@ -560,19 +576,24 @@ struct znasm
 			{
 				if(count_mbk_l(vstr)==2)
 				{
-					result+="	mov ecx , "+get_opnd2(vstr)+"\n";
-					result+="	mov "+get_opnd1(vstr)+" , ecx\n";
+					result+="	mov ecx , "+
+						get_opnd2(vstr)+"\n";
+					result+="	mov "+get_opnd1(vstr)+
+						" , ecx\n";
 				}
 				else
 				{
 					tfunc* ptfi=call_find(sh,item);
 					if(ptfi==null)
 					{
-						result+="	mov dword "+link_vstr(vstr.sub(1))+"\n";
+						result+="	mov dword "+
+							link_vstr(vstr.sub(1))+"\n";
 					}
 					else
 					{
-						result+="	mov dword "+get_opnd1(vstr)+" , "+get_nasm_symbol(*ptfi)+"\n";
+						result+="	mov dword "+
+							get_opnd1(vstr)+" , "+
+							get_nasm_symbol(*ptfi)+"\n";
 					}
 				}
 				return true;
@@ -591,12 +612,15 @@ struct znasm
 			{
 				if(count_mbk_l(vstr)==2)
 				{
-					result+="	mov ecx , "+get_opnd2(vstr)+"\n";
-					result+="	add "+get_opnd1(vstr)+" , ecx\n";
+					result+="	mov ecx , "+
+						get_opnd2(vstr)+"\n";
+					result+="	add "+get_opnd1(vstr)+
+						" , ecx\n";
 				}
 				else
 				{
-					result+="	add dword "+link_vstr(vstr.sub(1))+"\n";
+					result+="	add dword "+
+						link_vstr(vstr.sub(1))+"\n";
 				}
 				return true;
 			}
@@ -604,12 +628,15 @@ struct znasm
 			{
 				if(count_mbk_l(vstr)==2)
 				{
-					result+="	mov ecx , "+get_opnd2(vstr)+"\n";
-					result+="	sub "+get_opnd1(vstr)+" , ecx\n";
+					result+="	mov ecx , "+
+						get_opnd2(vstr)+"\n";
+					result+="	sub "+get_opnd1(vstr)+
+						" , ecx\n";
 				}
 				else
 				{
-					result+="	sub dword "+link_vstr(vstr.sub(1))+"\n";
+					result+="	sub dword "+
+						link_vstr(vstr.sub(1))+"\n";
 				}
 				return true;
 			}
@@ -718,12 +745,15 @@ struct znasm
 			{
 				if(count_mbk_l(vstr)==2)
 				{
-					result+="	mov ecx , "+get_opnd2(vstr)+"\n";
-					result+="	and "+get_opnd1(vstr)+" , ecx\n";
+					result+="	mov ecx , "+
+						get_opnd2(vstr)+"\n";
+					result+="	and "+get_opnd1(vstr)+
+						" , ecx\n";
 				}
 				else
 				{
-					result+="	and dword "+link_vstr(vstr.sub(1))+"\n";
+					result+="	and dword "+
+						link_vstr(vstr.sub(1))+"\n";
 				}
 				return true;
 			}
@@ -731,30 +761,37 @@ struct znasm
 			{
 				if(count_mbk_l(vstr)==2)
 				{
-					result+="	mov ecx , "+get_opnd2(vstr)+"\n";
-					result+="	or "+get_opnd1(vstr)+" , ecx\n";
+					result+="	mov ecx , "+
+						get_opnd2(vstr)+"\n";
+					result+="	or "+get_opnd1(vstr)+
+						" , ecx\n";
 				}
 				else
 				{
-					result+="	or dword "+link_vstr(vstr.sub(1))+"\n";
+					result+="	or dword "+
+						link_vstr(vstr.sub(1))+"\n";
 				}
 				return true;
 			}
 		case tkey::c_bnot:
 			{
-				result+="	not dword "+link_vstr(vstr.sub(1))+"\n";
+				result+="	not dword "+
+					link_vstr(vstr.sub(1))+"\n";
 				return true;
 			}
 		case tkey::c_bxor:
 			{
 				if(count_mbk_l(vstr)==2)
 				{
-					result+="	mov ecx , "+get_opnd2(vstr)+"\n";
-					result+="	xor "+get_opnd1(vstr)+" , ecx\n";
+					result+="	mov ecx , "+
+						get_opnd2(vstr)+"\n";
+					result+="	xor "+
+						get_opnd1(vstr)+" , ecx\n";
 				}
 				else
 				{
-					result+="	xor dword "+link_vstr(vstr.sub(1))+"\n";
+					result+="	xor dword "+
+						link_vstr(vstr.sub(1))+"\n";
 				}
 				return true;
 			}
@@ -809,7 +846,9 @@ struct znasm
 				if(vstr.count()==3&&vstr.top().is_number()&&
 					is_jmp_ins_nasm(vstr[1]))
 				{
-					result+="	"+vstr[1]+" "+get_nasm_symbol(tfi)+"_"+vstr.top()+"\n";
+					result+="	"+vstr[1]+" "+
+						get_nasm_symbol(tfi)+"_"+
+						vstr.top()+"\n";
 				}
 				else
 				{

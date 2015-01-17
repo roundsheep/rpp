@@ -361,7 +361,8 @@ struct zclass
 
 	static rbool inherit_proc_all(tsh& sh)
 	{
-		for(tclass* p=sh.m_class.begin();p!=sh.m_class.end();p=sh.m_class.next(p))
+		for(tclass* p=sh.m_class.begin();
+			p!=sh.m_class.end();p=sh.m_class.next(p))
 			if(!inherit_proc(sh,*p))
 				return false;
 		return true;

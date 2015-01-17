@@ -18,7 +18,8 @@ struct zmatch
 			return false;
 		}
 		tfunc* ptfi=zfind::func_search(*ptci,sh.get_tname(dst),
-			sh.get_tname(dst)+rppoptr(c_addr),sh.get_tname(src.type)+rppoptr(c_addr));
+			sh.get_tname(dst)+rppoptr(c_addr),
+			sh.get_tname(src.type)+rppoptr(c_addr));
 		if(ptfi!=null)
 		{
 			return true;
@@ -45,7 +46,8 @@ struct zmatch
 	}
 
 	//是否直接传递或构造转换传递
-	static rbool is_direct_construct_pass_m(tsh& sh,rbuf<tsent>& vsent,rbuf<tdata>& vparam)
+	static rbool is_direct_construct_pass_m(tsh& sh,rbuf<tsent>& vsent,
+		rbuf<tdata>& vparam)
 	{
 		if(vsent.count()!=vparam.count())
 		{
@@ -82,12 +84,15 @@ struct zmatch
 		if(!is_direct_pass(sh,src,dst))
 			return false;
 		if(src.vword.count()==1&&
-			(src.vword[0].is_const()||sh.m_key.is_asm_reg(src.vword[0].val))&&
+			(src.vword[0].is_const()||
+			sh.m_key.is_asm_reg(src.vword[0].val))&&
 			sh.is_quote(dst))
 		{
 			return false;
 		}
-		if(src.vword.count()==5&&sh.is_quote(dst)&&src.vword[1].val==rppoptr(c_addr)&&
+		if(src.vword.count()==5&&
+			sh.is_quote(dst)&&
+			src.vword[1].val==rppoptr(c_addr)&&
 			src.vword[0].val==rppoptr(c_mbk_l))
 		{
 			return false;
@@ -208,7 +213,8 @@ struct zmatch
 			//这里也可以用 if is_direct_construct_pass
 			ifn(is_full_pass(sh,vsent[i],ptfi->param[i].type))
 			{
-				insert_type(sh,vsent[i],sh.get_tname(ptfi->param[i].type));
+				insert_type(sh,vsent[i],
+					sh.get_tname(ptfi->param[i].type));
 			}
 		}
 		return ptfi;

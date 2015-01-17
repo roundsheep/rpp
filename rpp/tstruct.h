@@ -118,7 +118,8 @@ struct tword
 			return false;
 		for(;i<val.count();i++)
 		{
-			if(rstr::is_number(val[i])||rstr::is_alpha(val[i])||'_'==val[i]||'.'==val[i])
+			if(rstr::is_number(val[i])||rstr::is_alpha(val[i])||
+				'_'==val[i]||'.'==val[i])
 				continue;
 			elif(rcode::is_utf8_3(val[i])&&val.get(i+1)&&val.get(i+2))
 			{

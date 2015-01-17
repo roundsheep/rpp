@@ -127,9 +127,11 @@ struct zjitf
 		{
 			if(mbi.State==MEM_FREE)
 				mbi.AllocationBase=mbi.BaseAddress;
-			if(mbi.AllocationBase==mbi.BaseAddress&&mbi.AllocationBase!=null) 
+			if(mbi.AllocationBase==mbi.BaseAddress&&
+				mbi.AllocationBase!=null) 
 			{
-				void* ret=GetProcAddress((HINSTANCE)mbi.AllocationBase,name);
+				void* ret=GetProcAddress(
+					(HINSTANCE)mbi.AllocationBase,name);
 				if(ret!=null)
 				{
 					return ret;

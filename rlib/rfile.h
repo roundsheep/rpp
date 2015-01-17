@@ -329,7 +329,8 @@ struct rfile
 #ifdef _MSC_VER
 		return _wfopen(name,mode);
 #else
-		return fopen(rstrw(name).torstr().cstr_t(),rstrw(mode).torstr().cstr_t());
+		return fopen(rstrw(name).torstr().cstr_t(),
+			rstrw(mode).torstr().cstr_t());
 #endif
 	}
 
@@ -347,7 +348,8 @@ struct rfile
 #ifdef _MSC_VER
 		return 0==::_wrename(oldname.cstrw_t(),newname.cstrw_t());
 #else
-		return 0==::rename(oldname.torstr().cstr_t(),newname.torstr().cstr_t());
+		return 0==::rename(oldname.torstr().cstr_t(),
+			newname.torstr().cstr_t());
 #endif
 	}
 #ifdef _MSC_VER
@@ -360,9 +362,12 @@ struct rfile
 		}
 		uchar* data=temp.begin();
 		PIMAGE_DOS_HEADER dos_head=(PIMAGE_DOS_HEADER)data;
-		PIMAGE_OPTIONAL_HEADER op_head=(PIMAGE_OPTIONAL_HEADER)(data+dos_head->e_lfanew+4+20);
-		PIMAGE_FILE_HEADER file_head=(PIMAGE_FILE_HEADER)(data+dos_head->e_lfanew+4);
-		PIMAGE_SECTION_HEADER sec=(PIMAGE_SECTION_HEADER)(data+dos_head->e_lfanew+sizeof(IMAGE_NT_HEADERS));
+		PIMAGE_OPTIONAL_HEADER op_head=(PIMAGE_OPTIONAL_HEADER)(
+			data+dos_head->e_lfanew+4+20);
+		PIMAGE_FILE_HEADER file_head=(PIMAGE_FILE_HEADER)(
+			data+dos_head->e_lfanew+4);
+		PIMAGE_SECTION_HEADER sec=(PIMAGE_SECTION_HEADER)(
+			data+dos_head->e_lfanew+sizeof(IMAGE_NT_HEADERS));
 		int size=op_head->SizeOfHeaders;
 		for(int i=0;i<file_head->NumberOfSections;i++)
 		{

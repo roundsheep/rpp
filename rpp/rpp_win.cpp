@@ -1,10 +1,11 @@
-#include "rlib/rf.h"
-#include "rlib/rclass.h"
-#include "rpp/zmain.h"
+﻿#include "../rlib/rf.h"
+#include "../rlib/rclass.h"
+#include "zmain.h"
 
 //#define RPP_SHOW_CONSOLE
 
-int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine,int nCmdShow)
+int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,
+		   LPSTR lpCmdLine,int nCmdShow)
 {
 	rbuf<rstr> v=zmain::param_split(lpCmdLine);
 	v.push_front(rcode::utf8_to_gbk(rdir::get_exe_name().torstr()));

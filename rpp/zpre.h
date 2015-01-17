@@ -67,20 +67,23 @@ struct zpre
 		{
 			int cur=sh.m_file.count();
 			rbuf<rstrw> vname;
-			for(tfile* p=sh.m_file.begin();p!=sh.m_file.end();p=sh.m_file.next(p))
+			for(tfile* p=sh.m_file.begin();
+				p!=sh.m_file.end();p=sh.m_file.next(p))
 			{
 				count_tab(*p);
 				if(!str_analyse(sh,p->cont,p->vword,p))
 				{
 					return false;
 				}
-				ifn(ifdef_replace(sh,sh.m_vdefine,p->vword))//仅编译器内部使用
+				//仅编译器内部使用
+				ifn(ifdef_replace(sh,sh.m_vdefine,p->vword))
 				{
 					return false;
 				}
 				if(!obtain_name(sh,vname,p->vword,*p))
 				{
-					sh.error(rstr("obtain error ")+sh.get_file_name(p));
+					sh.error(rstr("obtain error ")+
+						sh.get_file_name(p));
 					return false;
 				}
 			}
@@ -539,7 +542,8 @@ struct zpre
 			if(!zread::is_const_str(sh,v,pos,right))
 				continue;
 			int dst;
-			if(!zread::const_eval(sh,sh.vword_to_vstr(v.sub(pos,right)),dst))
+			if(!zread::const_eval(sh,
+				sh.vword_to_vstr(v.sub(pos,right)),dst))
 			{
 				sh.error(v[i],"const_eval");
 				return false;

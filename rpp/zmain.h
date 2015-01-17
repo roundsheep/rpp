@@ -55,7 +55,8 @@ struct zmain
 			return false;
 		}
 		sh.m_db.close();
-		ifn(rfile::write_all_n(name,rfile::read_all_n(rdir::get_exe_name())+rfile::read_all_n(name)))
+		ifn(rfile::write_all_n(name,rfile::read_all_n(
+			rdir::get_exe_name())+rfile::read_all_n(name)))
 		{
 			return false;
 		}

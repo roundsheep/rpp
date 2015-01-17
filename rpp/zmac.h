@@ -54,8 +54,9 @@ struct zmac
 				{
 					result+=head;
 					result+=ptci->vdata[i].name;
-					result+=tword(rppoptr(c_sbk_r));//todo 单词没有行号
+					result+=tword(rppoptr(c_sbk_r));
 					result+=tword(rppoptr(c_semi));
+					//todo 单词没有行号
 				}
 			}
 			else
@@ -129,7 +130,8 @@ struct zmac
 			{
 				ifn(i>1&&v.get(i-1).val==rppoptr(c_dot))
 				{
-					if(!replace_param(sh,v,i,*ptci->vmac.find(item),right))
+					if(!replace_param(sh,v,i,
+						*ptci->vmac.find(item),right))
 					{
 						return false;
 					}
@@ -142,7 +144,8 @@ struct zmac
 			{
 				ifn(i>1&&v.get(i-1).val==rppoptr(c_dot))
 				{
-					if(!replace_param(sh,v,i,*ptci->vmac.find(item),right))
+					if(!replace_param(sh,v,i,
+						*ptci->vmac.find(item),right))
 					{
 						return false;
 					}
@@ -173,7 +176,8 @@ struct zmac
 		return true;
 	}
 
-	static rbool replace_param(tsh& sh,rbuf<tword>& v,int& i,tmac& mitem,int& right)
+	static rbool replace_param(tsh& sh,rbuf<tword>& v,int& i,
+		tmac& mitem,int& right)
 	{
 		if(mitem.is_super)
 		{
@@ -185,7 +189,8 @@ struct zmac
 		}
 	}
 
-	static rbool replace_param_common(tsh& sh,rbuf<tword>& v,int& i,tmac& mitem,int& right)
+	static rbool replace_param_common(tsh& sh,rbuf<tword>& v,int& i,
+		tmac& mitem,int& right)
 	{
 		int left=i+1;
 		rbuf<rbuf<rstr> > param;

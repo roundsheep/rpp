@@ -114,7 +114,8 @@ struct zopt
 		{
 			for(int j=0;j<dst[i].vstr.count();j++)
 			{
-				if(dst[i].vstr[j].get(0)=='@')//@后面的数字暂时只能是1位数
+				//@后面的数字暂时只能是1位数
+				if(dst[i].vstr[j].get(0)=='@')
 				{
 					int num=dst[i].vstr[j].sub(1).toint();
 					if(num>=temp.count())

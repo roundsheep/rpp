@@ -377,7 +377,8 @@ struct zbin
 					dst+='\0';
 				elif(src.get(i+1)=='x')
 				{
-					uchar ch=(uchar)rstr::hextodec(src.sub(i+2,i+4)).touint();
+					uchar ch=(uchar)rstr::hextodec(
+						src.sub(i+2,i+4)).touint();
 					dst+=ch;
 					i=i+3;
 					continue;

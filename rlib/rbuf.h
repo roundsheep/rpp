@@ -400,7 +400,7 @@ struct rbuf
 	//这里的重复代码可用宏或者模板简化
 	void alloc(int num)
 	{
-		if(m_p!=null)//指针为空时必须保证m_count和m_cmax也为空
+		if(m_p!=null)
 		{
 			return;
 		}
@@ -559,7 +559,7 @@ struct rbuf
 		}
 		rbuf<T> ret;
 		int temp=end-begin;
-		ret.alloc(temp);//这里会判断temp<0的情况，所以不需要判断begin>=end
+		ret.alloc(temp);//alloc会判断temp<0的情况，所以不需要判断begin>=end
 		for(int i=0;i<temp;i++)
 		{
 			ret[i]=m_p[begin+i];

@@ -73,7 +73,8 @@ struct zautof
 			tci.vfunc.insert(tfi);
 			added=true;
 		}
-		if(zfind::func_search(tci,tci.name,tci.name+rppoptr(c_addr),tci.name)==null)
+		if(zfind::func_search(tci,tci.name,
+			tci.name+rppoptr(c_addr),tci.name)==null)
 		{
 			tfunc tfi=*zfind::copystruct_search(tci);
 			tfi.ptci=&tci;
@@ -102,9 +103,11 @@ struct zautof
 			tci.vfunc.insert(tfi);
 			added=true;
 		}
-		if(zfind::func_search(tci,rppoptr(c_equal),tci.name+rppoptr(c_addr),tci.name)==null)
+		if(zfind::func_search(tci,rppoptr(c_equal),
+			tci.name+rppoptr(c_addr),tci.name)==null)
 		{
-			tfunc tfi=*zfind::func_search(tci,rppoptr(c_equal),tci.name+rppoptr(c_addr),
+			tfunc tfi=*zfind::func_search(
+				tci,rppoptr(c_equal),tci.name+rppoptr(c_addr),
 				tci.name+rppoptr(c_addr));
 			tfi.ptci=&tci;
 			tfi.param[1].type=tci.name;
@@ -185,7 +188,8 @@ struct zautof
 			{
 				continue;
 			}
-			if(v[i+1]!=rppoptr(c_tbk_l)||v[i+2]!="char"||v[i+3]!=rppoptr(c_tbk_r))
+			if(v[i+1]!=rppoptr(c_tbk_l)||v[i+2]!="char"||
+				v[i+3]!=rppoptr(c_tbk_r))
 			{
 				continue;
 			}

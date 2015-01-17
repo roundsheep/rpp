@@ -39,7 +39,8 @@ struct zcontrol
 		return true;
 	}
 
-	static rbool json_proc_a(tsh& sh,const rbuf<rstr>& src,rbuf<rstr>& dst,int level)
+	static rbool json_proc_a(tsh& sh,const rbuf<rstr>& src,
+		rbuf<rstr>& dst,int level)
 	{
 		if(src.get_bottom()==rppoptr(c_bbk_l))
 		{
@@ -53,7 +54,8 @@ struct zcontrol
 		return true;
 	}
 
-	static rbool json_proc(tsh& sh,const rbuf<rstr>& src,rbuf<rstr>& dst,int level=0)
+	static rbool json_proc(tsh& sh,const rbuf<rstr>& src,
+		rbuf<rstr>& dst,int level=0)
 	{
 		if(level++>c_rpp_deep)
 		{
@@ -154,7 +156,8 @@ struct zcontrol
 			{
 				continue;
 			}
-			if(!json_proc(sh,sh.vword_to_vstr(v.sub(left,right+1)),v[left].multi))
+			if(!json_proc(sh,sh.vword_to_vstr(
+				v.sub(left,right+1)),v[left].multi))
 			{
 				sh.error(v[left],"json error");
 				return false;
@@ -393,7 +396,8 @@ struct zcontrol
 		result.m_count=0;
 		for(int i=0;i<vsent.count();++i)
 		{
-			rbuf<rbuf<tword> > temp=r_split(vsent[i].vword,tword(rstr(";")));
+			rbuf<rbuf<tword> > temp=r_split(
+				vsent[i].vword,tword(rstr(";")));
 			if(temp.empty())
 			{
 				continue;
@@ -655,7 +659,8 @@ struct zcontrol
 			}
 			if(is_for)
 			{
-				rbuf<rbuf<tword> > forcond=r_split_e(vcond,tword(rppoptr(c_semi)));
+				rbuf<rbuf<tword> > forcond=r_split_e(
+					vcond,tword(rppoptr(c_semi)));
 				if(forcond.count()!=3)
 				{
 					sh.error(v.get(i),"miss for cond");
@@ -697,14 +702,16 @@ struct zcontrol
 		word.multi.push(rstr(posword.pos.line));
 	}
 
-	static void insert_cond_true_asm(tsh& sh,rbuf<rstr>& multi,const tword& posword)
+	static void insert_cond_true_asm(tsh& sh,rbuf<rstr>& multi,
+		const tword& posword)
 	{
 		multi.push(rppoptr(c_semi));
 		multi.push(rppkey(c_jebxnz));
 		multi.push(rstr(posword.pos.line));
 	}
 
-	static void insert_cond_false_asm(tsh& sh,rbuf<rstr>& multi,const tword& posword)
+	static void insert_cond_false_asm(tsh& sh,rbuf<rstr>& multi,
+		const tword& posword)
 	{
 		multi.push(rppoptr(c_semi));
 		multi.push(rppkey(c_jebxz));
@@ -849,7 +856,8 @@ struct zcontrol
 	}
 
 	//begin应该是条件关键字的位置
-	static int get_condition_end(tsh& sh,rbuf<tword>& v,int begin,rbuf<tword>* pret=null)
+	static int get_condition_end(tsh& sh,rbuf<tword>& v,
+		int begin,rbuf<tword>* pret=null)
 	{
 		if(v.get(begin).val.empty())
 			return v.count();
@@ -871,7 +879,8 @@ struct zcontrol
 		if(pret!=null)
 		{
 			ret=v.sub(begin+1,i);
-			if(ret.get_bottom()==rppoptr(c_sbk_l)&&ret.get_top()==rppoptr(c_sbk_r))
+			if(ret.get_bottom()==rppoptr(c_sbk_l)&&
+				ret.get_top()==rppoptr(c_sbk_r))
 			{
 				ret.pop_front();
 				ret.pop();
@@ -895,7 +904,8 @@ struct zcontrol
 			int topos=r_find_pos(vcond,tword(rppkey(c_to)));
 			if(topos<vcond.count())
 			{
-				int assignpos=r_find_pos(vcond,tword(rppoptr(c_equal)));
+				int assignpos=r_find_pos(
+					vcond,tword(rppoptr(c_equal)));
 				if(assignpos==vcond.count())
 				{
 					sh.error(v.get(i),"for to miss assign optr");

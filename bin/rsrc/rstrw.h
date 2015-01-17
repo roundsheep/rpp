@@ -17,6 +17,12 @@ struct rstrw
 	{
 		set(p);
 	}
+	
+	rstrw(const uchar* p,int len)
+	{
+		set_size(len);
+		rf.memcpy(m_buf.begin(),p,len);
+	}
 
 	rstrw(const rstrw& s)
 	{

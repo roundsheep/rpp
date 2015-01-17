@@ -12,12 +12,14 @@ struct rindex
 		{
 			if(rstr(argv[2]).get_top()=='\\')
 			{
-				if(!build(rcode::gbk_to_utf8(argv[1]),rcode::gbk_to_utf8(argv[2])))
+				if(!build(rcode::gbk_to_utf8(argv[1]),
+					rcode::gbk_to_utf8(argv[2])))
 					rf::error("build error");
 			}
 			else
 			{
-				search(rcode::gbk_to_utf8(argv[1]),rcode::gbk_to_utf8(argv[2]));
+				search(rcode::gbk_to_utf8(argv[1]),
+					rcode::gbk_to_utf8(argv[2]));
 			}
 		}
 		elif(argc==2)

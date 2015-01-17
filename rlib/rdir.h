@@ -93,7 +93,8 @@ struct rdir
 			return ret;
 		ret=buf;
 #else
-		ret=rstr(FileUtils::getInstance()->fullPathForFilename("rinf/key.txt").c_str());
+		ret=rstr(FileUtils::getInstance()->fullPathForFilename(
+			"rinf/key.txt").c_str());
 		ret=ret.sub(0,ret.count()-rstr("rinf/key.txt").count()+1);
 #endif
 		ret=dir_std(ret);
@@ -112,7 +113,8 @@ struct rdir
 		ret=dir_std(ret);
 		ret+='/';
 #else
-		ret=rstr(FileUtils::getInstance()->fullPathForFilename("rinf/key.txt").c_str());
+		ret=rstr(FileUtils::getInstance()->fullPathForFilename(
+			"rinf/key.txt").c_str());
 		ret=ret.sub(0,ret.count()-rstr("rinf/key.txt").count()+1);
 		ret=dir_std(ret);
 		ret=get_prev_dir(ret);
@@ -152,7 +154,8 @@ struct rdir
 		{
 			path=queue.pop_front();
 			WIN32_FIND_DATAW wfd; 
-			HANDLE handle=FindFirstFileW((path+rstr("*.*")).cstrw_t(),&wfd); 
+			HANDLE handle=FindFirstFileW(
+				(path+rstr("*.*")).cstrw_t(),&wfd); 
 			if(handle==INVALID_HANDLE_VALUE)
 				continue;
 			while(true)
@@ -162,7 +165,8 @@ struct rdir
 				if(rstr(".")!=name&&rstr("..")!=name)
 				{
 					item.path=path+name;
-					if(0!=(wfd.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY))
+					if(0!=(wfd.dwFileAttributes&
+						FILE_ATTRIBUTE_DIRECTORY))
 					{
 						item.is_dir=true;
 						queue.push(item.path+rstr("/"));

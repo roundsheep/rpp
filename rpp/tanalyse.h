@@ -32,9 +32,11 @@ struct tanalyse
 	static void analyse_print(tsh& sh)
 	{
 		rbuf<tanalyse_item> v;
-		for(tclass* p=sh.m_class.begin();p!=sh.m_class.end();p=sh.m_class.next(p))
+		for(tclass* p=sh.m_class.begin();
+			p!=sh.m_class.end();p=sh.m_class.next(p))
 		{
-			for(tfunc* q=p->vfunc.begin();q!=p->vfunc.end();q=p->vfunc.next(q))
+			for(tfunc* q=p->vfunc.begin();
+				q!=p->vfunc.end();q=p->vfunc.next(q))
 			{
 				if(q->count==0)
 				{

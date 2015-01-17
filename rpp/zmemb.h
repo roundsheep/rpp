@@ -214,7 +214,8 @@ struct zmemb
 				return false;
 			}
 			rbuf<rbuf<rstr> > temp=r_split<rbuf<rstr>,rstr>(
-				sh.vword_to_vstr(v.sub(left+1,right)),rppoptr(c_comma));
+				sh.vword_to_vstr(v.sub(left+1,right)),
+				rppoptr(c_comma));
 			for(int j=0;j<temp.count();j++)
 			{
 				mitem.param.push(temp[j].get(0));
@@ -363,7 +364,8 @@ struct zmemb
 		rbuf<rbuf<tword> > list=sh.comma_split(param);
 		int i=0;
 		//如果第一个参数只有类型，则表明是返回值
-		if(!list.empty()&&list[0].count()==1&&zfind::is_class_t(sh,list[0].get_bottom().val))
+		if(!list.empty()&&list[0].count()==1&&
+			zfind::is_class_t(sh,list[0].get_bottom().val))
 		{
 			item.retval.type=list[0].get_bottom().val;
 			i++;
@@ -389,7 +391,8 @@ struct zmemb
 		return true;
 	}
 
-	static rbool a_func_define(tsh& sh,tfunc& item,rbuf<tword>& v,rbool lambda=false)
+	static rbool a_func_define(tsh& sh,tfunc& item,rbuf<tword>& v,
+		rbool lambda=false)
 	{
 		item.name.clear();
 		if(v.get_bottom().val.sub(0,7)=="_LAMBDA")
