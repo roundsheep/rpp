@@ -518,7 +518,7 @@ struct zpre
 	static void count_tab(tfile& file)
 	{
 		file.line_list=r_split_e(file.cont,rstr("\n"));
-		file.line_list.push_front("");//行号从1开始
+		file.line_list.push_front(rstr());//行号从1开始
 		for(int i=0;i<file.line_list.count();i++)
 		{
 			file.tab_list.push(count_tab_line(file.line_list[i]));

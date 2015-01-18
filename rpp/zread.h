@@ -55,7 +55,7 @@ struct zread
 	{
 		if(sh.m_is_pack_read||sh.m_is_pack_mode)
 		{
-			return "";
+			return rstrw();
 		}
 		return rdir::get_exe_dir();
 	}
@@ -704,7 +704,7 @@ struct zread
 			name.torstr().cstr_t(),"rb",(ssize_t*)&size);
 		if(pbuf==null||size<=0)
 		{
-			return "";
+			return rstr();
 		}
 		rstr ret=rstr(pbuf,size);
 		delete[] pbuf;
@@ -723,7 +723,7 @@ struct zread
 					return sh.m_db[i+1];
 				}
 			}
-			return "";
+			return rstr();
 		}
 		else
 		{

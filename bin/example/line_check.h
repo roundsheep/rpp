@@ -1,6 +1,6 @@
 ﻿/*
-检查代码每行是否超过88字符
-rpp -jit example\check_line.h ../rpp/
+检查代码每行是否超过92字符
+rpp -jit example\line_check.h ../rpp/
 */
 
 import rdir.h
@@ -17,7 +17,7 @@ bool check_line(rstrw s)
 			count+=8
 		else
 			count++
-	if count<=88
+	if count<=92
 		return true
 	putsl 'count '+count
 	putsl(s.torstr)

@@ -25,7 +25,7 @@ struct rcode
 		size=MultiByteToWideChar(936,0,s.cstr_t(),-1,result.cstrw_t(),size);
 		if(size<=0)
 		{
-			return "";
+			return rstr();
 		}
 		result.m_buf.m_count-=2;
 		return r_move(result);
@@ -127,7 +127,7 @@ struct rcode
 			(char*)result.begin(),size,null,null);
 		if(size<=0)
 		{
-			return "";
+			return rstr();
 		}
 		result.pop();
 		return r_move(result);

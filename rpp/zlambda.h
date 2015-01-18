@@ -131,7 +131,7 @@ struct zlambda
 				return v[i].val;
 			}
 		}
-		return "";
+		return rstr();
 	}
 
 	static void lambda_push_type(const rstr& name,tfunc& tfi)

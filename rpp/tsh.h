@@ -195,7 +195,7 @@ struct tsh
 		elif(word.is_cstr())
 			return rstr("rp<char>");
 		else
-			return "";
+			return rstr();
 	}
 	
 	//获取类型名称，忽略引用
@@ -568,12 +568,12 @@ struct tsh
 	{
 		if(p==null)
 		{
-			return "";
+			return rstr();
 		}
 		return p->name.torstr();
 	}
 
-	static void error(rstr e="")
+	static void error(rstr e=rstr())
 	{
 #ifndef __COCOS2D_H__
 		rf::printl(e);
@@ -588,7 +588,7 @@ struct tsh
 		tpos pos=word.pos_src;
 		if(pos.file==null)
 		{
-			return "";
+			return rstr();
 		}
 		rstr ret;
 		ret+="\nsrc_file: "+pos.file->name.torstr();
@@ -597,7 +597,7 @@ struct tsh
 		return r_move(ret);
 	}
 
-	void error(const tword& word,rstr e="")
+	void error(const tword& word,rstr e=rstr())
 	{
 		error(rstr("file: ")+get_file_name(word.pos.file)+
 			rstr("\nline: ")+rstr(word.pos.line)+
@@ -605,7 +605,7 @@ struct tsh
 		error(get_src_str(word));
 	}
 
-	void error(const tsent& sent,rstr e="")
+	void error(const tsent& sent,rstr e=rstr())
 	{
 		error(rstr("file: ")+get_file_name(sent.pos.file)+
 			rstr("\nline: ")+rstr(sent.pos.line)+rstr("\n")+e);
@@ -614,7 +614,7 @@ struct tsh
 		error(get_src_str(sent.vword.get_bottom()));
 	}
 
-	void error(const tasm& oasm,rstr e="")
+	void error(const tasm& oasm,rstr e=rstr())
 	{
 		error(rstr("file: ")+get_file_name(oasm.pos.file)+
 			rstr("\nline: ")+rstr(oasm.pos.line)+rstr("\n")+e);
@@ -622,12 +622,12 @@ struct tsh
 		rf::printl();
 	}
 
-	static void error(tfunc& tfi,rstr e="")
+	static void error(tfunc& tfi,rstr e=rstr())
 	{
 		error(&tfi,e);
 	}
 
-	static void error(tfunc* ptfi,rstr e="")
+	static void error(tfunc* ptfi,rstr e=rstr())
 	{
 		if(ptfi==null)
 		{

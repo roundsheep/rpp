@@ -126,272 +126,130 @@ struct zjit
 	{
 		tins& ins=item.ins;
 		rbuf<rstr>& vstr=item.vstr;
+		rstr s;
 		switch(ins.type)
 		{
 		case tkey::c_calle:
-			{
-				return p_calle(sh,ins,start);
-			}
+			return p_calle(sh,ins,start);
 		case tkey::c_call:
-			{
-				return zjiti::b_call(ins,start);
-			}
+			return zjiti::b_call(ins,start);
 		case tkey::c_retn:
-			{
-				return zjiti::b_retn();
-			}
+			return zjiti::b_retn();
 		case tkey::c_reti:
-			{
-				return zjiti::b_reti(ins);
-			}
+			return zjiti::b_reti(ins);
 		case tkey::c_push:
-			{
-				return zjiti::b_push(ins);
-			}
+			return zjiti::b_push(ins);
 		case tkey::c_pop:
-			{
-				return zjiti::b_pop(ins);
-			}
+			return zjiti::b_pop(ins);
 		case tkey::c_jmp:
-			{
-				return zjiti::b_jmp(ins,start);
-			}
+			return zjiti::b_jmp(ins,start);
 		case tkey::c_jebxz:
-			{
-				return rppj4(b_cmp,rppkey(c_ebx),rppoptr(c_comma),"0")+
-					zjiti::b_jz(ins,start+6);
-			}
+			return rppj4(b_cmp,rppkey(c_ebx),rppoptr(c_comma),"0")+
+				zjiti::b_jz(ins,start+6);
 		case tkey::c_jebxnz:
-			{
-				return rppj4(b_cmp,rppkey(c_ebx),rppoptr(c_comma),"0")+
-					zjiti::b_jnz(ins,start+6);
-			}
+			return rppj4(b_cmp,rppkey(c_ebx),rppoptr(c_comma),"0")+
+				zjiti::b_jnz(ins,start+6);
 		case tkey::c_nop:
-			{
-				return zjiti::b_nop();
-			}
+			return zjiti::b_nop();
 		case tkey::c_lea:
-			{
-				if(znasm::count_mbk_l(vstr)==2)
-				{
-					//应该检查b_lea是否返回空串
-					return rppj4(b_lea,rppkey(c_ecx),
-						rppoptr(c_comma),rppjb)+
-						rppj4(b_mov,rppja,rppoptr(c_comma),
-							rppkey(c_ecx));
-				}
-				else
-				{
-					return zjiti::b_lea(ins);
-				}
-			}
+			if(znasm::count_mbk_l(vstr)!=2)
+				return zjiti::b_lea(ins);
+			//应该检查b_lea是否返回空串
+			return rppj4(b_lea,rppkey(c_ecx),rppoptr(c_comma),rppjb)+
+				rppj4(b_mov,rppja,rppoptr(c_comma),rppkey(c_ecx));
 		case tkey::c_mov:
-			{
-				if(znasm::count_mbk_l(vstr)==2)
-				{
-					return rppj4(b_mov,rppkey(c_ecx),
-						rppoptr(c_comma),rppjb)+
-						rppj4(b_mov,rppja,rppoptr(c_comma),
-							rppkey(c_ecx));
-				}
-				else
-				{
-					return zjiti::b_mov(ins);
-				}
-			}
+			if(znasm::count_mbk_l(vstr)!=2)
+				return zjiti::b_mov(ins);
+			return rppj4(b_mov,rppkey(c_ecx),rppoptr(c_comma),rppjb)+
+				rppj4(b_mov,rppja,rppoptr(c_comma),rppkey(c_ecx));
 		case tkey::c_mov1:
-			{
-				return rppj4(b_mov1_cl_addr,rppkey(c_ecx),
-					rppoptr(c_comma),rppjb)+
-					rppj4(b_mov1_addr_cl,rppja,
-						rppoptr(c_comma),rppkey(c_ecx));
-			}
+			return rppj4(b_mov1_cl_addr,rppkey(c_ecx),rppoptr(c_comma),rppjb)+
+				rppj4(b_mov1_addr_cl,rppja,rppoptr(c_comma),rppkey(c_ecx));
 		case tkey::c_mov8:
-			{
-				rstr s;
-				s+=rppj4(b_mov,rppkey(c_ecx),rppoptr(c_comma),rppjb);
-				s+=rppj4(b_mov,rppja,rppoptr(c_comma),rppkey(c_ecx));
-				ins.first.val+=4;
-				ins.second.val+=4;
-				s+=rppj4(b_mov,rppkey(c_ecx),rppoptr(c_comma),rppjb);
-				s+=rppj4(b_mov,rppja,rppoptr(c_comma),rppkey(c_ecx));
-				return r_move(s);
-			}
+			s+=rppj4(b_mov,rppkey(c_ecx),rppoptr(c_comma),rppjb);
+			s+=rppj4(b_mov,rppja,rppoptr(c_comma),rppkey(c_ecx));
+			ins.first.val+=4;
+			ins.second.val+=4;
+			s+=rppj4(b_mov,rppkey(c_ecx),rppoptr(c_comma),rppjb);
+			s+=rppj4(b_mov,rppja,rppoptr(c_comma),rppkey(c_ecx));
+			return r_move(s);
 		case tkey::c_add:
-			{
-				if(znasm::count_mbk_l(vstr)==2)
-				{
-					return rppj4(b_mov,rppkey(c_ecx),
-						rppoptr(c_comma),rppjb)+
-						rppj4(b_add,rppja,rppoptr(c_comma),
-							rppkey(c_ecx));
-				}
-				else
-				{
-					return zjiti::b_add(ins);
-				}
-			}
+			if(znasm::count_mbk_l(vstr)!=2)
+				return zjiti::b_add(ins);
+			return rppj4(b_mov,rppkey(c_ecx),rppoptr(c_comma),rppjb)+
+				rppj4(b_add,rppja,rppoptr(c_comma),rppkey(c_ecx));
 		case tkey::c_sub:
-			{
-				if(znasm::count_mbk_l(vstr)==2)
-				{
-					return rppj4(b_mov,rppkey(c_ecx),
-						rppoptr(c_comma),rppjb)+
-						rppj4(b_sub,rppja,rppoptr(c_comma),
-							rppkey(c_ecx));
-				}
-				else
-				{
-					return zjiti::b_sub(ins);
-				}
-			}
+			if(znasm::count_mbk_l(vstr)!=2)
+				return zjiti::b_sub(ins);
+			return rppj4(b_mov,rppkey(c_ecx),rppoptr(c_comma),rppjb)+
+				rppj4(b_sub,rppja,rppoptr(c_comma),rppkey(c_ecx));
 		case tkey::c_imul:
-			{
-				return rppj4(b_mov,rppkey(c_ecx),
-					rppoptr(c_comma),rppja)+
-					rppj4(b_imul,rppkey(c_ecx),rppoptr(c_comma),
-						rppjb)+
-					rppj4(b_mov,rppja,rppoptr(c_comma),
-						rppkey(c_ecx));
-			}
+			return rppj4(b_mov,rppkey(c_ecx),rppoptr(c_comma),rppja)+
+				rppj4(b_imul,rppkey(c_ecx),rppoptr(c_comma),rppjb)+
+				rppj4(b_mov,rppja,rppoptr(c_comma),rppkey(c_ecx));
 		case tkey::c_idiv:
-			{
-				return rppj4(b_mov,rppkey(c_eax),
-					rppoptr(c_comma),rppja)+
-					zjiti::b_cdq()+
-					rppj4(b_mov,rppkey(c_ecx),
-						rppoptr(c_comma),rppjb)+
-					rppj4(b_idiv,rppkey(c_ecx),
-						rppoptr(c_comma),"0")+
-					rppj4(b_mov,rppja,rppoptr(c_comma),
-						rppkey(c_eax));
-			}
+			return rppj4(b_mov,rppkey(c_eax),rppoptr(c_comma),rppja)+
+				zjiti::b_cdq()+
+				rppj4(b_mov,rppkey(c_ecx),rppoptr(c_comma),rppjb)+
+				rppj4(b_idiv,rppkey(c_ecx),rppoptr(c_comma),"0")+
+				rppj4(b_mov,rppja,rppoptr(c_comma),rppkey(c_eax));
 		case tkey::c_imod:
-			{
-				return rppj4(b_mov,rppkey(c_eax),
-					rppoptr(c_comma),rppja)+
-					zjiti::b_cdq()+
-					rppj4(b_mov,rppkey(c_ecx),rppoptr(c_comma),
-						rppjb)+
-					rppj4(b_idiv,rppkey(c_ecx),
-						rppoptr(c_comma),"0")+
-					rppj4(b_mov,rppja,rppoptr(c_comma),
-						rppkey(c_edx));
-			}
+			return rppj4(b_mov,rppkey(c_eax),rppoptr(c_comma),rppja)+
+				zjiti::b_cdq()+
+				rppj4(b_mov,rppkey(c_ecx),rppoptr(c_comma),rppjb)+
+				rppj4(b_idiv,rppkey(c_ecx),rppoptr(c_comma),"0")+
+				rppj4(b_mov,rppja,rppoptr(c_comma),rppkey(c_edx));
 		case tkey::c_udiv:
-			{
-				return rppj4(b_mov,rppkey(c_eax),
-					rppoptr(c_comma),rppja)+
-					rppj4(b_xor,rppkey(c_edx),rppoptr(c_comma),
-						rppkey(c_edx))+
-					rppj4(b_mov,rppkey(c_ecx),
-						rppoptr(c_comma),rppjb)+
-					rppj4(b_udiv,rppkey(c_ecx),
-						rppoptr(c_comma),"0")+
-					rppj4(b_mov,rppja,rppoptr(c_comma),
-						rppkey(c_eax));
-			}
+			return rppj4(b_mov,rppkey(c_eax),rppoptr(c_comma),rppja)+
+				rppj4(b_xor,rppkey(c_edx),rppoptr(c_comma),rppkey(c_edx))+
+				rppj4(b_mov,rppkey(c_ecx),rppoptr(c_comma),rppjb)+
+				rppj4(b_udiv,rppkey(c_ecx),rppoptr(c_comma),"0")+
+				rppj4(b_mov,rppja,rppoptr(c_comma),rppkey(c_eax));
 		case tkey::c_umod:
-			{
-				return rppj4(b_mov,rppkey(c_eax),
-					rppoptr(c_comma),rppja)+
-					rppj4(b_xor,rppkey(c_edx),
-						rppoptr(c_comma),rppkey(c_edx))+
-					rppj4(b_mov,rppkey(c_ecx),
-						rppoptr(c_comma),rppjb)+
-					rppj4(b_udiv,rppkey(c_ecx),
-						rppoptr(c_comma),"0")+
-					rppj4(b_mov,rppja,rppoptr(c_comma),
-						rppkey(c_edx));
-			}
+			return rppj4(b_mov,rppkey(c_eax),rppoptr(c_comma),rppja)+
+				rppj4(b_xor,rppkey(c_edx),rppoptr(c_comma),rppkey(c_edx))+
+				rppj4(b_mov,rppkey(c_ecx),rppoptr(c_comma),rppjb)+
+				rppj4(b_udiv,rppkey(c_ecx),rppoptr(c_comma),"0")+
+				rppj4(b_mov,rppja,rppoptr(c_comma),rppkey(c_edx));
 		case tkey::c_cesb:
-			{
-				rppjcmp(b_sete_bl);
-			}
+			rppjcmp(b_sete_bl);
 		case tkey::c_cnesb:
-			{
-				rppjcmp(b_setne_bl);
-			}
+			rppjcmp(b_setne_bl);
 		case tkey::c_cgsb:
-			{
-				rppjcmp(b_setg_bl);
-			}
+			rppjcmp(b_setg_bl);
 		case tkey::c_cgesb:
-			{
-				rppjcmp(b_setge_bl);
-			}
+			rppjcmp(b_setge_bl);
 		case tkey::c_clsb:
-			{
-				rppjcmp(b_setl_bl);
-			}
+			rppjcmp(b_setl_bl);
 		case tkey::c_clesb:
-			{
-				rppjcmp(b_setle_bl);
-			}
+			rppjcmp(b_setle_bl);
 		case tkey::c_ucgsb:
-			{
-				rppjcmp(b_seta_bl);
-			}
+			rppjcmp(b_seta_bl);
 		case tkey::c_ucgesb:
-			{
-				rppjcmp(b_setae_bl);
-			}
+			rppjcmp(b_setae_bl);
 		case tkey::c_uclsb:
-			{
-				rppjcmp(b_setb_bl);
-			}
+			rppjcmp(b_setb_bl);
 		case tkey::c_uclesb:
-			{
-				rppjcmp(b_setbe_bl);
-			}
+			rppjcmp(b_setbe_bl);
 		case tkey::c_band:
-			{
-				if(znasm::count_mbk_l(vstr)==2)
-				{
-					return rppj4(b_mov,rppkey(c_ecx),
-						rppoptr(c_comma),rppjb)+
-						rppj4(b_and,rppja,rppoptr(c_comma),
-							rppkey(c_ecx));
-				}
-				else
-				{
-					return zjiti::b_and(ins);
-				}
-			}
+			if(znasm::count_mbk_l(vstr)!=2)
+				return zjiti::b_and(ins);
+			return rppj4(b_mov,rppkey(c_ecx),rppoptr(c_comma),rppjb)+
+				rppj4(b_and,rppja,rppoptr(c_comma),rppkey(c_ecx));
 		case tkey::c_bor:
-			{
-				if(znasm::count_mbk_l(vstr)==2)
-				{
-					return rppj4(b_mov,rppkey(c_ecx),
-						rppoptr(c_comma),rppjb)+
-						rppj4(b_or,rppja,rppoptr(c_comma),
-							rppkey(c_ecx));
-				}
-				else
-				{
-					return zjiti::b_or(ins);
-				}
-			}
+			if(znasm::count_mbk_l(vstr)!=2)
+				return zjiti::b_or(ins);
+			return rppj4(b_mov,rppkey(c_ecx),rppoptr(c_comma),rppjb)+
+				rppj4(b_or,rppja,rppoptr(c_comma),rppkey(c_ecx));
 		case tkey::c_bxor:
-			{
-				if(znasm::count_mbk_l(vstr)==2)
-				{
-					return rppj4(b_mov,rppkey(c_ecx),
-						rppoptr(c_comma),rppjb)+
-						rppj4(b_xor,rppja,rppoptr(c_comma),
-							rppkey(c_ecx));
-				}
-				else
-				{
-					return zjiti::b_xor(ins);
-				}
-			}
+			if(znasm::count_mbk_l(vstr)!=2)
+				return zjiti::b_xor(ins);
+			return rppj4(b_mov,rppkey(c_ecx),rppoptr(c_comma),rppjb)+
+				rppj4(b_xor,rppja,rppoptr(c_comma),rppkey(c_ecx));
 		case tkey::c_bnot:
-			{
-				return zjiti::b_not(ins);
-			}
+			return zjiti::b_not(ins);
 		}
-		return "";
+		return rstr();
 	}
 
 	static rstr p_calle(tsh& sh,tins& ins,uchar* start)
@@ -408,7 +266,7 @@ struct zjit
 		}
 		if(temp==null)
 		{
-			return "";
+			return rstr();
 		}
 		ins.first.val=(int)temp;
 		return zjiti::b_call(ins,start);

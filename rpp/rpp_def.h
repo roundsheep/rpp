@@ -43,7 +43,6 @@
 #define rppjf(a,b) sh.m_jit_f[a]=&b
 
 #define rppjcmp(a)                                            \
-rstr s;                                                       \
 if(znasm::count_mbk_l(vstr)==2)                               \
 {                                                             \
 	s+=rppj4(b_mov,rppkey(c_ecx),rppoptr(c_comma),rppjb); \

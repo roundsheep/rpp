@@ -116,7 +116,7 @@ struct tvar
 		}
 		else
 		{
-			return "";
+			return rstr();
 		}
 	}
 

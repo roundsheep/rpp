@@ -473,7 +473,7 @@ struct zbin
 		param.clear();
 		for(int i=0;i<temp.count();i++)
 		{
-			param.push(rstr::join<rstr>(temp[i],""));
+			param.push(rstr::join<rstr>(temp[i],rstr()));
 		}
 		if(param.empty())
 			return zfind::func_search(*ptci,fname);

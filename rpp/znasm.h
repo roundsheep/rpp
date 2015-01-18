@@ -486,376 +486,244 @@ struct znasm
 			return false;
 		}
 		int type=sh.m_key.get_key_index(vstr[0]);
+		tfunc* ptfi;
 		switch(type)
 		{
 		case tkey::c_call:
+			ptfi=call_find(sh,item);
+			if(ptfi==null)
 			{
-				tfunc* ptfi=call_find(sh,item);
-				if(ptfi==null)
-				{
-					result+="	call dword "+
-						link_vstr(vstr.sub(1))+"\n";
-					return true;
-				}
-				result+="	call "+get_nasm_symbol(*ptfi)+"\n";
-				return true;
-			}
-		case tkey::c_retn:
-			{
-				result+="	ret\n";
-				return true;
-			}
-		case tkey::c_reti:
-			{
-				result+="	ret "+vstr.get(1)+"\n";
-				return true;
-			}
-		case tkey::c_push:
-			{
-				tfunc* ptfi=call_find(sh,item);
-				if(ptfi==null)
-				{
-					result+="	push dword "+
-						link_vstr(vstr.sub(1))+"\n";
-				}
-				else
-				{
-					result+="	push "+
-						get_nasm_symbol(*ptfi)+"\n";
-				}
-				return true;
-			}
-		case tkey::c_pop:
-			{
-				result+="	pop dword "+
+				result+="	call dword "+
 					link_vstr(vstr.sub(1))+"\n";
 				return true;
 			}
+			result+="	call "+get_nasm_symbol(*ptfi)+"\n";
+			return true;
+		case tkey::c_retn:
+			result+="	ret\n";
+			return true;
+		case tkey::c_reti:
+			result+="	ret "+vstr.get(1)+"\n";
+			return true;
+		case tkey::c_push:
+			ptfi=call_find(sh,item);
+			if(ptfi==null)
+			{
+				result+="	push dword "+link_vstr(vstr.sub(1))+"\n";
+			}
+			else
+			{
+				result+="	push "+get_nasm_symbol(*ptfi)+"\n";
+			}
+			return true;
+		case tkey::c_pop:
+			result+="	pop dword "+link_vstr(vstr.sub(1))+"\n";
+			return true;
 		case tkey::c_jmp:
-			{
-				result+="	jmp "+get_nasm_symbol(tfi)+"_"+
-					vstr.get(1)+"\n";
-				return true;
-			}
+			result+="	jmp "+get_nasm_symbol(tfi)+"_"+vstr.get(1)+"\n";
+			return true;
 		case tkey::c_jebxz:
-			{
-				result+="	cmp ebx , 0\n";
-				result+="	jz "+get_nasm_symbol(tfi)+"_"+
-					vstr.get(1)+"\n";
-				return true;
-			}
+			result+="	cmp ebx , 0\n";
+			result+="	jz "+get_nasm_symbol(tfi)+"_"+vstr.get(1)+"\n";
+			return true;
 		case tkey::c_jebxnz:
-			{
-				result+="	cmp ebx , 0\n";
-				result+="	jnz "+get_nasm_symbol(tfi)+"_"+
-					vstr.get(1)+"\n";
-				return true;
-			}
+			result+="	cmp ebx , 0\n";
+			result+="	jnz "+get_nasm_symbol(tfi)+"_"+vstr.get(1)+"\n";
+			return true;
 		case tkey::c_nop:
-			{
-				result+="	nop\n";
-				return true;
-			}
+			result+="	nop\n";
+			return true;
 		case tkey::c_lea:
+			if(count_mbk_l(vstr)==2)
 			{
-				if(count_mbk_l(vstr)==2)
-				{
-					result+="	lea ecx , "+
-						get_opnd2(vstr)+"\n";
-					result+="	mov "+get_opnd1(vstr)+
-						" , ecx\n";
-				}
-				else
-				{
-					result+="	lea dword "+
-						link_vstr(vstr.sub(1))+"\n";
-				}
-				return true;
+				result+="	lea ecx , "+get_opnd2(vstr)+"\n";
+				result+="	mov "+get_opnd1(vstr)+" , ecx\n";
 			}
+			else
+			{
+				result+="	lea dword "+link_vstr(vstr.sub(1))+"\n";
+			}
+			return true;
 		case tkey::c_mov:
+			if(count_mbk_l(vstr)==2)
 			{
-				if(count_mbk_l(vstr)==2)
-				{
-					result+="	mov ecx , "+
-						get_opnd2(vstr)+"\n";
-					result+="	mov "+get_opnd1(vstr)+
-						" , ecx\n";
-				}
-				else
-				{
-					tfunc* ptfi=call_find(sh,item);
-					if(ptfi==null)
-					{
-						result+="	mov dword "+
-							link_vstr(vstr.sub(1))+"\n";
-					}
-					else
-					{
-						result+="	mov dword "+
-							get_opnd1(vstr)+" , "+
-							get_nasm_symbol(*ptfi)+"\n";
-					}
-				}
-				return true;
-			}
-		case tkey::c_mov1:
-			{
-				result+="	mov cl , "+get_opnd2(vstr)+"\n";
-				result+="	mov "+get_opnd1(vstr)+" , cl\n";
-				return true;
-			}
-		case tkey::c_mov8:
-			{
-				return false;
-			}
-		case tkey::c_add:
-			{
-				if(count_mbk_l(vstr)==2)
-				{
-					result+="	mov ecx , "+
-						get_opnd2(vstr)+"\n";
-					result+="	add "+get_opnd1(vstr)+
-						" , ecx\n";
-				}
-				else
-				{
-					result+="	add dword "+
-						link_vstr(vstr.sub(1))+"\n";
-				}
-				return true;
-			}
-		case tkey::c_sub:
-			{
-				if(count_mbk_l(vstr)==2)
-				{
-					result+="	mov ecx , "+
-						get_opnd2(vstr)+"\n";
-					result+="	sub "+get_opnd1(vstr)+
-						" , ecx\n";
-				}
-				else
-				{
-					result+="	sub dword "+
-						link_vstr(vstr.sub(1))+"\n";
-				}
-				return true;
-			}
-		case tkey::c_imul:
-			{
-				result+="	mov ecx , "+get_opnd1(vstr)+"\n";
-				result+="	imul ecx , "+get_opnd2(vstr)+"\n";
+				result+="	mov ecx , "+get_opnd2(vstr)+"\n";
 				result+="	mov "+get_opnd1(vstr)+" , ecx\n";
 				return true;
 			}
-		case tkey::c_idiv:
+			ptfi=call_find(sh,item);
+			if(ptfi==null)
 			{
-				result+="	mov eax , "+get_opnd1(vstr)+"\n";
-				result+="	cdq\n";
+				result+="	mov dword "+link_vstr(vstr.sub(1))+"\n";
+			}
+			else
+			{
+				result+="	mov dword "+get_opnd1(vstr)+" , "+
+					get_nasm_symbol(*ptfi)+"\n";
+			}
+			return true;
+		case tkey::c_mov1:
+			result+="	mov cl , "+get_opnd2(vstr)+"\n";
+			result+="	mov "+get_opnd1(vstr)+" , cl\n";
+			return true;
+		case tkey::c_mov8:
+			return false;
+		case tkey::c_add:
+			if(count_mbk_l(vstr)==2)
+			{
 				result+="	mov ecx , "+get_opnd2(vstr)+"\n";
-				result+="	idiv ecx\n";
-				result+="	mov "+get_opnd1(vstr)+" , eax\n";
-				return true;
+				result+="	add "+get_opnd1(vstr)+" , ecx\n";
 			}
-		case tkey::c_imod:
+			else
 			{
-				result+="	mov eax , "+get_opnd1(vstr)+"\n";
-				result+="	cdq\n";
-				result+="	mov ecx , "+get_opnd2(vstr)+"\n";
-				result+="	idiv ecx\n";
-				result+="	mov "+get_opnd1(vstr)+" , edx\n";
-				return true;
-			}
-		case tkey::c_cesb:
-			{
-				rppncmp("	sete bl\n");
-			}
-		case tkey::c_cnesb:
-			{
-				rppncmp("	setne bl\n");
-			}
-		case tkey::c_cgsb:
-			{
-				rppncmp("	setg bl\n");
-			}
-		case tkey::c_cgesb:
-			{
-				rppncmp("	setge bl\n");
-			}
-		case tkey::c_clsb:
-			{
-				rppncmp("	setl bl\n");
-			}
-		case tkey::c_clesb:
-			{
-				rppncmp("	setle bl\n");
-			}
-		case tkey::c_add8:
-			{
-				return false;
-			}
-		case tkey::c_sub8:
-			{
-				return false;
-			}
-		case tkey::c_imul8:
-			{
-				return false;
-			}
-		case tkey::c_idiv8:
-			{
-				return false;
-			}
-		case tkey::c_imod8:
-			{
-				return false;
-			}
-		case tkey::c_cgsb8:
-			{
-				return false;
-			}
-		case tkey::c_clsb8:
-			{
-				return false;
-			}
-		case tkey::c_fadd8:
-			{
-				return false;
-			}
-		case tkey::c_fsub8:
-			{
-				return false;
-			}
-		case tkey::c_fmul8:
-			{
-				return false;
-			}
-		case tkey::c_fdiv8:
-			{
-				return false;
-			}
-		case tkey::c_fcgsb8:
-			{
-				return false;
-			}
-		case tkey::c_fclsb8:
-			{
-				return false;
-			}
-		case tkey::c_band:
-			{
-				if(count_mbk_l(vstr)==2)
-				{
-					result+="	mov ecx , "+
-						get_opnd2(vstr)+"\n";
-					result+="	and "+get_opnd1(vstr)+
-						" , ecx\n";
-				}
-				else
-				{
-					result+="	and dword "+
-						link_vstr(vstr.sub(1))+"\n";
-				}
-				return true;
-			}
-		case tkey::c_bor:
-			{
-				if(count_mbk_l(vstr)==2)
-				{
-					result+="	mov ecx , "+
-						get_opnd2(vstr)+"\n";
-					result+="	or "+get_opnd1(vstr)+
-						" , ecx\n";
-				}
-				else
-				{
-					result+="	or dword "+
-						link_vstr(vstr.sub(1))+"\n";
-				}
-				return true;
-			}
-		case tkey::c_bnot:
-			{
-				result+="	not dword "+
+				result+="	add dword "+
 					link_vstr(vstr.sub(1))+"\n";
-				return true;
 			}
+			return true;
+		case tkey::c_sub:
+			if(count_mbk_l(vstr)==2)
+			{
+				result+="	mov ecx , "+get_opnd2(vstr)+"\n";
+				result+="	sub "+get_opnd1(vstr)+" , ecx\n";
+			}
+			else
+			{
+				result+="	sub dword "+link_vstr(vstr.sub(1))+"\n";
+			}
+			return true;
+		case tkey::c_imul:
+			result+="	mov ecx , "+get_opnd1(vstr)+"\n";
+			result+="	imul ecx , "+get_opnd2(vstr)+"\n";
+			result+="	mov "+get_opnd1(vstr)+" , ecx\n";
+			return true;
+		case tkey::c_idiv:
+			result+="	mov eax , "+get_opnd1(vstr)+"\n";
+			result+="	cdq\n";
+			result+="	mov ecx , "+get_opnd2(vstr)+"\n";
+			result+="	idiv ecx\n";
+			result+="	mov "+get_opnd1(vstr)+" , eax\n";
+			return true;
+		case tkey::c_imod:
+			result+="	mov eax , "+get_opnd1(vstr)+"\n";
+			result+="	cdq\n";
+			result+="	mov ecx , "+get_opnd2(vstr)+"\n";
+			result+="	idiv ecx\n";
+			result+="	mov "+get_opnd1(vstr)+" , edx\n";
+			return true;
+		case tkey::c_cesb:
+			rppncmp("	sete bl\n");
+		case tkey::c_cnesb:
+			rppncmp("	setne bl\n");
+		case tkey::c_cgsb:
+			rppncmp("	setg bl\n");
+		case tkey::c_cgesb:
+			rppncmp("	setge bl\n");
+		case tkey::c_clsb:
+			rppncmp("	setl bl\n");
+		case tkey::c_clesb:
+			rppncmp("	setle bl\n");
+		case tkey::c_add8:
+			return false;
+		case tkey::c_sub8:
+			return false;
+		case tkey::c_imul8:
+			return false;
+		case tkey::c_idiv8:
+			return false;
+		case tkey::c_imod8:
+			return false;
+		case tkey::c_cgsb8:
+			return false;
+		case tkey::c_clsb8:
+			return false;
+		case tkey::c_fadd8:
+			return false;
+		case tkey::c_fsub8:
+			return false;
+		case tkey::c_fmul8:
+			return false;
+		case tkey::c_fdiv8:
+			return false;
+		case tkey::c_fcgsb8:
+			return false;
+		case tkey::c_fclsb8:
+			return false;
+		case tkey::c_band:
+			if(count_mbk_l(vstr)==2)
+			{
+				result+="	mov ecx , "+get_opnd2(vstr)+"\n";
+				result+="	and "+get_opnd1(vstr)+" , ecx\n";
+			}
+			else
+			{
+				result+="	and dword "+link_vstr(vstr.sub(1))+"\n";
+			}
+			return true;
+		case tkey::c_bor:
+			if(count_mbk_l(vstr)==2)
+			{
+				result+="	mov ecx , "+get_opnd2(vstr)+"\n";
+				result+="	or "+get_opnd1(vstr)+" , ecx\n";
+			}
+			else
+			{
+				result+="	or dword "+link_vstr(vstr.sub(1))+"\n";
+			}
+			return true;
+		case tkey::c_bnot:
+			result+="	not dword "+link_vstr(vstr.sub(1))+"\n";
+			return true;
 		case tkey::c_bxor:
+			if(count_mbk_l(vstr)==2)
 			{
-				if(count_mbk_l(vstr)==2)
-				{
-					result+="	mov ecx , "+
-						get_opnd2(vstr)+"\n";
-					result+="	xor "+
-						get_opnd1(vstr)+" , ecx\n";
-				}
-				else
-				{
-					result+="	xor dword "+
-						link_vstr(vstr.sub(1))+"\n";
-				}
-				return true;
+				result+="	mov ecx , "+get_opnd2(vstr)+"\n";
+				result+="	xor "+get_opnd1(vstr)+" , ecx\n";
 			}
+			else
+			{
+				result+="	xor dword "+link_vstr(vstr.sub(1))+"\n";
+			}
+			return true;
 		case tkey::c_bshl:
-			{
-				return false;
-			}
+			return false;
 		case tkey::c_bshr:
-			{
-				return false;
-			}
+			return false;
 		case tkey::c_bsar:
-			{
-				return false;
-			}
+			return false;
 		case tkey::c_udiv:
-			{
-				result+="	mov eax , "+get_opnd1(vstr)+"\n";
-				result+="	xor edx , edx\n";
-				result+="	mov ecx , "+get_opnd2(vstr)+"\n";
-				result+="	div ecx\n";
-				result+="	mov "+get_opnd1(vstr)+" , eax\n";
-				return true;
-			}
+			result+="	mov eax , "+get_opnd1(vstr)+"\n";
+			result+="	xor edx , edx\n";
+			result+="	mov ecx , "+get_opnd2(vstr)+"\n";
+			result+="	div ecx\n";
+			result+="	mov "+get_opnd1(vstr)+" , eax\n";
+			return true;
 		case tkey::c_umod:
-			{
-				result+="	mov eax , "+get_opnd1(vstr)+"\n";
-				result+="	xor edx , edx\n";
-				result+="	mov ecx , "+get_opnd2(vstr)+"\n";
-				result+="	div ecx\n";
-				result+="	mov "+get_opnd1(vstr)+" , edx\n";
-				return true;
-			}
+			result+="	mov eax , "+get_opnd1(vstr)+"\n";
+			result+="	xor edx , edx\n";
+			result+="	mov ecx , "+get_opnd2(vstr)+"\n";
+			result+="	div ecx\n";
+			result+="	mov "+get_opnd1(vstr)+" , edx\n";
+			return true;
 		case tkey::c_ucgsb:
-			{
-				rppncmp("	seta bl\n");
-			}
+			rppncmp("	seta bl\n");
 		case tkey::c_ucgesb:
-			{
-				rppncmp("	setae bl\n");
-			}
+			rppncmp("	setae bl\n");
 		case tkey::c_uclsb:
-			{
-				rppncmp("	setb bl\n");
-			}
+			rppncmp("	setb bl\n");
 		case tkey::c_uclesb:
-			{
-				rppncmp("	setbe bl\n");
-			}
+			rppncmp("	setbe bl\n");
 		case tkey::c_rn:
+			if(vstr.count()==3&&vstr.top().is_number()&&
+				is_jmp_ins_nasm(vstr[1]))
 			{
-				if(vstr.count()==3&&vstr.top().is_number()&&
-					is_jmp_ins_nasm(vstr[1]))
-				{
-					result+="	"+vstr[1]+" "+
-						get_nasm_symbol(tfi)+"_"+
-						vstr.top()+"\n";
-				}
-				else
-				{
-					result+="	"+link_vstr(vstr.sub(1))+"\n";
-				}
-				return true;
+				result+="	"+vstr[1]+" "+get_nasm_symbol(tfi)+"_"+
+					vstr.top()+"\n";
 			}
+			else
+			{
+				result+="	"+link_vstr(vstr.sub(1))+"\n";
+			}
+			return true;
 		}
 		return false;
 	}

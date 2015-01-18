@@ -24,19 +24,19 @@ struct rf
 		c_block_size=(64*1024)
 	};
 
-	static void error(rstr s="")
+	static void error(rstr s=rstr())
 	{
 		printf("\n%s\n",s.cstr());
 		getch();
 		exit(1);
 	}
 
-	static void printl(rstr s="")
+	static void printl(rstr s=rstr())
 	{
 		printf("%s\n",s.cstr());
 	}
 
-	static void print(rstr s="")
+	static void print(rstr s=rstr())
 	{
 		printf("%s ",s.cstr());
 	}
@@ -123,7 +123,7 @@ struct rf
 #else
 	static rbool execmd_r(const char *cmd,rstr &result)
 	{
-		result="";
+		result=rstr();
 		FILE *fp=popen(cmd,"r");
 
 		if(null==fp)

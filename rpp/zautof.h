@@ -31,7 +31,7 @@ struct zautof
 			tfi.name=rppoptr(c_destruct)+tci.name;
 
 			tfi.param.push(tdata(tci.name+rppoptr(c_addr),rppkey(c_this)));
-			tfi.retval=tdata(rppkey(c_void),"");
+			tfi.retval=tdata(rppkey(c_void),rstr());
 
 			tfi.name_dec=tfi.get_dec();
 			tci.vfunc.insert(tfi);
@@ -48,7 +48,7 @@ struct zautof
 			tfi.name=tci.name;
 
 			tfi.param.push(tdata(tci.name+rppoptr(c_addr),rppkey(c_this)));
-			tfi.retval=tdata(rppkey(c_void),"");
+			tfi.retval=tdata(rppkey(c_void),rstr());
 
 			tfi.name_dec=tfi.get_dec();
 			tci.vfunc.insert(tfi);
@@ -66,7 +66,7 @@ struct zautof
 
 			tfi.param.push(tdata(tci.name+rppoptr(c_addr),rppkey(c_this)));
 			tfi.param.push(tdata(tci.name+rppoptr(c_addr),rppkey(c_rvara)));
-			tfi.retval=tdata(rppkey(c_void),"");
+			tfi.retval=tdata(rppkey(c_void),rstr());
 
 			add_copy_sent(sh,tfi);
 			tfi.name_dec=tfi.get_dec();
@@ -96,7 +96,7 @@ struct zautof
 
 			tfi.param.push(tdata(tci.name+rppoptr(c_addr),rppkey(c_this)));
 			tfi.param.push(tdata(tci.name+rppoptr(c_addr),rppkey(c_rvara)));
-			tfi.retval=tdata(rppkey(c_void),"");
+			tfi.retval=tdata(rppkey(c_void),rstr());
 
 			add_copy_sent(sh,tfi);
 			tfi.name_dec=tfi.get_dec();

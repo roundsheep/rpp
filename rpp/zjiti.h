@@ -20,7 +20,7 @@ struct zjiti
 		{
 			return zjitb::build_a(ins,0xff,0x90);
 		}
-		return "";
+		return rstr();
 	}
 
 	static rstr b_retn()
@@ -35,7 +35,7 @@ struct zjiti
 		s[0]=0xc2;
 		if(ins.first.val>65535)
 		{
-			return "";
+			return rstr();
 		}
 		*(ushort*)&s[1]=(ushort)ins.first.val;//只有16位的reti，截断
 		return r_move(s);
@@ -55,7 +55,7 @@ struct zjiti
 		{
 			return zjitb::build_a(ins,0xff,0xb0);
 		}
-		return "";
+		return rstr();
 	}
 
 	static rstr b_pop(const tins& ins)
@@ -64,7 +64,7 @@ struct zjiti
 		{
 			return zjitb::build_r(ins,0x58);
 		}
-		return "";
+		return rstr();
 	}
 
 	static rstr b_jmp(const tins& ins,uchar* start)
@@ -81,7 +81,7 @@ struct zjiti
 		{
 			return zjitb::build_a(ins,0xff,0xa0);
 		}
-		return "";
+		return rstr();
 	}
 
 	static rstr b_jz(const tins& ins,uchar* start)
@@ -90,7 +90,7 @@ struct zjiti
 		{
 			return zjitb::build_relative(ins,start,0x0f,0x84);
 		}
-		return "";
+		return rstr();
 	}
 
 	static rstr b_jnz(const tins& ins,uchar* start)
@@ -99,7 +99,7 @@ struct zjiti
 		{
 			return zjitb::build_relative(ins,start,0x0f,0x85);
 		}
-		return "";
+		return rstr();
 	}
 
 	static rstr b_nop()
@@ -113,7 +113,7 @@ struct zjiti
 		{
 			return zjitb::build_ra(ins,0x8d,0x80);
 		}
-		return "";
+		return rstr();
 	}
 
 	static rstr b_mov(const tins& ins)
@@ -144,7 +144,7 @@ struct zjiti
 				return zjitb::build_ar(ins,0x89,0x80);
 			}
 		}
-		return "";
+		return rstr();
 	}
 
 	static rstr b_mov1_cl_addr(const tins& ins)
@@ -209,7 +209,7 @@ struct zjiti
 				return zjitb::build_ar(ins,0x01,0x80);
 			}
 		}
-		return "";
+		return rstr();
 	}
 
 	static rstr b_sub(const tins& ins)
@@ -240,7 +240,7 @@ struct zjiti
 				return zjitb::build_ar(ins,0x29,0x80);
 			}
 		}
-		return "";
+		return rstr();
 	}
 
 	static rstr b_imul(const tins& ins)
@@ -249,7 +249,7 @@ struct zjiti
 		{
 			return zjitb::build_ra(ins,0x0f,0xaf,0x80);
 		}
-		return "";
+		return rstr();
 	}
 
 	static rstr b_idiv(const tins& ins)
@@ -258,7 +258,7 @@ struct zjiti
 		{
 			return zjitb::build_r(ins,0xf7,0xf8);
 		}
-		return "";
+		return rstr();
 	}
 
 	static rstr b_udiv(const tins& ins)
@@ -267,7 +267,7 @@ struct zjiti
 		{
 			return zjitb::build_r(ins,0xf7,0xf0);
 		}
-		return "";
+		return rstr();
 	}
 
 	static rstr b_cdq()
@@ -353,7 +353,7 @@ struct zjiti
 				return zjitb::build_ar(ins,0x39,0x80);
 			}
 		}
-		return "";
+		return rstr();
 	}
 
 	static rstr b_and(const tins& ins)
@@ -384,7 +384,7 @@ struct zjiti
 				return zjitb::build_ar(ins,0x21,0x80);
 			}
 		}
-		return "";
+		return rstr();
 	}
 
 	static rstr b_or(const tins& ins)
@@ -415,7 +415,7 @@ struct zjiti
 				return zjitb::build_ar(ins,0x09,0x80);
 			}
 		}
-		return "";
+		return rstr();
 	}
 
 	static rstr b_xor(const tins& ins)
@@ -446,7 +446,7 @@ struct zjiti
 				return zjitb::build_ar(ins,0x31,0x80);
 			}
 		}
-		return "";
+		return rstr();
 	}
 
 	static rstr b_not(const tins& ins)
@@ -459,7 +459,7 @@ struct zjiti
 		{
 			return zjitb::build_a(ins,0xf7,0x90);
 		}
-		return "";
+		return rstr();
 	}
 
 	static rstr b_shl_eax_cl()

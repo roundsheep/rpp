@@ -88,14 +88,14 @@ struct rhash
 	}
 	
 	//如果重复则不插入
-	void insert_c(T& a,rstr name="")
+	void insert_c(T& a,rstr name=rstr())
 	{
 		if(exist(name))
 			return;
 		insert(a,name);
 	}
 
-	void insert(T& a,rstr name="")
+	void insert(T& a,rstr name=rstr())
 	{
 		int addr=get_addr(name);
 		rhash_i<T>* p=new rhash_i<T>;
@@ -109,7 +109,7 @@ struct rhash
 		m_count++;
 	}
 
-	rbool erase(rstr name="")
+	rbool erase(rstr name=rstr())
 	{
 		rhash_i<T>* p=(rhash_i<T>*)find(name);
 		if(p==null)

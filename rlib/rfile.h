@@ -120,7 +120,7 @@ struct rfile
 		ret.set_size(size());
 		if(!read(0,size(),ret.begin()))
 		{
-			return "";
+			return rstr();
 		}
 		return r_move(ret);
 	}
@@ -133,7 +133,7 @@ struct rfile
 		ret.set_size(file.size());
 		if(!file.read(0,file.size(),ret.begin()))
 		{
-			return "";
+			return rstr();
 		}
 		return r_move(ret);
 	}
