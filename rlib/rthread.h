@@ -2,21 +2,21 @@
 #define rthread_h__
 
 #include "rbase.h"
-typedef void (*rthread_start)(void *);
+typedef void (*rthread_start)(void*);
 #ifdef _MSC_VER
 #include <windows.h>
 #include <process.h>
 typedef uint rthread_ret;//32 bit
 #define rthread_call __stdcall
-typedef uint (__stdcall *prthread)(void *);
+typedef uint (__stdcall*prthread)(void*);
 #else
 #include <pthread.h>
-typedef void *rthread_ret;
+typedef void* rthread_ret;
 #define rthread_call
-typedef void *(*prthread)(void *);
+typedef void* (*prthread)(void*);
 #endif
 
-typedef rthread_ret (rthread_call  *thread_start2)(void*);
+typedef rthread_ret (rthread_call*thread_start2)(void*);
 
 struct rthread
 {

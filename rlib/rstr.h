@@ -450,7 +450,7 @@ struct rstr
 	}
 
 	//todo 两个函数重复了
-	void format_t(const char *szFormat,...)
+	void format_t(const char* szFormat,...)
 	{
 		char szBuffer[1024];
 		va_list pArgList;
@@ -464,7 +464,7 @@ struct rstr
 		set(szBuffer);
 	}
 
-	static rstr format(const char *szFormat,...)
+	static rstr format(const char* szFormat,...)
 	{
 		char szBuffer[1024];
 		va_list pArgList;

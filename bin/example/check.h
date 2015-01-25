@@ -138,7 +138,9 @@ check_interpret(rstr a,rstr b)
 		puts('* * * error ')
 		g_sta_ok=0
 	putsl('interpret '+a.sub(15)+' vs '+b.sub(15))
-	rfile.remove(a)
+	ifn rfile.remove(a)
+		putsl('* * * error ')
+		g_sta_ok=0
 }
 
 check_jit(rstr a,rstr b)
@@ -151,7 +153,9 @@ check_jit(rstr a,rstr b)
 		puts('* * * error ')
 		g_sta_ok=0
 	putsl('jit '+a.sub(15)+' vs '+b.sub(15))
-	rfile.remove(a)
+	ifn rfile.remove(a)
+		putsl('* * * error ')
+		g_sta_ok=0
 }
 
 check_pack(rstr a,rstr b)
@@ -164,7 +168,9 @@ check_pack(rstr a,rstr b)
 		puts('* * * error ')
 		g_sta_ok=0
 	putsl('pack '+a.sub(15)+' vs '+b.sub(15))
-	rfile.remove(a)
+	ifn rfile.remove(a)
+		putsl('* * * error ')
+		g_sta_ok=0
 }
 
 check_exe(rstr a,rstr b)
@@ -178,5 +184,7 @@ check_exe(rstr a,rstr b)
 		puts('* * * error ')
 		g_sta_ok=0
 	putsl('exe '+a.sub(15)+' vs '+b.sub(15))
-	rfile.remove(a)
+	ifn rfile.remove(a)
+		putsl('* * * error ')
+		g_sta_ok=0
 }

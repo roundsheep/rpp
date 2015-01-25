@@ -43,7 +43,7 @@ struct rf
 
 	static void print(const char* s)
 	{
-		printf("%s ",s);
+		printf("%s ",s);//必须加上%s防止字符串中出现特殊字符
 	}
 
 	static int tick()
@@ -78,12 +78,12 @@ struct rf
 #else
 		struct termios oldt,newt;
 		int ch;
-		tcgetattr( STDIN_FILENO, &oldt );
-		newt = oldt;
-		newt.c_lflag &= ~( ICANON | ECHO );
-		tcsetattr( STDIN_FILENO, TCSANOW, &newt );
-		ch = getchar();
-		tcsetattr( STDIN_FILENO, TCSANOW, &oldt );
+		tcgetattr(STDIN_FILENO,&oldt);
+		newt=oldt;
+		newt.c_lflag&=~(ICANON|ECHO);
+		tcsetattr(STDIN_FILENO,TCSANOW,&newt);
+		ch=getchar();
+		tcsetattr(STDIN_FILENO,TCSANOW,&oldt);
 		return ch;
 #endif
 	}
@@ -126,10 +126,10 @@ struct rf
 	}
 #ifdef _MSC_VER
 #else
-	static rbool execmd_r(const char *cmd,rstr &result)
+	static rbool execmd_r(const char* cmd,rstr& result)
 	{
 		result=rstr();
-		FILE *fp=popen(cmd,"r");
+		FILE* fp=popen(cmd,"r");
 
 		if(null==fp)
 		{

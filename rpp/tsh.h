@@ -425,7 +425,7 @@ struct tsh
 	
 	//未找到返回结束位置，应该判断count<0，但那样会降低效率
 	template<class T>
-	static int find_symm_word_e(const rbuf<T>& v,rstr &left,rstr &right,
+	static int find_symm_word_e(const rbuf<T>& v,rstr& left,rstr& right,
 		int begin=0)
 	{
 		int end=v.count();
@@ -447,7 +447,7 @@ struct tsh
 		return v.count();
 	}
 
-	static int find_symm_word_rev(const rbuf<tword>& v,rstr &left,rstr &right,
+	static int find_symm_word_rev(const rbuf<tword>& v,rstr& left,rstr& right,
 		int begin,int end)
 	{
 		if(end>=v.count())

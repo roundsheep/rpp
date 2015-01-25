@@ -68,9 +68,9 @@ struct rsock//only use TCP
 #endif
 	}
 
-	rbool connect(const char *hostname,int port)
+	rbool connect(const char* hostname,int port)
 	{
-		struct hostent *hp=gethostbyname(hostname);
+		struct hostent* hp=gethostbyname(hostname);
 
 		if(null==hp)
 		{
@@ -88,9 +88,9 @@ struct rsock//only use TCP
 
 		int nRevTime = c_time_out*1000;
 		setsockopt(m_socket,SOL_SOCKET,SO_SNDTIMEO,
-			(char *)&nRevTime,r_size(nRevTime));
+			(char*)&nRevTime,r_size(nRevTime));
 		setsockopt(m_socket,SOL_SOCKET,SO_RCVTIMEO,
-			(char *)&nRevTime,r_size(nRevTime));
+			(char*)&nRevTime,r_size(nRevTime));
 		//设置非阻塞方式连接
 #ifdef _MSC_VER
 		unsigned long ul=1;
@@ -100,7 +100,7 @@ struct rsock//only use TCP
 			return false;
 		}
 
-		if(SOCKET_ERROR!=::connect(m_socket,(struct sockaddr *)&addr,r_size(addr)))
+		if(SOCKET_ERROR!=::connect(m_socket,(struct sockaddr*)&addr,r_size(addr)))
 		{
 			return false;
 		}
@@ -136,9 +136,8 @@ struct rsock//only use TCP
 			return false;
 		}
 
-		if(0<=::connect(m_socket,(struct sockaddr *)&addr,r_size(addr)))
+		if(0<=::connect(m_socket,(struct sockaddr*)&addr,r_size(addr)))
 		{
-			printf("2\n");
 			return false;
 		}
 
@@ -189,9 +188,9 @@ struct rsock//only use TCP
 	int send(int size,const void* data)//failed will return -1
 	{
 #ifdef _MSC_VER
-		int ret=::send(m_socket,(char *)data,size,0);
+		int ret=::send(m_socket,(char*)data,size,0);
 #else
-		int ret=::send(m_socket,(char *)data,size,MSG_NOSIGNAL);
+		int ret=::send(m_socket,(char*)data,size,MSG_NOSIGNAL);
 #endif
 		/*if(ret<=0)
 		{
@@ -203,9 +202,9 @@ struct rsock//only use TCP
 	int recv(int size,void* data)
 	{
 #ifdef _MSC_VER
-		int ret=::recv(m_socket,(char *)data,size,0);
+		int ret=::recv(m_socket,(char*)data,size,0);
 #else
-		int ret=::recv(m_socket,(char *)data,size,MSG_NOSIGNAL);
+		int ret=::recv(m_socket,(char*)data,size,MSG_NOSIGNAL);
 #endif
 		/*if(ret<=0)
 		{
@@ -219,7 +218,7 @@ struct rsock//only use TCP
 		int sendBytes=0;
 		while(sendBytes<size)
 		{
-			int temp=send(size-sendBytes,(char *)data+sendBytes);
+			int temp=send(size-sendBytes,(char*)data+sendBytes);
 			if(temp<=0)
 			{
 				return sendBytes;
@@ -243,7 +242,7 @@ struct rsock//only use TCP
 		addr.sin_addr.s_addr=htonl(INADDR_ANY);
 #endif
 		addr.sin_port=htons((ushort)port);
-		return ::bind(m_socket,(struct sockaddr *)&addr,r_size(addr))>=0;
+		return ::bind(m_socket,(struct sockaddr*)&addr,r_size(addr))>=0;
 	}
 
 	rbool listen()
@@ -261,13 +260,13 @@ struct rsock//only use TCP
 		struct sockaddr_in addr;
 		int len=r_size(addr);
 #ifdef _MSC_VER
-		*socket=::accept(m_socket,(struct sockaddr *)&addr,&len);
+		*socket=::accept(m_socket,(struct sockaddr*)&addr,&len);
 		if(INVALID_SOCKET==*socket)
 		{
 			return false;
 		}
 #else
-		*socket=::accept(m_socket,(struct sockaddr *)&addr,(socklen_t *)&len);
+		*socket=::accept(m_socket,(struct sockaddr*)&addr,(socklen_t*)&len);
 		if(*socket<0)
 		{
 			return false;
@@ -281,7 +280,7 @@ struct rsock//only use TCP
 		return socket()&&bind(port)&&listen();
 	}
 
-	rbool connect_direct(const char *hostname,int port)
+	rbool connect_direct(const char* hostname,int port)
 	{
 		return socket()&&connect(hostname,port);
 	}

@@ -33,9 +33,11 @@ main
 		;
 	elif v.count==4&&v[3]=='-del'
 		rf.cmd(b+'.exe')
-		rfile.remove(rcode.gbk_to_utf8(b)+'.exe')
+		ifn rfile.remove(rcode.gbk_to_utf8(b)+'.exe')
+			putsl 'delete error'
 	elif v.count==4&&v[3]=='-check'
-		rfile.remove(rcode.gbk_to_utf8(b)+'.exe')
+		ifn rfile.remove(rcode.gbk_to_utf8(b)+'.exe')
+			putsl 'delete error'
 }
 
 clear(rstr b)
