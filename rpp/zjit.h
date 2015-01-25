@@ -408,23 +408,17 @@ struct zjit
 		tfi.vword=v;
 		tfi.retval.type=rppkey(c_int);
 		tfi.retval.name=rppkey(c_s_ret);
+		tfi.is_cfunc=true;
 		if(!func_to_x86(sh,tfi,env))
 		{
 			return false;
 		}
-		//((void (*)())(tfi.code))();
 		uchar* temp=tfi.code;
-		__asm push ebx
-		__asm push esi
-		__asm push edi
 		__asm sub esp,4
 		__asm call temp
 		__asm mov esi,[esp]
 		__asm mov temp,esi
 		__asm add esp,4
-		__asm pop edi
-		__asm pop esi
-		__asm pop ebx
 		return (int)temp;
 	}
 };
