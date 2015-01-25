@@ -331,6 +331,8 @@ struct tkey
 		c_in,
 		c_case,
 		c_friend,
+		c_cfunc,
+		c_dynamic,
 		c_private,
 		c_protected,
 		c_public,
@@ -355,6 +357,7 @@ struct tkey
 		c_temp,
 		c_plambda,
 		c_pmain,//全局数据的引用
+		c_penv,//环境指针
 	};
 };
 

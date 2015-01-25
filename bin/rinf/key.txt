@@ -122,6 +122,8 @@ to
 in
 case
 friend
+cfunc
+dynamic
 private
 protected
 public
@@ -146,3 +148,5 @@ _RVARB
 _TEMP
 _LAMBDA_C_P
 _PMAIN
+_PENV
+

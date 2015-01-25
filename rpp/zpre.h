@@ -132,7 +132,6 @@ struct zpre
 			else
 			{
 				//处理不带引号的import
-				name+=rstrw("\"");
 				int j;
 				for(j=i+1;j<v.count();j++)
 				{
@@ -143,7 +142,7 @@ struct zpre
 					name+=rstrw(v[j].val);
 					v[j].val.clear();
 				}
-				name+=rstrw("\"");
+				name=rstrw(zsuper::add_quote(name.torstr()));
 			}
 			if(name.count()<3)
 				return false;

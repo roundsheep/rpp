@@ -7,7 +7,6 @@
 #include "tanalyse.h"
 #include "../rlib/rdic.h"
 #include "../rlib/rlist.h"
-#include "tvar.h"
 
 struct tvm;
 
@@ -18,7 +17,6 @@ struct tvm_t
 	rbuf<uchar> m_stack;
 	int m_thread;
 	rbuf<tasm> m_vasm;//一组初始化指令
-	tfunc m_meta;//元函数
 	rdic<void*> m_func;//外部函数字典，每个线程一个则不需要使用互斥体
 	tvm* m_pvm;
 };
@@ -70,18 +68,9 @@ next:
 			case tins::c_eval_txt:
 				return false;
 			case tins::c_cp_txt:
-				pvmt->m_meta.clear();
-				if(!zbin::cp_func_txt(sh,
-					pvmt->m_meta,(char*)v_pto_uint(reg.esp)))
-				{
-					sh.error(((tasm*)cur)->ptfi);
-					return false;
-				}
-				reg.esp+=4;
-				v_next_ins;
+				return false;
 			case tins::c_find_meta:
-				v_pto_uint(reg.esp)=(uint)pvmt->m_meta.vasm.begin();
-				v_next_ins;
+				return false;
 			case tins::c_find_func:
 				v_pto_uint(reg.esp+4)=zbin::find_func_bin(sh,
 					(char*)v_pto_uint(reg.esp));
@@ -115,10 +104,10 @@ next:
 				v_next_ins;
 
 			case tins::c_mu_init:
-				v_pto_int(reg.esp)=(int)(new rmutex);
+				v_pto_int(reg.esp)=(int)(r_new<rmutex>());
 				v_next_ins;
 			case tins::c_mu_del:
-				delete ((rmutex*)v_pto_int(reg.esp));
+				r_delete((rmutex*)v_pto_int(reg.esp));
 				reg.esp+=4;
 				v_next_ins;
 			case tins::c_mu_enter:
@@ -1301,7 +1290,6 @@ next:
 		pitem->m_stack.realloc_n(rppconf(c_stack_size));
 		pitem->m_reg.esp=r_to_uint(pitem->m_stack.end());
 		pitem->m_reg.eip=r_to_uint(pitem->m_vasm.begin());
-		pitem->m_meta.ptci=sh.m_main;
 	}
 
 	rbool init(tsh& sh)
@@ -1320,8 +1308,9 @@ next:
 	static rbool main_init(tsh& sh,rbuf<tasm>& vasm)
 	{
 		zasm::push_asm(vasm,"sub","esp",",","4");
-		zasm::push_asm(vasm,"call",rppoptr(c_mbk_l),
-			"&","main","main()",rppoptr(c_mbk_r));
+		zasm::push_asm(vasm,"call",rppoptr(c_mbk_l),rppoptr(c_addr),
+			rppoptr(c_comma),"main",rppoptr(c_comma),"main()",
+			rppoptr(c_mbk_r));
 		zasm::push_asm(vasm,"add","esp",",","4");
 		zasm::push_asm(vasm,"halt");
 		return zbin::proc_vasm(sh,vasm);

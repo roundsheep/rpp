@@ -1,6 +1,4 @@
-﻿#include "../rlib/rf.h"
-#include "../rlib/rclass.h"
-#include "zmain.h"
+﻿#include "zmain.h"
 
 int main(int argc, char* argv[])
 {

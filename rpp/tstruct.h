@@ -349,6 +349,8 @@ struct tclass;
 
 struct tfunc
 {
+	rbool is_cfunc;
+	rbool is_dynamic;
 	rbool is_friend;
 	rstr lambda_data;
 	tdata retval;
@@ -386,6 +388,8 @@ struct tfunc
 
 	void clear()
 	{
+		is_cfunc=false;
+		is_dynamic=false;
 		is_friend=false;
 		lambda_data.clear();
 		retval.clear();
@@ -469,6 +473,29 @@ struct tclass
 	friend rbool operator<(const tclass& a,const tclass& b)
 	{
 		return a.name<b.name;
+	}
+};
+
+struct taddr
+{
+	uint start;
+	uint end;
+	tfunc* ptfi;
+
+	taddr()
+	{
+	}
+
+	taddr(uint start,uint end,tfunc* ptfi)
+	{
+		this->start=start;
+		this->end=end;
+		this->ptfi=ptfi;
+	}
+
+	friend rbool operator<(const taddr& a,const taddr& b)
+	{
+		return a.end<=b.start;
 	}
 };
 

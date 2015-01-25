@@ -7,11 +7,12 @@ struct zmemb
 {
 	static rbool recursion_get_size(tsh& sh,tclass& tci,int level=0)
 	{
-		if(level++>c_rpp_deep)
+		if(level>c_rpp_deep)
 		{
 			sh.error(rstr("level overflow ")+tci.name);
 			return false;
 		}
+		level++;
 		if(tci.size>0||tci.size==0&&tci.vdata.empty())
 		{
 			return true;
@@ -400,7 +401,17 @@ struct zmemb
 			return lambda_a_func_define(sh,item,v);
 		}
 		int start=0;
-		if(v[start].val==rppkey(c_friend))
+		if(v.get(start).val==rppkey(c_cfunc))
+		{
+			item.is_cfunc=true;
+			start++;
+		}
+		if(v.get(start).val==rppkey(c_dynamic))
+		{
+			item.is_dynamic=true;
+			start++;
+		}
+		if(v.get(start).val==rppkey(c_friend))
 		{
 			item.is_friend=true;
 			start++;

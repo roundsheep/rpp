@@ -11,13 +11,18 @@ struct zjit
 	{
 		init_addr_list(sh);
 #ifdef _MSC_VER
-		tfunc* ptfi=zfind::func_search(*sh.m_main,"main_c");
+		tfunc* ptfi=zfind::func_search(*sh.m_main,"__declare");
+		if(ptfi!=null)
+		{
+			func_to_x86(sh,*ptfi,null);
+		}
+		ptfi=zfind::func_search(*sh.m_main,"main_c");
 		if(ptfi==null)
 		{
 			rf::printl("main not find");
 			return false;
 		}
-		ifn(func_to_x86(sh,*ptfi))
+		ifn(func_to_x86(sh,*ptfi,null))
 		{
 			return false;
 		}
@@ -29,12 +34,12 @@ struct zjit
 	}
 
 	//将一个函数翻译成X86代码
-	static rbool func_to_x86(tsh& sh,tfunc& tfi)
+	static rbool func_to_x86(tsh& sh,tfunc& tfi,tfunc* env)
 	{
 #ifdef _MSC_VER
 		if(!tfi.vasm.empty())
 			return true;
-		if(!zbin::cp_vword_to_vasm(sh,tfi))
+		if(!zbin::cp_vword_to_vasm(sh,tfi,env))
 		{
 			return false;
 		}
@@ -47,6 +52,8 @@ struct zjit
 			{
 				return false;
 			}
+			sh.m_addr.insert(taddr(
+				(uint)tfi.code,(uint)(tfi.code+size),&tfi));
 		}
 		int cur=0;
 		for(int i=0;i<tfi.vasm.count();i++)
@@ -274,21 +281,7 @@ struct zjit
 
 	static rbool a_asm(tsh& sh,tasm& item)
 	{
-		int i;
-		int count=0;
-		for(i=1;i<item.vstr.count();i++)
-		{
-			if(rppoptr(c_sbk_l)==item.vstr[i])
-			{
-				count++;
-			}
-			elif(rppoptr(c_sbk_r)==item.vstr[i])
-			{
-				count--;
-			}
-			elif(count==0&&item.vstr[i]==rppoptr(c_comma))
-				break;
-		}
+		int i=zbin::find_comma(sh,item.vstr);
 		if(!a_opnd(sh,item,i-1,item.vstr.sub(1,i),item.ins.first))
 			return false;
 		if(!a_opnd(sh,item,i+1,item.vstr.sub(i+1),item.ins.second))
@@ -299,14 +292,14 @@ struct zjit
 
 	static rbool a_opnd(tsh& sh,tasm& item,int index,const rbuf<rstr>& v,topnd& o)
 	{
-		if(v.count()==5&&v[1]==rppoptr(c_addr))
+		if(v.count()==7&&v[1]==rppoptr(c_addr))
 		{
 			tfunc* ptfi=znasm::call_find(sh,item);
 			if(ptfi==null)
 			{
 				return false;
 			}
-			ifn(func_to_x86(sh,*ptfi))
+			ifn(func_to_x86(sh,*ptfi,null))
 			{
 				return false;
 			}
@@ -358,7 +351,7 @@ struct zjit
 		{
 			return null;
 		}
-		ifn(func_to_x86(*zjitf::get_psh(),*ptfi))
+		ifn(func_to_x86(*zjitf::get_psh(),*ptfi,null))
 		{
 			return null;
 		}
@@ -390,6 +383,49 @@ struct zjit
 		rppjf("find_func",find_func);
 		rppjf("find_dll",zjitf::find_dll_full);
 		rppjf("utf8_to_gbk",rcode::utf8_to_gbk_c);
+		rppjf("get_cur_func",zjitf::get_cur_func);
+		rppjf("get_vclass",zjitf::get_vclass);
+		rppjf("eval",eval);
+	}
+
+	static rbool eval(uchar* s,tfunc* env)
+	{
+		tsh& sh=*zjitf::get_psh();
+		tfunc tfi;
+		tfi.ptci=sh.m_main;
+		rbuf<tword> v;
+		if(!zpre::str_analyse(sh,rstr(s),v,null))
+		{
+			return false;
+		}
+		zpre::def_replace(sh,sh.m_vdefine,v);
+		if(!zctl::type_replace(sh,v))
+		{
+			return false;
+		}
+		tfi.first_pos.line=1;
+		tfi.last_pos.line=v.get_top().pos.line+10;
+		tfi.vword=v;
+		tfi.retval.type=rppkey(c_int);
+		tfi.retval.name=rppkey(c_s_ret);
+		if(!func_to_x86(sh,tfi,env))
+		{
+			return false;
+		}
+		//((void (*)())(tfi.code))();
+		uchar* temp=tfi.code;
+		__asm push ebx
+		__asm push esi
+		__asm push edi
+		__asm sub esp,4
+		__asm call temp
+		__asm mov esi,[esp]
+		__asm mov temp,esi
+		__asm add esp,4
+		__asm pop edi
+		__asm pop esi
+		__asm pop ebx
+		return (int)temp;
 	}
 };
 

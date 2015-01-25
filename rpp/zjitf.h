@@ -112,12 +112,28 @@ struct zjitf
 		get_psh()->m_ret=a;
 	}
 
+	static tfunc* get_cur_func(uchar* pasm)
+	{
+		taddr* p=get_psh()->m_addr.find(taddr((uint)pasm,(uint)pasm+1,null));
+		if(p==null)
+		{
+			return null;
+		}
+		return p->ptfi;
+	}
+
+	static rset<tclass>* get_vclass()
+	{
+		return &get_psh()->m_class;
+	}
+
 	//fixme
 	static void ftell8(int8* ret,FILE* fp)
 	{
 		*ret=rfile::ftell8(fp);
 	}
 
+	//todo 有待优化
 	static void* find_dll_full(const char* name)
 	{
 #ifdef _MSC_VER

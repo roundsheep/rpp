@@ -1,6 +1,7 @@
 ﻿#ifndef zmain_h__
 #define zmain_h__
 
+#include "../rlib/rsock.h"//winsock2的原因需要先包含rsock.h
 #include "tvm.h"
 
 //main函数进行参数解析

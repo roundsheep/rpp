@@ -376,11 +376,12 @@ struct zclass
 	//后面自动生成构造、析构、拷贝构造、operator=不会继承，但用户定义的会继承
 	static rbool inherit_proc(tsh& sh,tclass& tci,int level=0)
 	{
-		if(level++>c_rpp_deep)
+		if(level>c_rpp_deep)
 		{
 			sh.error("inherit too deep");
 			return false;
 		}
+		level++;
 		if(tci.vfather.empty())
 			return true;
 		rbuf<tword> v;

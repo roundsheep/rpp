@@ -44,6 +44,8 @@ struct tsh
 	rbool m_is_pack_mode;
 	rbool m_is_pre_mode;
 	rdbint m_db;
+	rset<taddr> m_addr;
+	rclass m_rlib;
 
 	enum
 	{
@@ -155,7 +157,9 @@ struct tsh
 		ret+=rppkey(c_call);
 		ret+=rppoptr(c_mbk_l);
 		ret+=rppoptr(c_addr);
+		ret+=rppoptr(c_comma);
 		ret+=tci.name;
+		ret+=rppoptr(c_comma);
 		ret+=tfi.name_dec;
 		ret+=rppoptr(c_mbk_r);
 		return r_move(ret);
@@ -282,13 +286,13 @@ struct tsh
 	}
 
 	//这里的重复代码是为了提高效率
-	rbuf<rbuf<tword> > comma_split(rbuf<tword> v)
+	template<class T>
+	rbuf<rbuf<T> > comma_split(rbuf<T> v)
 	{
-		rbuf<rbuf<tword> > result;
-		v.push(tword(m_optr[toptr::c_comma]));
+		rbuf<rbuf<T> > result;
+		v.push_move(T(m_optr[toptr::c_comma]));
 		int count1=0;
 		int count2=0;
-		int count3=0;
 		int start=0;
 		for(int i=0;i<v.count();i++)
 		{
@@ -301,42 +305,10 @@ struct tsh
 				count2++;
 			elif(v[i].val==m_optr[toptr::c_mbk_r])
 				count2--;
-			elif(count1==0&&count2==0&&count3==0&&
+			elif(count1==0&&count2==0&&
 				v[i].val==m_optr[toptr::c_comma])
 			{
-				rbuf<tword> temp;
-				for(int j=start;j<i;j++)
-					temp.push_move(v[j]);
-				if(!temp.empty())
-					result.push_move(temp);
-				start=i+1;
-			}
-		}
-		return r_move(result);
-	}
-
-	rbuf<rbuf<rstr> > comma_split(rbuf<rstr> v)
-	{
-		rbuf<rbuf<rstr> > result;
-		v.push(m_optr[toptr::c_comma]);
-		int count1=0;
-		int count2=0;
-		int count3=0;
-		int start=0;
-		for(int i=0;i<v.count();i++)
-		{
-			if(v[i]==m_optr[toptr::c_sbk_l])
-				count1++;
-			elif(v[i]==m_optr[toptr::c_sbk_r])
-				count1--;
-			elif(v[i]==m_optr[toptr::c_mbk_l])
-				count2++;
-			elif(v[i]==m_optr[toptr::c_mbk_r])
-				count2--;
-			elif(count1==0&&count2==0&&count3==0&&
-				v[i]==m_optr[toptr::c_comma])
-			{
-				rbuf<rstr> temp;
+				rbuf<T> temp;
 				for(int j=start;j<i;j++)
 					temp.push_move(v[j]);
 				if(!temp.empty())
@@ -354,7 +326,6 @@ struct tsh
 		v.push(tword(m_optr[toptr::c_comma]));
 		int count1=0;
 		int count2=0;
-		int count3=0;
 		int start=0;
 		for(int i=0;i<v.count();i++)
 		{
@@ -366,42 +337,13 @@ struct tsh
 				count2++;
 			elif(v[i].val==m_optr[toptr::c_mbk_r])
 				count2--;
-			elif(count1==0&&count2==0&&count3==0&&
+			elif(count1==0&&count2==0&&
 				v[i].val==m_optr[toptr::c_comma])
 			{
 				rbuf<tword> temp;
 				for(int j=start;j<i;j++)
 					temp.push_move(v[j]);
 				result.push_move(temp);
-				start=i+1;
-			}
-		}
-		return r_move(result);
-	}
-
-	//带大括号的split
-	rbuf<rbuf<rstr> > comma_split_b(rbuf<rstr> v)
-	{
-		rbuf<rbuf<rstr> > result;
-		v.push(m_optr[toptr::c_comma]);
-		int count1=0;
-		int count2=0;
-		int count3=0;
-		int start=0;
-		for(int i=0;i<v.count();i++)
-		{
-			if(v[i]==m_optr[toptr::c_bbk_l])
-				count3++;
-			elif(v[i]==m_optr[toptr::c_bbk_r])
-				count3--;
-			elif(count1==0&&count2==0&&count3==0&&
-				v[i]==m_optr[toptr::c_comma])
-			{
-				rbuf<rstr> temp;
-				for(int j=start;j<i;j++)
-					temp.push_move(v[j]);
-				if(!temp.empty())
-					result.push_move(temp);
 				start=i+1;
 			}
 		}
@@ -482,30 +424,8 @@ struct tsh
 	}
 	
 	//未找到返回结束位置，应该判断count<0，但那样会降低效率
-	static int find_symm_word_e(const rbuf<tword>& v,rstr &left,rstr &right,
-		int begin=0)
-	{
-		int end=v.count();
-		if(begin<0)
-		{
-			begin=0;
-		}
-		int count=0;
-		int i;
-		for(i=begin;i<end;i++)
-		{
-			if(left==v[i].val)
-				++count;
-			if(right==v[i].val)
-				--count;
-			if(0==count)
-				return i;
-		}
-		return v.count();
-	}
-
-	//未找到返回结束位置
-	static int find_symm_word_e(const rbuf<rstr>& v,rstr &left,rstr &right,
+	template<class T>
+	static int find_symm_word_e(const rbuf<T>& v,rstr &left,rstr &right,
 		int begin=0)
 	{
 		int end=v.count();

@@ -295,11 +295,12 @@ struct zread
 
 	static rbool const_eval(tsh& sh,rbuf<rstr> src,int& dst,int level=0)
 	{
-		if(level++>c_rpp_deep)
+		if(level>c_rpp_deep)
 		{
 			sh.error("const eval level overflow");
 			return false;
 		}
+		level++;
 		rbuf<rstr> soptr;
 		rbuf<int> sopnd;
 		soptr+=rppoptr(c_exp_part);

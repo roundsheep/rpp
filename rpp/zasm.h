@@ -48,7 +48,7 @@ struct zasm
 		tasm item;
 		item.pos=tfi.first_pos;
 		int size=zfind::get_func_local_size(tfi);
-		if(!(rppconf(c_op_zero)&&size==0))
+		ifn(rppconf(c_op_zero)&&size==0)
 		{
 			item.vstr.clear();
 			item.vstr.push(rppkey(c_sub));
@@ -72,8 +72,43 @@ struct zasm
 			item.vstr.push(rppkey(c_esp));
 			vasm.push(item);
 		}
+		if(tfi.is_cfunc)
+		{
+			//todo 如果ebx、esi、edi未修改则不用保护
+			item.vstr.clear();
+			item.vstr.push(rppkey(c_push));
+			item.vstr.push(rppkey(c_ebx));
+			vasm.push(item);
+
+			item.vstr.clear();
+			item.vstr.push(rppkey(c_push));
+			item.vstr.push(rppkey(c_esi));
+			vasm.push(item);
+
+			item.vstr.clear();
+			item.vstr.push(rppkey(c_push));
+			item.vstr.push(rppkey(c_edi));
+			vasm.push(item);
+		}
 		vasm+=tfi.vasm;
 		item.pos=tfi.last_pos;
+		if(tfi.is_cfunc)
+		{
+			item.vstr.clear();
+			item.vstr.push(rppkey(c_pop));
+			item.vstr.push(rppkey(c_edi));
+			vasm.push(item);
+
+			item.vstr.clear();
+			item.vstr.push(rppkey(c_pop));
+			item.vstr.push(rppkey(c_esi));
+			vasm.push(item);
+
+			item.vstr.clear();
+			item.vstr.push(rppkey(c_pop));
+			item.vstr.push(rppkey(c_ebx));
+			vasm.push(item);
+		}
 		if(b_use_ebp)
 		{
 			item.vstr.clear();
@@ -81,7 +116,7 @@ struct zasm
 			item.vstr.push(rppkey(c_ebp));
 			vasm.push(item);
 		}
-		if(!(rppconf(c_op_zero)&&size==0))
+		ifn(rppconf(c_op_zero)&&size==0)
 		{
 			item.vstr.clear();
 			item.vstr.push(rppkey(c_add));
@@ -161,11 +196,12 @@ struct zasm
 				return true;
 			}
 		}
-		if(src.vword.count()==5&&src.vword[1].val==rppoptr(c_addr))
+		if(src.vword.count()==7&&src.vword[1].val==rppoptr(c_addr))
 		{
 			push_asm(vasm,rppkey(c_mov),rppkey(c_ebx),rppoptr(c_comma),
-				rppoptr(c_mbk_l),rppoptr(c_addr),src.vword[2].val,
-				src.vword[3].val,rppoptr(c_mbk_r));
+				rppoptr(c_mbk_l),rppoptr(c_addr),rppoptr(c_comma),
+				src.vword[3].val,rppoptr(c_comma),src.vword[5].val,
+				rppoptr(c_mbk_r));
 			return true;
 		}
 		//返回变量
@@ -252,10 +288,11 @@ struct zasm
 	static rbool a_exp(tsh& sh,const tsent& src,rbuf<tasm>& vasm,tdata& retval,
 		tfunc& tfi,int level=0)
 	{
-		if(level++>c_rpp_deep)
+		if(level>c_rpp_deep)
 		{
 			return false;
 		}
+		level++;
 		if(src.vword.get_bottom().val!=rppoptr(c_mbk_l)||
 			src.vword.get_top().val!=rppoptr(c_mbk_r))
 		{
@@ -285,7 +322,7 @@ struct zasm
 			zexp::get_vsent(temp_v,vsent,src);
 			for(int i=vsent.count()-1;i>=0;i--)
 			{
-				if(!zexp::p_exp(sh,vsent[i],tfi,level))
+				if(!zexp::p_exp(sh,vsent[i],tfi,level,null))
 				{
 					return false;
 				}
@@ -300,7 +337,7 @@ struct zasm
 			}
 			tsent sent=src;
 			sent.vword=vlisp[2];
-			if(!zexp::p_exp(sh,sent,tfi,level))
+			if(!zexp::p_exp(sh,sent,tfi,level,null))
 			{
 				return false;
 			}
@@ -323,13 +360,13 @@ struct zasm
 		zexp::get_vsent(vlisp,vsent,src);
 		for(int i=vsent.count()-1;i>=0;i--)
 		{
-			if(!zexp::p_exp(sh,vsent[i],tfi,level))
+			if(!zexp::p_exp(sh,vsent[i],tfi,level,null))
 			{
 				return false;
 			}
 		}
 		rstr cname=src.vword.get(1).val;
-		rstr fname=src.vword.get(2).val;
+		rstr fname=src.vword.get(3).val;//p_exp已经合并了name_dec
 		tclass* ptci=zfind::class_search(sh,cname);
 		if(null==ptci)
 		{
@@ -361,33 +398,6 @@ struct zasm
 		}
 		push_asm(vasm,sh.get_func_declare_call(sh,*ptci,*ptfi));
 		return true;
-	}
-
-	static tsent get_src_in(tsh& sh,tsent& src)
-	{
-		if(src.vword.get(1).val!=rppoptr(c_dot))
-		{
-			return src;
-		}
-		tsent temp=src;
-		int start=0;
-		rbuf<tword>& v=src.vword;
-		while(start+2<v.count()&&
-			v[start].val==rppoptr(c_mbk_l)&&
-			v[start+1].val==rppoptr(c_dot))
-		{
-			start+=2;
-		}
-		if(v[start].val==rppoptr(c_mbk_l))
-		{
-			int right=sh.find_symm_mbk(v,start);
-			temp.vword=v.sub(start,right+1);
-		}
-		else
-		{
-			temp.vword=v.sub(start,start+1);
-		}
-		return r_move(temp);
 	}
 
 	static rbool pass_param(tsh& sh,tsent& src,tdata& dst,rbuf<tasm>& vasm,
@@ -438,7 +448,7 @@ struct zasm
 			double dval=src.vword[0].val.todouble();
 			push_double(sh,vasm,dval);
 		}
-		elif(src.vword.count()==5&&
+		elif(src.vword.count()==7&&
 			src.vword.get(1).val==rppoptr(c_addr)&&
 			src.vword[0].val==rppoptr(c_mbk_l))
 		{
@@ -511,8 +521,7 @@ struct zasm
 	static rbool obtain_var_addr_var(tsh& sh,tsent& src,tdata& dst,
 		tdata* ptdi,rbuf<tasm>& vasm)
 	{
-		int size;
-		size=zfind::get_ceil_space(dst);
+		int size=zfind::get_ceil_space(dst);
 		push_asm(vasm,rppkey(c_sub),rppkey(c_esp),rppoptr(c_comma),size);
 		push_asm(vasm,rppkey(c_mov),rppkey(c_edi),rppoptr(c_comma),
 			rppkey(c_esp));
@@ -527,8 +536,7 @@ struct zasm
 	static rbool obtain_var_addr_f(tsh& sh,tdata& retval,
 		tsent& src,rbuf<tasm>& vasm)
 	{
-		int size;
-		size=zfind::get_ceil_space(retval);
+		int size=zfind::get_ceil_space(retval);
 		push_asm(vasm,rppkey(c_lea),rppkey(c_edi),rppoptr(c_comma),
 			rppoptr(c_mbk_l),rppkey(c_esp),rppoptr(c_plus),
 			rstr(size),rppoptr(c_mbk_r));
@@ -539,6 +547,34 @@ struct zasm
 		return true;
 	}
 
+	static tsent get_src_in(tsh& sh,tsent& src)
+	{
+		if(src.vword.get(1).val!=rppoptr(c_dot))
+		{
+			return src;
+		}
+		tsent temp=src;
+		int start=0;
+		rbuf<tword>& v=src.vword;
+		while(start+2<v.count()&&
+			  v[start].val==rppoptr(c_mbk_l)&&
+			  v[start+1].val==rppoptr(c_dot))
+		{
+			start+=3;
+		}
+		if(v[start].val==rppoptr(c_mbk_l))
+		{
+			int right=sh.find_symm_mbk(v,start);
+			temp.vword=v.sub(start,right+1);
+		}
+		else
+		{
+			temp.vword=v.sub(start,start+1);
+		}
+		return r_move(temp);
+	}
+	
+	// [ . , [ . , [ . , a , b ] , c ] , d ]
 	static rbool add_esi(tsh& sh,rstr type,rbuf<tasm>& vasm,tsent& src)
 	{
 		int start=0;
@@ -551,9 +587,9 @@ struct zasm
 			v[start].val==rppoptr(c_mbk_l)&&
 			v[start+1].val==rppoptr(c_dot))
 		{
-			start+=2;
+			start+=3;
 		}
-		int right=start+1;
+		int right=start+2;
 		if(v[start].val==rppoptr(c_mbk_l))
 		{
 			right=sh.find_symm_mbk(v,start);
@@ -561,9 +597,9 @@ struct zasm
 			{
 				return false;
 			}
-			right++;
+			right+=2;
 		}
-		for(int i=0;i<start;i+=2)
+		for(int i=0;i<start;i+=3)
 		{
 			tclass* ptci=zfind::class_search_t(sh,type);
 			if(null==ptci)
@@ -585,7 +621,7 @@ struct zasm
 					rppoptr(c_comma),ptdi->off);
 			}
 			type=ptdi->type;
-			right+=2;
+			right+=3;
 		}
 		return true;
 	}
@@ -719,7 +755,7 @@ struct zasm
 		vasm.push_move(item);
 	}
 
-	//todo 这里无法使用变参函数，可以使用模板元简化代码
+	//todo 这里无法使用变参函数，可以使用变参宏或模板元简化代码
 	static void push_asm(rbuf<tasm>& vasm,
 		const rstr& s1,const rstr& s2,const rstr& s3,const rstr& s4,
 		const rstr& s5,const rstr& s6,const rstr& s7,const rstr& s8,
@@ -738,6 +774,25 @@ struct zasm
 		item.vstr.push(s10);
 		item.vstr.push(s11);
 		item.vstr.push(s12);
+		vasm.push_move(item);
+	}
+
+	static void push_asm(rbuf<tasm>& vasm,
+		const rstr& s1,const rstr& s2,const rstr& s3,const rstr& s4,
+		const rstr& s5,const rstr& s6,const rstr& s7,const rstr& s8,
+		const rstr& s9,const rstr& s10)
+	{
+		tasm item;
+		item.vstr.push(s1);
+		item.vstr.push(s2);
+		item.vstr.push(s3);
+		item.vstr.push(s4);
+		item.vstr.push(s5);
+		item.vstr.push(s6);
+		item.vstr.push(s7);
+		item.vstr.push(s8);
+		item.vstr.push(s9);
+		item.vstr.push(s10);
 		vasm.push_move(item);
 	}
 

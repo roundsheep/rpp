@@ -1,3 +1,3 @@
 @echo off
-cd /d %~dp0
-rpp.exe -jit %1
+rem cd /d %~dp0
+%~dp0\rpp.exe -jit %1

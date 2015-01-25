@@ -218,13 +218,13 @@ struct znasm
 		{
 			return null;
 		}
-		i++;
+		i+=2;
 		tclass* ptci=zfind::class_search(sh,item.vstr.get(i));
 		if(ptci==null)
 		{
 			return null;
 		}
-		i++;
+		i+=2;
 		rstr fname=item.vstr.get(i);
 		return zfind::func_search_dec(*ptci,fname);
 	}
@@ -304,11 +304,12 @@ struct znasm
 	static rbool proc_func(tsh& sh,tfunc& tfi,rstr& result,
 		rbuf<rstr>& vconst,int level=0)
 	{
-		if(level++>300)
+		if(level>300)
 		{
 			sh.error(tfi,"nasm level overflow");
 			return false;
 		}
+		level++;
 		if(tfi.count==1)
 		{
 			return true;
@@ -316,7 +317,7 @@ struct znasm
 		tfi.count=1;
 		if(tfi.vasm.empty())
 		{
-			if(!zbin::cp_vword_to_vasm(sh,tfi))
+			if(!zbin::cp_vword_to_vasm(sh,tfi,null))
 			{
 				return false;
 			}
@@ -425,7 +426,7 @@ struct znasm
 		rbuf<tasm>& vasm=ptfi->vasm;
 		if(vasm.empty())
 		{
-			if(!zbin::cp_vword_to_vasm(sh,*ptfi))
+			if(!zbin::cp_vword_to_vasm(sh,*ptfi,null))
 			{
 				return false;
 			}

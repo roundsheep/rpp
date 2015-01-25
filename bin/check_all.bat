@@ -1,1 +1,1 @@
-rpp example\check.h
+rjit example\check.h

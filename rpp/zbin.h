@@ -13,7 +13,7 @@ struct zbin
 	{
 		if(!tfi.vasm.empty())
 			return true;
-		if(!cp_vword_to_vasm(sh,tfi))
+		if(!cp_vword_to_vasm(sh,tfi,null))
 		{
 			return false;
 		}
@@ -29,7 +29,7 @@ struct zbin
 		return true;
 	}
 
-	static rbool cp_func_txt(tsh& sh,tfunc& tfi,rstr s)
+	/*static rbool cp_func_txt(tsh& sh,tfunc& tfi,rstr s)
 	{
 		rmutex_t mutex_t(sh.m_mutex);
 		rbuf<tword> v;
@@ -72,7 +72,7 @@ struct zbin
 			return false;
 		}
 		return true;
-	}
+	}*/
 	
 	//翻译一条未解析的指令
 	static rbool cp_call_asm(tsh& sh,tasm& item)
@@ -96,13 +96,13 @@ struct zbin
 			return false;
 		}
 		int addr_pos=i;
-		i++;
+		i+=2;
 		tclass* ptci=zfind::class_search(sh,item.vstr.get(i));
 		if(ptci==null)
 		{
 			return false;
 		}
-		i++;
+		i+=2;
 		rstr fname=item.vstr.get(i);
 		tfunc* ptfi=zfind::func_search_dec(*ptci,fname);
 		if(ptfi==null)
@@ -126,9 +126,9 @@ struct zbin
 	}
 
 	//从函数的词表编译到vasm
-	static rbool cp_vword_to_vasm(tsh& sh,tfunc& tfi)
+	static rbool cp_vword_to_vasm(tsh& sh,tfunc& tfi,tfunc* env)
 	{
-		if(!zsent::proc_func(sh,tfi))
+		if(!zsent::proc_func(sh,tfi,env))
 		{
 			sh.error(tfi,"sent error");
 			return false;
@@ -200,23 +200,38 @@ struct zbin
 		return true;
 	}
 
-	static rbool a_asm(tsh& sh,tasm& item)
+	static int find_comma(tsh& sh,rbuf<rstr>& v)
 	{
+		int count1=0;
+		int count2=0;
 		int i;
-		int count=0;
-		for(i=1;i<item.vstr.count();i++)
+		for(i=1;i<v.count();i++)
 		{
-			if(rppoptr(c_sbk_l)==item.vstr[i])
+			if(rppoptr(c_sbk_l)==v[i])
 			{
-				count++;
+				count1++;
 			}
-			elif(rppoptr(c_sbk_r)==item.vstr[i])
+			elif(rppoptr(c_sbk_r)==v[i])
 			{
-				count--;
+				count1--;
 			}
-			elif(count==0&&item.vstr[i]==rppoptr(c_comma))
+			elif(rppoptr(c_mbk_l)==v[i])
+			{
+				count2++;
+			}
+			elif(rppoptr(c_mbk_r)==v[i])
+			{
+				count2--;
+			}
+			elif(count1==0&&count2==0&&v[i]==rppoptr(c_comma))
 				break;
 		}
+		return i;
+	}
+
+	static rbool a_asm(tsh& sh,tasm& item)
+	{
+		int i=find_comma(sh,item.vstr);
 		if(!a_opnd(sh,item,i-1,item.vstr.sub(1,i),item.ins.first))
 			return false;
 		if(item.ins.empty())
@@ -332,20 +347,17 @@ struct zbin
 		}
 		elif(v.count()==5)
 		{
-			if(v[1]==rppoptr(c_addr))
-			{
-				item.ins.clear();
-				return true;
-			}
-			else
-			{
-				//[ebp+2]
-				o.type=topnd::c_addr;
-				o.off=get_reg_off(sh,v[1]);
-				o.val=v[3].touint();
-				if(v[2]==rppoptr(c_minus))
-					o.val=-o.val;
-			}
+			//[ebp+2]
+			o.type=topnd::c_addr;
+			o.off=get_reg_off(sh,v[1]);
+			o.val=v[3].touint();
+			if(v[2]==rppoptr(c_minus))
+				o.val=-o.val;
+		}
+		elif(v.count()==7&&v[1]==rppoptr(c_addr))
+		{
+			item.ins.clear();
+			return true;
 		}
 		elif(v.count()==0)
 			return true;
@@ -363,10 +375,24 @@ struct zbin
 			return;
 		}
 		rstr dst;
-		for(int i=0;i<src.count();i++)
+		for(int i=1;i<src.count()-1;i++)
 		{
 			if(src[i]=='\\')
 			{
+				/*if(src.get(i+1)=='\\')//有歧义
+				{
+					int j;
+					for(j=i+2;j<src.count()-1&&src[j]=='\\';j++)
+					{
+						;
+					}
+					if(src.get(j)=='"')
+					{
+						dst+=src.sub(i+1,j+1);
+						i=j;
+						continue;
+					}
+				}*/
 				if(src.get(i+1)=='b')
 					dst+='\b';
 				elif(src.get(i+1)=='n')
@@ -393,8 +419,8 @@ struct zbin
 			}
 		}
 		src=r_move(dst);
-		src.m_buf.pop_front();
-		src.m_buf.top()=0;
+		src.m_buf.push(0);
+		//src.cstr();
 	}
 
 	static rbool is_jmp_ins(int type)

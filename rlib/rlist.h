@@ -40,7 +40,7 @@ struct rlist
 		while(m_front)
 		{
 			m_rear=m_front->next;
-			delete m_front;
+			r_delete(m_front);
 			m_front=m_rear;
 		}
 		init();
@@ -63,7 +63,7 @@ struct rlist
 
 	void push(const T& a)
 	{
-		rlist_i<T>* p=new rlist_i<T>;
+		rlist_i<T>* p=r_new<rlist_i<T> >();
 		p->val=a;
 		p->next=null;
 		p->prev=m_rear;
@@ -94,13 +94,13 @@ struct rlist
 		{
 			m_front=null;
 		}
-		delete p;
+		r_delete(p);
 		return ret;
 	}
 
 	void push_front(const T& a)
 	{
-		rlist_i<T>* p=new rlist_i<T>;
+		rlist_i<T>* p=r_new<rlist_i<T> >();
 		p->val=a;
 		p->next=m_front;
 		p->prev=null;
@@ -131,7 +131,7 @@ struct rlist
 		{
 			m_rear=null;
 		}
-		delete p;
+		r_delete(p);
 		return ret;
 	}
 	
@@ -144,7 +144,7 @@ struct rlist
 			return;
 		}
 		rlist_i<T>* cur=(rlist_i<T>*)pos;
-		rlist_i<T>* p=new rlist_i<T>;
+		rlist_i<T>* p=r_new<rlist_i<T> >();
 		p->val=a;
 		p->next=cur;
 		p->prev=cur->prev;
@@ -192,7 +192,7 @@ struct rlist
 		{
 			cur->next->prev=cur->prev;
 		}
-		delete cur;
+		r_delete(cur);
 		m_count--;
 	}
 

@@ -184,9 +184,19 @@ struct zsuper
 		return r_move(s);
 	}
 
-	static rstr add_quote(rstr s)
+	static rstr add_quote(const rstr& s)
 	{
-		return "\""+s+"\"";
+		//return "\""+s+"\"";
+		rstr result;
+		result+='"';
+		for(int i=0;i<s.count();i++)
+		{
+			if(s[i]=='"')
+				result+='\\';
+			result+=s[i];
+		}
+		result+='"';
+		return r_move(result);
 	}
 
 	static void link_sharp(rbuf<rstr>& v)

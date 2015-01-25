@@ -62,7 +62,7 @@ struct rhash
 				{
 					rhash_i<T>* temp=p;
 					p=p->next;
-					delete temp;
+					r_delete(temp);
 				}
 			}
 		}
@@ -98,7 +98,7 @@ struct rhash
 	void insert(T& a,rstr name=rstr())
 	{
 		int addr=get_addr(name);
-		rhash_i<T>* p=new rhash_i<T>;
+		rhash_i<T>* p=r_new<rhash_i<T> >();
 		p->name=name;
 		p->next=m_hash[addr];
 		p->pre=null;
@@ -126,7 +126,7 @@ struct rhash
 			if(p->next!=null)
 				p->next->pre=null;
 		}
-		delete p;
+		r_delete(p);
 		m_count--;
 		return true;
 	}

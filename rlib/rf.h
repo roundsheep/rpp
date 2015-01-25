@@ -41,6 +41,11 @@ struct rf
 		printf("%s ",s.cstr());
 	}
 
+	static void print(const char* s)
+	{
+		printf("%s ",s);
+	}
+
 	static int tick()
 	{
 #ifdef _MSC_VER

@@ -103,11 +103,12 @@ struct zctl
 
 	static rbool type_replace(tsh& sh,rbuf<tword>& v,int level=0)
 	{
-		if(level++>c_rpp_deep)
+		if(level>c_rpp_deep)
 		{
 			sh.error("type level overflow");
 			return false;
 		}
+		level++;
 		rbool need;
 		point_replace(sh,v,need);
 		for(int i=1;i<v.count();i++)

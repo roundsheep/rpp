@@ -1,6 +1,4 @@
-﻿#include "../rlib/rf.h"
-#include "../rlib/rclass.h"
-#include "zmain.h"
+﻿#include "zmain.h"
 
 //#define RPP_SHOW_CONSOLE
 

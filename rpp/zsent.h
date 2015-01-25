@@ -8,8 +8,12 @@
 //从这里开始行号已经放在sent中
 struct zsent
 {
-	static rbool proc_func(tsh& sh,tfunc& tfi)
+	static rbool proc_func(tsh& sh,tfunc& tfi,tfunc* env)
 	{
+		if(env!=null)
+		{
+			add_class(sh,tfi,env);
+		}
 		ifn(zlambda::function_replace(sh,tfi.vword))
 		{
 			return false;
@@ -45,19 +49,16 @@ struct zsent
 		if(!zsrep::size_off_to_zero(sh,tfi))
 			return false;
 		//进行类型推断
-		if(!proc_type_infer(sh,tfi))
+		if(!proc_type_infer(sh,tfi,env))
 			return false;
-		if(!zsrep::typeof_replace(sh,tfi))
+		if(!zsrep::typeof_replace(sh,tfi,env))
 			return false;
 		//变量构造函数替换如a(1) -> int.int(a,1)
 		//这个变量必须是已定义的，不能是类型推断
 		if(!zsrep::var_struct_replace(sh,tfi))
 			return false;
-		//元函数替换
-		if(!zself::self_replace(sh,tfi))
-			return false;
 		//表达式标准化
-		if(!zexp::p_exp_all(sh,tfi))
+		if(!zexp::p_exp_all(sh,tfi,env))
 		{
 			return false;
 		}
@@ -85,9 +86,35 @@ struct zsent
 		//成员变量里有sizeof s_off的情况需要再次替换
 		//注意成员变量初始化的时候不能使用临时变量
 		//再处理一次，获取所有表达式的类型
-		if(!zexp::p_exp_all(sh,tfi))
+		if(!zexp::p_exp_all(sh,tfi,null))
 			return false;
 		return true;
+	}
+
+	static void add_class(tsh& sh,tfunc& tfi,tfunc* env)
+	{
+		rstr name="_func_class_"+env->name_dec;
+		if(!zfind::is_class(sh,name))
+		{
+			tclass item;
+			item.name=name;
+			for(int i=0;i<env->local.count();i++)
+			{
+				item.vdata.push(env->local[i]);
+			}
+			for(int i=0;i<env->param.count();i++)
+			{
+				item.vdata.push(env->param[i]);
+			}
+			sh.m_class.insert(item);
+		}
+
+		tdata tdi;
+		tdi.type=name+"&";
+		tdi.name=rppkey(c_penv);
+		tdi.size=4;
+		tdi.count=1;
+		tfi.local.push(tdi);
 	}
 
 	//增加全局变量引用的初始化汇编语句
@@ -190,16 +217,16 @@ struct zsent
 		tfi.retval.off=off;
 	}
 
-	static rbool proc_type_infer(tsh& sh,tfunc& tfi)
+	static rbool proc_type_infer(tsh& sh,tfunc& tfi,tfunc* env)
 	{
 		for(int i=0;i<tfi.vsent.count();++i)
-			if(!proc_type_infer(sh,tfi.vsent[i],tfi))
+			if(!proc_type_infer(sh,tfi.vsent[i],tfi,env))
 				return false;
 		zcontrol::part_vsent(tfi);
 		return true;
 	}
 
-	static rbool proc_type_infer(tsh& sh,tsent& sent,tfunc& tfi)
+	static rbool proc_type_infer(tsh& sh,tsent& sent,tfunc& tfi,tfunc* env)
 	{
 		tclass& tci=*tfi.ptci;
 		if(sent.vword.count()>=3&&
@@ -210,16 +237,20 @@ struct zsent
 			rstr name=sent.vword[0].val;
 			if(null!=zfind::local_search(tfi,name))
 				return true;
+			if(env!=null&&null!=zfind::local_search(*env,name))
+			{
+				return true;
+			}
 			if(null!=zfind::data_member_search(tci,name))
 				return true;
 			if(null!=zfind::data_member_search(*sh.m_main,name))
 				return true;
 			tsent temp=sent.sub(2,sent.vword.count());
-			if(!zsrep::typeof_replace(sh,tfi,temp))
+			if(!zsrep::typeof_replace(sh,tfi,temp,env))
 			{
 				return false;
 			}
-			if(!zexp::p_exp(sh,temp,tfi))
+			if(!zexp::p_exp(sh,temp,tfi,0,env))
 				return false;
 			tdata tdi;
 			tdi.name=name;
@@ -235,9 +266,8 @@ struct zsent
 		return true;
 	}
 
-	static rbool replace_temp_var_v(tsh& sh,tfunc& tfi,tsent& sent,int& tid)
+	static rbool replace_temp_var_v(tsh& sh,tfunc& tfi,rbuf<tword>& v,int& tid)
 	{
-		rbuf<tword>& v=sent.vword;
 		rbuf<tword> result;
 		for(int i=1;i<v.count();i++)
 		{
@@ -245,7 +275,7 @@ struct zsent
 			{
 				continue;
 			}
-			tclass* ptci=zfind::class_search(sh,v.get(i+1).val);
+			tclass* ptci=zfind::class_search(sh,v.get(i+2).val);
 			if(null==ptci)
 				continue;
 			int left=i-1;
@@ -256,22 +286,26 @@ struct zsent
 			int right=sh.find_symm_mbk(v,left);
 			if(right>=v.count())
 			{
-				sh.error(sent,"miss ]");
 				return false;
 			}
 			tdata tdi;
 			tdi.type=ptci->name;
-			tdi.name=rppkey(c_temp)+rstr(tid++);
+			tdi.name=rppkey(c_temp)+rstr(tid);
+			tid++;
 			//先析构后构造
 			zadd::add_destructor_func(sh,tdi,result);
 			result+=rppoptr(c_mbk_l);
 			result+=tdi.type;
+			result+=rppoptr(c_comma);
 			result+=tdi.type;
+			result+=rppoptr(c_comma);
 			result+=rppoptr(c_mbk_l);
 			result+=tdi.name;
-			for(int j=left+4;j<right-1;j++)
+			rbuf<tword> vparam=v.sub(left+6,right-1);
+			ifn(vparam.empty())
 			{
-				result+=v[j];
+				result+=rppoptr(c_comma);
+				result+=vparam;
 			}
 			result+=rppoptr(c_mbk_r);
 			result+=rppoptr(c_mbk_r);
@@ -301,14 +335,140 @@ struct zsent
 				//刚好是先构造内层的临时变量，再构造外层的临时变量
 				//这种循环替换的方式好像比递归更清晰
 				int temp=tid;
-				if(!replace_temp_var_v(sh,tfi,tfi.vsent[i],tid))
+				if(!replace_temp_var_v(sh,tfi,tfi.vsent[i].vword,tid))
+				{
+					sh.error(tfi.vsent[i],"replace_temp_var_v");
 					return false;
+				}
 				if(temp==tid)
 					break;
 			}
 		}
 		zcontrol::part_vsent(tfi);
 		return true;
+	}
+
+	static rbool is_and_or_name(const rstr& s)
+	{
+		return s=="&&&(rbuf<rstr>)"||s=="|||(rbuf<rstr>)";
+	}
+
+	static rbool exist_and_or(rbuf<tsent>& vsent)
+	{
+		for(int i=0;i<vsent.count();i++)
+		{
+			for(int j=0;j<vsent[i].vword.count();j++)
+			{
+				if(is_and_or_name(vsent[i].vword[j].val))
+					return true;
+			}
+		}
+		return false;
+	}
+
+	static rbool part_and_or_one(tsh& sh,tfunc& tfi,tfunc* env,
+		int& tid,rbuf<tsent>& vsent,tsent& sent)
+	{
+		rbuf<tword>& v=sent.vword;
+		if(sh.m_key.is_asm_ins(v.get_bottom().val))
+		{
+			vsent.push(sent);
+			return true;
+		}
+		for(int i=0;i<v.count();i++)
+		{
+			//[int,&&&(rbuf<rstr>),[1,2]]
+			ifn(is_and_or_name(v[i].val))
+			{
+				continue;
+			}
+			if(i==3)
+				continue;
+			tclass* ptci=zfind::class_search(sh,v.get(i-2).val);
+			if(null==ptci)
+				continue;
+			int left=i-3;
+			if(v.get(left).val!=rppoptr(c_mbk_l))
+			{
+				continue;
+			}
+			int right=sh.find_symm_mbk(v,left);
+			if(right>=v.count())
+			{
+				return false;
+			}
+			tdata tdi;
+			tdi.type=ptci->name;
+			tdi.name=rppkey(c_temp)+rstr(tid);
+			tid++;
+			tfi.local.push(tdi);
+
+			tsent temp;
+			temp.type=rppkey(c_int);
+			temp.vword+=rppkey(c_int);
+			temp.vword+=rppoptr(c_dot);
+			temp.vword+=v[i].val.sub(0,3);
+			temp.vword+=rppoptr(c_sbk_l);
+			temp.vword+=v.sub(i+3,right-1);
+			temp.vword+=rppoptr(c_sbk_r);
+			temp.pos=sent.pos;
+			ifn(zexp::p_exp(sh,temp,tfi,0,env))
+				return false;
+			vsent+=temp;
+
+			temp.type=rppkey(c_void);
+			temp.vword.clear();
+			temp.vword+=tdi.name;
+			temp.vword+=rppoptr(c_equal);
+			temp.vword+=rppkey(c_ebx);
+			ifn(zexp::p_exp(sh,temp,tfi,0,env))
+				return false;
+			vsent+=temp;
+
+			sh.clear_word_val(v,left,right+1);
+			v[left].val=tdi.name;
+			zpre::arrange(v);
+			ifn(zexp::p_exp(sh,sent,tfi,0,env))
+				return false;
+			vsent+=sent;
+
+			return true;
+		}
+		vsent.push(sent);
+		return true;
+	}
+
+	static rbool part_and_or(tsh& sh,tfunc& tfi,tfunc* env,int& tid)
+	{
+		rbuf<tsent> v;
+		for(int i=0;i<tfi.vsent.count();i++)
+		{
+			ifn(part_and_or_one(sh,tfi,env,tid,v,tfi.vsent[i]))
+			{
+				return false;
+			}
+		}
+		tfi.vsent=r_move(v);
+		return true;
+
+	}
+
+	static rbool replace_and_or(tsh& sh,tfunc& tfi,tfunc* env,int& tid)
+	{
+		ifn(exist_and_or(tfi.vsent))
+			return true;
+		for(int i=0;i<c_rpp_deep;i++)
+		{
+			int cur=tfi.vsent.count();
+			ifn(part_and_or(sh,tfi,env,tid))
+			{
+				sh.error(tfi.vsent[i],"replace_and_or");
+				return false;
+			}
+			if(cur==tfi.vsent.count())
+				return true;
+		}
+		return false;
 	}
 };
 

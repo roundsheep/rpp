@@ -11,9 +11,16 @@
 template<typename T>
 struct rbuf
 {
+	enum
+	{
+		c_small=16
+	};
+
 	T* m_p;
 	int m_count;
 	int m_cmax;
+	uchar m_block[c_small];
+	//当分配小内存时，m_p指向m_block，无需new可提高效率
 
 	~rbuf<T>()
 	{
@@ -54,10 +61,17 @@ struct rbuf
 
 	void move(rbuf<T>& a)
 	{
-		//memcpy(this,&a,sizeof(a));
-		m_p=a.m_p;
-		m_count=a.m_count;
-		m_cmax=a.m_cmax;
+		if(a.m_p==(T*)a.m_block)
+		{
+			memcpy(this,&a,sizeof(a));
+			m_p=(T*)m_block;
+		}
+		else
+		{
+			m_p=a.m_p;
+			m_count=a.m_count;
+			m_cmax=a.m_cmax;
+		}
 		a.init();//如果move后对象不再使用可以只置空a.m_p
 	}
 
@@ -250,7 +264,7 @@ struct rbuf
 
 	static int extend_num(int num)
 	{
-		return r_cond(num<16,16,num*2);
+		return r_cond(num<c_small,c_small,num*2);
 	}
 	
 	//应判断m_count是否太大,否则在64位上m_count++有可能归零
@@ -397,6 +411,17 @@ struct rbuf
 		return true;
 	}
 
+	T* v_new(int num)
+	{
+		return r_cond(num*sizeof(T)<=c_small,(T*)m_block,r_new<T>(num));
+	}
+
+	void v_delete()
+	{
+		if(m_p!=(T*)m_block)
+			r_delete<T>(m_p);
+	}
+
 	//这里的重复代码可用宏或者模板简化
 	void alloc(int num)
 	{
@@ -409,7 +434,7 @@ struct rbuf
 			init();
 			return;
 		}
-		m_p=new T[num];
+		m_p=v_new(num);
 		m_cmax=num;
 		m_count=m_cmax;
 	}
@@ -425,7 +450,7 @@ struct rbuf
 			init();
 			return;
 		}
-		m_p=new T[num];
+		m_p=v_new(num);
 		m_cmax=num;
 	}
 
@@ -441,15 +466,7 @@ struct rbuf
 			free();
 			return;
 		}
-		T* p=new T[num];
-		int copy_size=r_min(num,m_count);
-		for(int i=0;i<copy_size;i++)
-		{
-			p[i]=r_move(m_p[i]);
-		}
-		delete []m_p;
-		m_p=p;
-		m_cmax=num;
+		realloc_not_change_in(num);
 		m_count=m_cmax;
 	}
 
@@ -465,13 +482,18 @@ struct rbuf
 			free();
 			return;
 		}
-		T* p=new T[num];
+		realloc_not_change_in(num);
+	}
+
+	void realloc_not_change_in(int num)
+	{
+		T* p=v_new(num);
 		int copy_size=r_min(num,m_count);
 		for(int i=0;i<copy_size;i++)
 		{
 			p[i]=r_move(m_p[i]);
 		}
-		delete []m_p;
+		v_delete();
 		m_p=p;
 		m_cmax=num;
 	}
@@ -489,8 +511,8 @@ struct rbuf
 			free();
 			return;
 		}
-		delete []m_p;
-		m_p=new T[num];
+		v_delete();
+		m_p=v_new(num);
 		m_cmax=num;
 		m_count=m_cmax;
 	}
@@ -507,8 +529,8 @@ struct rbuf
 			free();
 			return;
 		}
-		delete []m_p;
-		m_p=new T[num];
+		v_delete();
+		m_p=v_new(num);
 		m_cmax=num;
 	}
 
@@ -518,7 +540,7 @@ struct rbuf
 		{
 			return;
 		}
-		delete []m_p;
+		v_delete();
 		init();
 	}
 

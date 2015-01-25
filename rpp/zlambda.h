@@ -4,7 +4,6 @@
 #include "zexp.h"
 #include "zsrep.h"
 #include "zftl.h"
-#include "zself.h"
 
 struct zlambda
 {

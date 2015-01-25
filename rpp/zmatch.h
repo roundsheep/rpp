@@ -90,7 +90,7 @@ struct zmatch
 		{
 			return false;
 		}
-		if(src.vword.count()==5&&
+		if(src.vword.count()==7&&
 			sh.is_quote(dst)&&
 			src.vword[1].val==rppoptr(c_addr)&&
 			src.vword[0].val==rppoptr(c_mbk_l))
@@ -152,26 +152,26 @@ struct zmatch
 			v[start+1].val==rppoptr(c_dot)&&
 			v[start].val==rppoptr(c_mbk_l))
 		{
-			start+=2;
+			start+=3;
 		}
 		if(v[start].val==rppoptr(c_mbk_l))
 		{
 			start++;
 		}
-		if(start+1>=v.count())
+		if(start+2>=v.count())
 		{
 			return false;
 		}
 		if(v[start].val==rppkey(c_pcall))
 		{
-			return !sh.is_quote(v[start+1].val);
+			return !sh.is_quote(v[start+2].val);
 		}
 		tclass* ptci=zfind::class_search(sh,v[start].val);
 		if(ptci==null)
 		{
 			return false;
 		}
-		tfunc* ptfi=zfind::func_search_dec(*ptci,v[start+1].val);
+		tfunc* ptfi=zfind::func_search_dec(*ptci,v[start+2].val);
 		if(ptfi==null)
 		{
 			return false;
@@ -184,7 +184,9 @@ struct zmatch
 		rbuf<tword> result;
 		result+=rppoptr(c_mbk_l);
 		result+=rppkey(c_btemp);
+		result+=rppoptr(c_comma);
 		result+=type;
+		result+=rppoptr(c_comma);
 		result+=rppoptr(c_mbk_l);
 		result+=sent.vword;
 		result+=rppoptr(c_mbk_r);

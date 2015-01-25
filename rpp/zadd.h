@@ -66,7 +66,9 @@ struct zadd
 			return;
 		v+=rppoptr(c_mbk_l);
 		v+=tdi.type;
+		v+=rppoptr(c_comma);
 		v+=tdi.type;
+		v+=rppoptr(c_comma);
 		v+=rppoptr(c_mbk_l);
 		v+=tdi.name;
 		v+=rppoptr(c_mbk_r);
@@ -82,7 +84,9 @@ struct zadd
 			return;
 		v+=rppoptr(c_mbk_l);
 		v+=tdi.type;
+		v+=rppoptr(c_comma);
 		v+=rppoptr(c_destruct)+tdi.type;
+		v+=rppoptr(c_comma);
 		v+=rppoptr(c_mbk_l);
 		v+=tdi.name;
 		v+=rppoptr(c_mbk_r);

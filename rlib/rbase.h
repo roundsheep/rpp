@@ -8,6 +8,7 @@
 //#pragma warning(disable:4390)
 //#pragma warning(disable:4710)
 #pragma warning(disable:4996)
+#pragma warning(disable:4345)
 
 #include <windows.h>
 #include <wchar.h>

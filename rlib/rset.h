@@ -89,7 +89,7 @@ struct rset
 		}
 		clear_x(x->left);
 		clear_x(x->right);
-		delete x;
+		r_delete(x);
 	}
 
 	rbool empty() const
@@ -162,6 +162,7 @@ struct rset
 		x->father=y;
 	}
 
+	//重复代码需简化
 	void insert_fixup(rset_i<T>* z)
 	{
 		rset_i<T>* y;
@@ -252,7 +253,7 @@ struct rset
 
 	void insert(const T& a)
 	{
-		rset_i<T>* p=new rset_i<T>;
+		rset_i<T>* p=r_new<rset_i<T> >();
 		p->key=a;
 		insert_p(p);
 		m_count++;
@@ -412,7 +413,7 @@ struct rset
 		if(x!=&m_nil)
 		{
 			erase_p(x);
-			delete x;
+			r_delete(x);
 			m_count--;
 		}
 	}

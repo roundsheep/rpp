@@ -127,8 +127,7 @@ struct rstr
 
 	uchar* cstr()
 	{
-		char temp=0;
-		push(temp);
+		push((uchar)0);
 		pop();
 		return begin();
 	}
@@ -140,9 +139,8 @@ struct rstr
 
 	ushort* cstrw()
 	{
-		char temp=0;
-		push(temp);
-		push(temp);
+		push((uchar)0);
+		push((uchar)0);
 		pop();
 		pop();
 		return (ushort*)begin();
@@ -451,31 +449,32 @@ struct rstr
 		printf("%s\n",cstr());
 	}
 
+	//todo 两个函数重复了
 	void format_t(const char *szFormat,...)
 	{
-		char   szBuffer [1024] ;
-		va_list pArgList ;
-		va_start (pArgList, szFormat) ;
+		char szBuffer[1024];
+		va_list pArgList;
+		va_start(pArgList,szFormat);
 #ifdef _MSC_VER
-		_vsnprintf (szBuffer, r_size (szBuffer),szFormat, pArgList) ;
+		_vsnprintf(szBuffer,r_size(szBuffer),szFormat,pArgList);
 #else
-		vsnprintf (szBuffer, r_size (szBuffer),szFormat, pArgList) ;
+		vsnprintf(szBuffer,r_size(szBuffer),szFormat,pArgList);
 #endif
-		va_end (pArgList) ;
+		va_end(pArgList);
 		set(szBuffer);
 	}
 
 	static rstr format(const char *szFormat,...)
 	{
-		char   szBuffer [1024] ;
-		va_list pArgList ;
-		va_start (pArgList, szFormat) ;
+		char szBuffer[1024];
+		va_list pArgList;
+		va_start(pArgList,szFormat);
 #ifdef _MSC_VER
-		_vsnprintf (szBuffer, r_size (szBuffer),szFormat, pArgList) ;
+		_vsnprintf(szBuffer,r_size(szBuffer),szFormat,pArgList);
 #else
-		vsnprintf (szBuffer, r_size (szBuffer),szFormat, pArgList) ;
+		vsnprintf(szBuffer,r_size(szBuffer),szFormat,pArgList);
 #endif
-		va_end (pArgList) ;
+		va_end(pArgList);
 		return rstr(szBuffer);
 	}
 

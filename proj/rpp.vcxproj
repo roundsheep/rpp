@@ -44,7 +44,6 @@
     <ClInclude Include="..\rpp\tconf.h" />
     <ClInclude Include="..\rpp\tsh.h" />
     <ClInclude Include="..\rpp\tstruct.h" />
-    <ClInclude Include="..\rpp\tvar.h" />
     <ClInclude Include="..\rpp\tvm.h" />
     <ClInclude Include="..\rpp\tvm_struct.h" />
     <ClInclude Include="..\rpp\zadd.h" />
@@ -70,14 +69,11 @@
     <ClInclude Include="..\rpp\zopt.h" />
     <ClInclude Include="..\rpp\zpre.h" />
     <ClInclude Include="..\rpp\zread.h" />
-    <ClInclude Include="..\rpp\zself.h" />
     <ClInclude Include="..\rpp\zsent.h" />
     <ClInclude Include="..\rpp\zsrep.h" />
     <ClInclude Include="..\rpp\zsuper.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\rlib\rclass.cpp" />
-    <ClCompile Include="..\rlib\rsock.cpp" />
     <ClCompile Include="..\rpp\rpp.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -159,6 +155,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
+      <StackReserveSize>2097152</StackReserveSize>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -200,6 +197,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
+      <StackReserveSize>2097152</StackReserveSize>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
