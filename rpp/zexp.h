@@ -222,15 +222,6 @@ struct zexp
 				vsent.push(sent);
 			}
 
-			/*if(ptfi!=null&&ptfi->is_dynamic)
-			{
-				//不处理参数，直接把代码字符串传进去
-				ifn(set_vsent(sh,src.vword[0].pos,vsent,tfi,level,env))
-					return false;
-				set_func(sh,outopnd,r_move(vsent),ptfi);
-				return true;
-			}*/
-
 			if(ptfi==null)
 			{
 				ptfi=zmatch::find_replace(sh,*ptci,fname,vsent);
@@ -360,7 +351,6 @@ struct zexp
 		tmp.vword+=rppoptr(c_comma);
 		tmp.vword+=tword(ptfi->name_dec);
 		tmp.vword+=tword(rppoptr(c_mbk_r));
-		//sh.print_vword(tmp.vword);
 
 		outopnd.type=ptfi->retval.type;
 		outopnd.vword+=tword(rppoptr(c_mbk_l));
@@ -383,7 +373,6 @@ struct zexp
 		outopnd.vword+=tword(rppoptr(c_mbk_r));
 
 		outopnd.vword+=tword(rppoptr(c_mbk_r));
-		//sh.print_vword(outopnd.vword);
 		i=right;
 		return true;
 	}
@@ -801,61 +790,6 @@ struct zexp
 				tfunc* ptfi;
 				tsent outopnd;
 				outopnd.pos=src.pos;
-				/*if(theta==rppoptr(c_and3)||theta==rppoptr(c_or3))
-				{
-					if(sopnd.empty())
-					{
-						sh.error(src,"exp miss opnd");
-						return false;
-					}
-					vsent.push_front(sopnd.pop());
-					ptci=zfind::class_search_t(sh,rppkey(c_int));
-					if(ptci==null)
-					{
-						sh.error(src,"exp miss opnd");
-						return false;
-					}
-					ptfi=zmatch::find_replace(sh,
-						*ptci,"+",vsent);
-					if(ptfi==null)
-					{
-						sh.error(src,"exp miss opnd");
-						return false;
-					}
-					ptfi=zfind::func_search(*ptci,theta);
-					if(ptfi==null)
-					{
-						sh.error(src,"exp miss opnd");
-						return false;
-					}
-					set_func(sh,outopnd,r_move(vsent),ptfi);
-					sopnd.push_move(outopnd);
-					i--;
-					continue;
-				}*/
-				/*if(theta==rppoptr(c_and3)||theta==rppoptr(c_or3))
-				{
-					if(sopnd.empty())
-					{
-						sh.error(src,"exp miss opnd");
-						return false;
-					}
-					vsent.push_front(sopnd.pop());
-					ifn(set_vsent(sh,src.pos,vsent,tfi,level,env))
-					{
-						return false;
-					}
-					ptfi=zfind::func_search(*ptci,theta);
-					if(ptfi==null)
-					{
-						sh.error(src,"exp miss &&&");
-						return false;
-					}
-					set_func(sh,outopnd,r_move(vsent),ptfi);
-					sopnd.push_move(outopnd);
-					i--;
-					continue;
-				}*/
 				if(ptci!=null)
 				{
 					ptfi=zmatch::find_replace(sh,
