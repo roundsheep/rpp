@@ -322,7 +322,7 @@ struct zasm
 			zexp::get_vsent(temp_v,vsent,src);
 			for(int i=vsent.count()-1;i>=0;i--)
 			{
-				if(!zexp::p_exp(sh,vsent[i],tfi,level,null))
+				if(!zexp::p_exp(sh,vsent[i],tfi,level,tenv()))
 				{
 					return false;
 				}
@@ -337,7 +337,7 @@ struct zasm
 			}
 			tsent sent=src;
 			sent.vword=vlisp[2];
-			if(!zexp::p_exp(sh,sent,tfi,level,null))
+			if(!zexp::p_exp(sh,sent,tfi,level,tenv()))
 			{
 				return false;
 			}
@@ -360,7 +360,7 @@ struct zasm
 		zexp::get_vsent(vlisp,vsent,src);
 		for(int i=vsent.count()-1;i>=0;i--)
 		{
-			if(!zexp::p_exp(sh,vsent[i],tfi,level,null))
+			if(!zexp::p_exp(sh,vsent[i],tfi,level,tenv()))
 			{
 				return false;
 			}

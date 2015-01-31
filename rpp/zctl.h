@@ -175,7 +175,7 @@ struct zctl
 			}
 		}
 		combine_quote(sh,v);
-		zclass::arrange_format_l(sh,v);  //匿名函数要在这里处理大括号换行
+		zclass::arrange_format_l(sh,v);//匿名函数要在这里处理大括号换行
 		if(!zpre::op_const_eval(sh,v,false))
 		{
 			return false;

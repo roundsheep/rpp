@@ -7,7 +7,7 @@
 //简单替换类
 struct zsrep
 {
-	static rbool typeof_replace(tsh& sh,tfunc& tfi,tfunc* env)
+	static rbool typeof_replace(tsh& sh,tfunc& tfi,tenv env)
 	{
 		for(int i=0;i<tfi.vsent.count();i++)
 		{
@@ -19,7 +19,7 @@ struct zsrep
 		return true;
 	}
 
-	static rbool typeof_replace(tsh& sh,tfunc& tfi,tsent& sent,tfunc* env)
+	static rbool typeof_replace(tsh& sh,tfunc& tfi,tsent& sent,tenv env)
 	{
 		rbuf<tword>& v=sent.vword;
 		for(int i=0;i<v.count();i++)

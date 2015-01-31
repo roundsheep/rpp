@@ -345,6 +345,21 @@ struct tsent
 	}
 };
 
+struct tdynamic
+{
+	int key;
+	rbuf<rbuf<rstr> > vparam;
+
+	tdynamic()
+	{
+	}
+
+	friend rbool operator<(const tdynamic& a,const tdynamic& b)
+	{
+		return a.key<b.key;
+	}
+};
+
 struct tclass;
 
 struct tfunc
@@ -372,6 +387,7 @@ struct tfunc
 	tclass* ptci;//反射到tclass，不用初始化
 
 	uchar* code;//jit代码段
+	rset<tdynamic> sdynamic;
 
 	tfunc()
 	{
@@ -410,6 +426,7 @@ struct tfunc
 		count=0;
 		//ptci=null;
 		code=null;
+		sdynamic.clear();
 	}
 
 	rstr get_dec() const
@@ -496,6 +513,18 @@ struct taddr
 	friend rbool operator<(const taddr& a,const taddr& b)
 	{
 		return a.end<=b.start;
+	}
+};
+
+struct tenv
+{
+	tfunc* ptfi;
+	uint v_ebp;
+
+	tenv()
+	{
+		ptfi=null;
+		v_ebp=0;
 	}
 };
 

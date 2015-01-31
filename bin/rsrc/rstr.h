@@ -66,6 +66,12 @@ public:
 		set(tmp.m_p);
 	}
 
+	rstr(float i)
+	{
+		//sprintf用%f时以8字节打印
+		set(rstr(double(i)).cstr)
+	}
+
 	rstr(rstr& s)
 	{
 		m_buf.alloc_not_change(s.m_buf.m_cmax);

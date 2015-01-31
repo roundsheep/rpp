@@ -92,6 +92,22 @@ struct zjitf
 		return a>>b; 
 	}
 
+	static void _float_to_double(float a,double* b)
+	{
+		*b=a;
+	}
+
+	//当返回double时X86的ABI是通过xmm返回
+	static void sin(double a,double* b)
+	{
+		*b=::sin(a);
+	}
+
+	static void cos(double a,double* b)
+	{
+		*b=::cos(a);
+	}
+
 	static int get_argc()
 	{
 		return get_psh()->m_argc;
@@ -127,7 +143,7 @@ struct zjitf
 		return &get_psh()->m_class;
 	}
 
-	//fixme
+	//fixme _ftelli64必须要加载msvcr110.dll才能使用
 	static void ftell8(int8* ret,FILE* fp)
 	{
 		*ret=rfile::ftell8(fp);

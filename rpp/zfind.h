@@ -78,7 +78,7 @@ struct zfind
 		return s==rppkey(c_int)||s==rppkey(c_char)||
 			s==rppkey(c_uint)||s==rppkey(c_int8)||
 			s==rppkey(c_double)||s==rppkey(c_rd4)||
-			s==rppkey(c_rcs)||sh.is_point_quote(s);
+			s=="float"||sh.is_point_quote(s);
 	}
 
 	static rbool is_class(tsh& sh,const rstr& s)

@@ -8,9 +8,9 @@
 //从这里开始行号已经放在sent中
 struct zsent
 {
-	static rbool proc_func(tsh& sh,tfunc& tfi,tfunc* env)
+	static rbool proc_func(tsh& sh,tfunc& tfi,tenv env)
 	{
-		if(env!=null)
+		if(env.ptfi!=null)
 		{
 			add_class(sh,tfi,env);
 		}
@@ -65,6 +65,31 @@ struct zsent
 		//临时变量替换，替换后有些表达式类型会变空
 		if(!replace_temp_var(sh,tfi,tid))
 			return false;
+		ifn(tfi.sdynamic.empty())
+		{
+			tdata tdi;
+			tdi.type=rppkey(c_int);
+			tdi.name="_EBP";
+			tfi.local+=tdi;
+
+			tsent sent;
+			sent.pos=tfi.first_pos;
+			sent.vword.push(tword("mov"));//tword没有设置pos
+			sent.vword.push(tword("_EBP"));
+			sent.vword.push(tword(","));
+			sent.vword.push(tword("ebp"));
+			tfi.vsent.push_front(r_move(sent));
+		}
+		if(env.ptfi!=null)
+		{
+			tsent sent;
+			sent.pos=tfi.first_pos;
+			sent.vword.push(tword("mov"));//tword没有设置pos
+			sent.vword.push(tword("_PENV"));
+			sent.vword.push(tword(","));
+			sent.vword.push(tword(rstr(env.v_ebp)));
+			tfi.vsent.push_front(r_move(sent));
+		}
 		//获取局部变量偏移
 		obtain_local_off(sh,tfi.local);
 		obtain_param_off(tfi);
@@ -86,25 +111,25 @@ struct zsent
 		//成员变量里有sizeof s_off的情况需要再次替换
 		//注意成员变量初始化的时候不能使用临时变量
 		//再处理一次，获取所有表达式的类型
-		if(!zexp::p_exp_all(sh,tfi,null))
+		if(!zexp::p_exp_all(sh,tfi,tenv()))
 			return false;
 		return true;
 	}
 
-	static void add_class(tsh& sh,tfunc& tfi,tfunc* env)
+	static void add_class(tsh& sh,tfunc& tfi,tenv env)
 	{
-		rstr name="_func_class_"+env->name_dec;
+		rstr name="_func_class_"+env.ptfi->name_dec;
 		if(!zfind::is_class(sh,name))
 		{
 			tclass item;
 			item.name=name;
-			for(int i=0;i<env->local.count();i++)
+			for(int i=0;i<env.ptfi->local.count();i++)
 			{
-				item.vdata.push(env->local[i]);
+				item.vdata.push(env.ptfi->local[i]);
 			}
-			for(int i=0;i<env->param.count();i++)
+			for(int i=0;i<env.ptfi->param.count();i++)
 			{
-				item.vdata.push(env->param[i]);
+				item.vdata.push(env.ptfi->param[i]);
 			}
 			sh.m_class.insert(item);
 		}
@@ -217,7 +242,7 @@ struct zsent
 		tfi.retval.off=off;
 	}
 
-	static rbool proc_type_infer(tsh& sh,tfunc& tfi,tfunc* env)
+	static rbool proc_type_infer(tsh& sh,tfunc& tfi,tenv env)
 	{
 		for(int i=0;i<tfi.vsent.count();++i)
 			if(!proc_type_infer(sh,tfi.vsent[i],tfi,env))
@@ -226,7 +251,7 @@ struct zsent
 		return true;
 	}
 
-	static rbool proc_type_infer(tsh& sh,tsent& sent,tfunc& tfi,tfunc* env)
+	static rbool proc_type_infer(tsh& sh,tsent& sent,tfunc& tfi,tenv env)
 	{
 		tclass& tci=*tfi.ptci;
 		if(sent.vword.count()>=3&&
@@ -237,7 +262,7 @@ struct zsent
 			rstr name=sent.vword[0].val;
 			if(null!=zfind::local_search(tfi,name))
 				return true;
-			if(env!=null&&null!=zfind::local_search(*env,name))
+			if(env.ptfi!=null&&null!=zfind::local_search(*env.ptfi,name))
 			{
 				return true;
 			}

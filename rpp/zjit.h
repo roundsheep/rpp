@@ -14,7 +14,7 @@ struct zjit
 		tfunc* ptfi=zfind::func_search(*sh.m_main,"__declare");
 		if(ptfi!=null)
 		{
-			func_to_x86(sh,*ptfi,null);
+			func_to_x86(sh,*ptfi,tenv());
 		}
 		ptfi=zfind::func_search(*sh.m_main,"main_c");
 		if(ptfi==null)
@@ -22,7 +22,7 @@ struct zjit
 			rf::printl("main not find");
 			return false;
 		}
-		ifn(func_to_x86(sh,*ptfi,null))
+		ifn(func_to_x86(sh,*ptfi,tenv()))
 		{
 			return false;
 		}
@@ -34,7 +34,7 @@ struct zjit
 	}
 
 	//将一个函数翻译成X86代码
-	static rbool func_to_x86(tsh& sh,tfunc& tfi,tfunc* env)
+	static rbool func_to_x86(tsh& sh,tfunc& tfi,tenv env)
 	{
 #ifdef _MSC_VER
 		if(!tfi.vasm.empty())
@@ -299,7 +299,7 @@ struct zjit
 			{
 				return false;
 			}
-			ifn(func_to_x86(sh,*ptfi,null))
+			ifn(func_to_x86(sh,*ptfi,tenv()))
 			{
 				return false;
 			}
@@ -351,7 +351,7 @@ struct zjit
 		{
 			return null;
 		}
-		ifn(func_to_x86(*zjitf::get_psh(),*ptfi,null))
+		ifn(func_to_x86(*zjitf::get_psh(),*ptfi,tenv()))
 		{
 			return null;
 		}
@@ -386,31 +386,43 @@ struct zjit
 		rppjf("get_cur_func",zjitf::get_cur_func);
 		rppjf("get_vclass",zjitf::get_vclass);
 		rppjf("eval",eval);
+		rppjf("eval_vstr",eval_vstr);
+		rppjf("_float_to_double",zjitf::_float_to_double);
+		rppjf("sin",zjitf::sin);
+		rppjf("sin",zjitf::cos);
 	}
 
-	static rbool eval(uchar* s,tfunc* env)
+	static rbool eval_vstr(rbuf<rstr>& vstr,tenv env)
+	{
+		rbuf<tword> v;
+		for(int i=0;i<vstr.count();i++)
+		{
+			v+=tword(vstr[i]);
+			v[i].pos.line=1;
+		}
+		return eval_v(v,env);
+	}
+
+	static rbool eval_v(rbuf<tword>& v,tenv env)
 	{
 		tsh& sh=*zjitf::get_psh();
-		tfunc tfi;
-		tfi.ptci=sh.m_main;
-		rbuf<tword> v;
-		if(!zpre::str_analyse(sh,rstr(s),v,null))
-		{
-			return false;
-		}
 		zpre::def_replace(sh,sh.m_vdefine,v);
 		if(!zctl::type_replace(sh,v))
 		{
+			sh.error("type_replace");
 			return false;
 		}
-		tfi.first_pos.line=1;
-		tfi.last_pos.line=v.get_top().pos.line+10;
+		tfunc tfi;
+		tfi.ptci=sh.m_main;
 		tfi.vword=v;
+		tfi.first_pos.line=1;
+		tfi.last_pos.line=tfi.vword.get_top().pos.line+10;
 		tfi.retval.type=rppkey(c_int);
 		tfi.retval.name=rppkey(c_s_ret);
 		tfi.is_cfunc=true;
 		if(!func_to_x86(sh,tfi,env))
 		{
+			sh.error("func_to_x86");
 			return false;
 		}
 		uchar* temp=tfi.code;
@@ -420,6 +432,17 @@ struct zjit
 		__asm mov temp,esi
 		__asm add esp,4
 		return (int)temp;
+	}
+
+	static rbool eval(uchar* s,tenv env)
+	{
+		tsh& sh=*zjitf::get_psh();
+		rbuf<tword> v;
+		if(!zpre::str_analyse(sh,rstr(s),v,null))
+		{
+			return false;
+		}
+		return eval_v(v,env);
 	}
 };
 

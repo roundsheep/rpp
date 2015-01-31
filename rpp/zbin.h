@@ -13,7 +13,7 @@ struct zbin
 	{
 		if(!tfi.vasm.empty())
 			return true;
-		if(!cp_vword_to_vasm(sh,tfi,null))
+		if(!cp_vword_to_vasm(sh,tfi,tenv()))
 		{
 			return false;
 		}
@@ -28,51 +28,6 @@ struct zbin
 		}
 		return true;
 	}
-
-	/*static rbool cp_func_txt(tsh& sh,tfunc& tfi,rstr s)
-	{
-		rmutex_t mutex_t(sh.m_mutex);
-		rbuf<tword> v;
-		if(!zpre::str_analyse(sh,s,v,tfi.first_pos.file))
-		{
-			return false;
-		}
-		ifn(zpre::def_replace(sh,sh.m_vdefine,v))
-		{
-			return false;
-		}
-		//元函数暂不支持模板函数
-		if(!zctl::type_replace(sh,v))
-		{
-			return false;
-		}
-		int left=v.find(tword(rppoptr(c_bbk_l)));
-		if(left>=v.count())
-		{
-			sh.error(v.get(left),"miss {");
-			return false;
-		}
-		int right=sh.find_symm_bbk(v,left);
-		if(right>=v.count())
-		{
-			sh.error(v.get(left),"miss }");
-			return false;
-		}
-		rbuf<tword> vhead=v.sub(0,left);
-		tfi.vword=v.sub(left+1,right);
-		tfi.first_pos=v[left].pos;
-		tfi.last_pos=v[right].pos;
-		if(!zmemb::a_func_define(sh,tfi,vhead,true))
-		{
-			return false;
-		}
-		zmemb::obtain_size_func(sh,tfi);
-		if(!proc_func(sh,tfi))
-		{
-			return false;
-		}
-		return true;
-	}*/
 	
 	//翻译一条未解析的指令
 	static rbool cp_call_asm(tsh& sh,tasm& item)
@@ -126,7 +81,7 @@ struct zbin
 	}
 
 	//从函数的词表编译到vasm
-	static rbool cp_vword_to_vasm(tsh& sh,tfunc& tfi,tfunc* env)
+	static rbool cp_vword_to_vasm(tsh& sh,tfunc& tfi,tenv env)
 	{
 		if(!zsent::proc_func(sh,tfi,env))
 		{
@@ -379,20 +334,6 @@ struct zbin
 		{
 			if(src[i]=='\\')
 			{
-				/*if(src.get(i+1)=='\\')//有歧义
-				{
-					int j;
-					for(j=i+2;j<src.count()-1&&src[j]=='\\';j++)
-					{
-						;
-					}
-					if(src.get(j)=='"')
-					{
-						dst+=src.sub(i+1,j+1);
-						i=j;
-						continue;
-					}
-				}*/
 				if(src.get(i+1)=='b')
 					dst+='\b';
 				elif(src.get(i+1)=='n')
@@ -420,7 +361,6 @@ struct zbin
 		}
 		src=r_move(dst);
 		src.m_buf.push(0);
-		//src.cstr();
 	}
 
 	static rbool is_jmp_ins(int type)

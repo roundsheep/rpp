@@ -6,22 +6,29 @@ bool evalue(rstr s)
 	return eval(s,get_up_func,get_up_ebp)
 }
 
-bool eval(rstr s,tfunc* env,uint v_ebp)
+bool eval(rstr s,tfunc* ptfi=null,int vebp=0)
 {
-	if v_ebp!=0
-		s="mov _PENV,"+rstr(v_ebp)+";"+s
-	return eval_in(s.cstr,env)
+	return eval_in(s.cstr,ptfi,vebp)
 }
 
-bool eval_in(char* s,tfunc* env)
+bool eval_in(char* s,tfunc* ptfi,int vebp)
 {
-	sub esp,4
-	push env
+	push vebp
+	push ptfi
 	push s
 	calle "eval"
 	mov s_ret,eax
-	add esp,8
-	add esp,4
+	add esp,12
+}
+
+bool eval_vstr(rbuf<rstr>* vstr,tfunc* ptfi,int vebp)
+{
+	push vebp
+	push ptfi
+	push vstr
+	calle "eval_vstr"
+	mov s_ret,eax
+	add esp,12
 }
 
 define get_up_func get_up_func_in(ebp,sizeof(s_local))
@@ -41,10 +48,30 @@ tfunc* get_cur_func()
 
 tfunc* get_cur_func_in(int pasm)
 {
-	sub esp,4
 	push pasm
 	calle "get_cur_func"
 	mov s_ret,eax
 	add esp,4
-	add esp,4
+}
+
+dynamic bool and(rbuf<rbuf<rstr>>* p,tfunc* ptfi,int vebp)
+{
+	for i=0;i<p->count;i++
+		rbuf<rstr> v
+		v.push('return')
+		v+=(*p)[i]
+		ifn eval_vstr(&v,ptfi,vebp)
+			return false
+	return true
+}
+
+dynamic bool or(rbuf<rbuf<rstr>>* p,tfunc* ptfi,int vebp)
+{
+	for i=0;i<p->count;i++
+		rbuf<rstr> v
+		v.push('return')
+		v+=(*p)[i]
+		if eval_vstr(&v,ptfi,vebp)
+			return true
+	return false
 }

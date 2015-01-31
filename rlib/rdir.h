@@ -16,6 +16,7 @@
 //#include <sys/types.h> 
 #endif
 
+//todo 去掉这个结构体
 struct rdir_item
 {
 	rstrw path;

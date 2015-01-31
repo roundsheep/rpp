@@ -317,7 +317,7 @@ struct znasm
 		tfi.count=1;
 		if(tfi.vasm.empty())
 		{
-			if(!zbin::cp_vword_to_vasm(sh,tfi,null))
+			if(!zbin::cp_vword_to_vasm(sh,tfi,tenv()))
 			{
 				return false;
 			}
@@ -426,7 +426,7 @@ struct znasm
 		rbuf<tasm>& vasm=ptfi->vasm;
 		if(vasm.empty())
 		{
-			if(!zbin::cp_vword_to_vasm(sh,*ptfi,null))
+			if(!zbin::cp_vword_to_vasm(sh,*ptfi,tenv()))
 			{
 				return false;
 			}

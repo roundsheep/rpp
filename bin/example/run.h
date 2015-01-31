@@ -34,7 +34,7 @@ main
 	elif v.count==4&&v[3]=='-del'
 		rf.cmd(b+'.exe')
 		ifn rfile.remove(rcode.gbk_to_utf8(b)+'.exe')
-			putsl 'delete error'
+			;//很可能是由于golink没有关闭EXE导致无法删除
 	elif v.count==4&&v[3]=='-check'
 		ifn rfile.remove(rcode.gbk_to_utf8(b)+'.exe')
 			putsl 'delete error'

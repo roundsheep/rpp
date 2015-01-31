@@ -12,7 +12,7 @@ struct zexp
 {
 	//处理函数名调用
 	static rbool p_func_call(tsh& sh,tsent& src,tsent& outopnd,
-		tfunc& tfi,int level,int& i,tfunc* env)
+		tfunc& tfi,int level,int& i,tenv env)
 	{
 		tclass* ptci=tfi.ptci;
 		rstr fname=src.vword[i].val;
@@ -43,7 +43,7 @@ struct zexp
 
 	//处理[]函数指针直接调用
 	static rbool p_point_call(tsh& sh,tsent& src,tsent& outopnd,
-		tfunc& tfi,int level,int& i,tfunc* env)
+		tfunc& tfi,int level,int& i,tenv env)
 	{
 		int left=i+1;
 		int right=sh.find_symm_mbk(src.vword,left);
@@ -91,7 +91,7 @@ struct zexp
 	}
 
 	static rbool p_temp_var(tsh& sh,tsent& src,tsent& outopnd,
-		tfunc& tfi,int level,int& i,tfunc* env)
+		tfunc& tfi,int level,int& i,tenv env)
 	{
 		int left=i+1;
 		int right=sh.find_symm_sbk(src.vword,left);
@@ -133,7 +133,7 @@ struct zexp
 	
 	//处理类名直接调用
 	static rbool p_class_call(tsh& sh,tsent& src,tsent& outopnd,
-		tfunc& tfi,int level,int& i,tfunc* env)
+		tfunc& tfi,int level,int& i,tenv env)
 	{
 		if(src.vword.get(i+1).val!=rppoptr(c_dot))
 		{
@@ -154,7 +154,7 @@ struct zexp
 	}
 
 	static rbool p_mbk(tsh& sh,const tsent& first,const tsent& second,
-		tsent& outopnd,tfunc& tfi,int level,tfunc* env)
+		tsent& outopnd,tfunc& tfi,int level,tenv env)
 	{
 		rbuf<tsent> vsent;
 		sh.split_param(vsent,second.vword,first);
@@ -181,7 +181,7 @@ struct zexp
 	}
 
 	static rbool p_lisp(tsh& sh,const tsent& src,tsent& outopnd,
-		tfunc& tfi,int level,tfunc* env)
+		tfunc& tfi,int level,tenv env)
 	{
 		if(src.vword.get_bottom().val!=rppoptr(c_mbk_l)&&
 			src.vword.get_top().val!=rppoptr(c_mbk_r))
@@ -301,7 +301,7 @@ struct zexp
 	
 	//处理变参中括号调用,变参不能重载
 	static rbool p_mbk_param(tsh& sh,tsent& src,tsent* pfirst,tsent& outopnd,
-		tfunc& tfi,int level,int& i,tclass* ptci,tfunc* env)
+		tfunc& tfi,int level,int& i,tclass* ptci,tenv env)
 	{
 		rstr cname=ptci->name;
 		rstr fname=src.vword[i].val;
@@ -379,7 +379,7 @@ struct zexp
 	
 	//无括号call
 	static rbool p_call_n(tsh& sh,tsent& src,tsent* pfirst,tsent& outopnd,
-		tfunc& tfi,int level,int& i,tclass* ptci,tfunc* env)
+		tfunc& tfi,int level,int& i,tclass* ptci,tenv env)
 	{
 		rstr cname=ptci->name;
 		rstr fname=src.vword[i].val;
@@ -442,7 +442,7 @@ struct zexp
 	}
 
 	static rbool p_ftl(tsh& sh,tsent src,tsent* pfirst,tsent& outopnd,
-		tfunc& tfi,int level,int& i,tclass* ptci,tfunc* env)
+		tfunc& tfi,int level,int& i,tclass* ptci,tenv env)
 	{
 		int left=i+1;
 		if(src.vword.get(left)!=rppoptr(c_tbk_l))
@@ -467,52 +467,39 @@ struct zexp
 	}
 
 	static rbool set_vsent(tsh& sh,tpos pos,rbuf<tsent>& vsent,
-		tfunc& tfi,int level,tfunc* env)
+		tfunc& tfi,int level,tenv env)
 	{
 		tsent sent;
 		tword word;
 		word.pos=pos;
 		word.pos_src=pos;
 		sent.pos=pos;
-		sh.push_twi(sent.vword,word,"array<rstr>");
-		sh.push_twi(sent.vword,word,rppoptr(c_mbk_l));
-
-		sh.push_twi(sent.vword,word,"rstr");
-		sh.push_twi(sent.vword,word,rppoptr(c_sbk_l));
-		sh.push_twi(sent.vword,word,"get_cur_func");
-		sh.push_twi(sent.vword,word,rppoptr(c_dot));
-		sh.push_twi(sent.vword,word,"toint");
-		sh.push_twi(sent.vword,word,rppoptr(c_sbk_r));
-
-		sh.push_twi(sent.vword,word,rppoptr(c_comma));
-
-		sh.push_twi(sent.vword,word,"rstr");
-		sh.push_twi(sent.vword,word,rppoptr(c_sbk_l));
-		sh.push_twi(sent.vword,word,"ebp");//有符号整数
-		sh.push_twi(sent.vword,word,rppoptr(c_sbk_r));
-
+		tdynamic item;
+		item.key=tfi.sdynamic.count();
 		for(int k=0;k<vsent.count();k++)
 		{
-			sh.push_twi(sent.vword,word,rppoptr(c_comma));
-			sh.push_twi(sent.vword,word,"rstr");
-			sh.push_twi(sent.vword,word,rppoptr(c_sbk_l));
-			sh.push_twi(sent.vword,word,
-				zsuper::add_quote(rstr::join<rstr>(
-					tsh::vword_to_vstr(vsent[k].vword)," ")));
-			sh.push_twi(sent.vword,word,rppoptr(c_sbk_r));
+			item.vparam+=sh.vword_to_vstr(vsent[k].vword);
 		}
-		sh.push_twi(sent.vword,word,rppoptr(c_mbk_r));
-		//rbuf<rstr>不能是引用，因为array<rstr>没有进行find_replace处理
-		//rstr::join<rstr>(sh.vword_to_vstr(sent.vword)," ").printl();
-		if(!p_exp(sh,sent,tfi,level,env))
-			return false;
+		tfi.sdynamic.insert(item);
+
 		vsent.clear();
+
+		sh.push_twi(sent.vword,word,rstr((uint)&tfi.sdynamic.find(item)->vparam));
 		vsent.push(sent);
+
+		sent.vword.clear();
+		sh.push_twi(sent.vword,word,rstr((uint)&tfi));
+		vsent.push(sent);
+
+		sent.vword.clear();
+		sh.push_twi(sent.vword,word,rstr("_EBP"));
+		vsent.push(sent);
+
 		return true;
 	}
 
 	static rbool p_call(tsh& sh,tsent& src,tsent* pfirst,tsent& outopnd,
-		tfunc& tfi,int level,int& i,tclass* ptci,tfunc* env)
+		tfunc& tfi,int level,int& i,tclass* ptci,tenv env)
 	{
 		rstr cname=ptci->name;
 		rstr fname=src.vword[i].val;
@@ -540,10 +527,14 @@ struct zexp
 		}
 		rbuf<tsent> vsent;
 		sh.split_param(vsent,src.vword.sub(left+1,right),src);
+		for(int j=0;j<vsent.count();j++)
+		{
+			if(!p_exp(sh,vsent[j],tfi,level,env))
+				return false;
+		}
 		tfunc* ptfi=zfind::func_search(*ptci,fname);
 		if(ptfi!=null&&ptfi->is_dynamic)
 		{
-			//不处理参数，直接把代码字符串传进去
 			ifn(set_vsent(sh,src.vword[i].pos,vsent,tfi,level,env))
 				return false;
 			if(pfirst!=null)
@@ -551,11 +542,6 @@ struct zexp
 			set_func(sh,outopnd,r_move(vsent),ptfi);
 			i=right;
 			return true;
-		}
-		for(int j=0;j<vsent.count();j++)
-		{
-			if(!p_exp(sh,vsent[j],tfi,level,env))
-				return false;
 		}
 		if(pfirst!=null)
 			vsent.push_front(*pfirst);//插入DOT前的对象
@@ -580,7 +566,7 @@ struct zexp
 		return true;
 	}
 
-	static rbool p_exp_all(tsh& sh,tfunc& tfi,tfunc* env)
+	static rbool p_exp_all(tsh& sh,tfunc& tfi,tenv env)
 	{
 		for(int i=0;i<tfi.vsent.count();++i)
 		{
@@ -595,7 +581,7 @@ struct zexp
 	}
 
 	static rbool p_exp(tsh& sh,rbuf<tword>& v,tfunc& tfi,
-		int level,tfunc* env)
+		int level,tenv env)
 	{
 		tsent sent;
 		sent.vword=v;
@@ -607,14 +593,14 @@ struct zexp
 	}
 
 	static rbool p_exp(tsh& sh,tsent& src,tfunc& tfi,
-		int level,tfunc* env)
+		int level,tenv env)
 	{
 		return p_exp(sh,src,src,tfi,level,env);
 	}
 	
 	//表达式标准化，并设置dst.type
 	static rbool p_exp(tsh& sh,tsent src,tsent& dst,tfunc& tfi,
-		int level,tfunc* env)
+		int level,tenv env)
 	{
 		tclass& tci=*tfi.ptci;
 		if(level>c_rpp_deep)
@@ -907,9 +893,9 @@ struct zexp
 					sopnd.push_move(outopnd);
 					continue;
 				}
-				if(env!=null)
+				if(env.ptfi!=null)
 				{
-					ptdi=zfind::local_search(*env,name);
+					ptdi=zfind::local_search(*env.ptfi,name);
 					if(ptdi!=null)
 					{
 						//环境变量
@@ -937,7 +923,7 @@ struct zexp
 			return false;
 		}
 		dst=r_move(sopnd[0]);
-		if(dst.vword.empty()||dst.type.empty())//||dst.pos.line==0)
+		if(dst.vword.empty()||dst.type.empty()||dst.pos.line==0)
 		{
 			sh.error(src,"expression error");
 			return false;

@@ -285,7 +285,6 @@ struct tsh
 		}
 	}
 
-	//这里的重复代码是为了提高效率
 	template<class T>
 	rbuf<rbuf<T> > comma_split(rbuf<T> v)
 	{
