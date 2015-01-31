@@ -56,7 +56,8 @@ struct zpre
 			return false;
 		}
 		const_replace(dst);
-		double_combine(dst);
+		combine_double(dst);
+		combine_float(dst);
 		key_replace(sh,dst);
 		return true;
 	}
@@ -439,7 +440,7 @@ struct zpre
 		return true;
 	}
 
-	static void double_combine(rbuf<tword>& v)
+	static void combine_double(rbuf<tword>& v)
 	{
 		for(int i=1;i<v.count()-1;i++)
 		{
@@ -453,6 +454,34 @@ struct zpre
 				v[i+1].clear();
 				i++;
 			}
+		}
+		arrange(v);
+	}
+
+	static void combine_float(rbuf<tword>& v)
+	{
+		for(int i=0;i<v.count();i++)
+		{
+			ifn(v[i]=="."&&v.get(i-1).val.is_number())
+				continue;
+			rstr s=v.get(i+1).val;
+			if(s.get_top()!='f')
+			{
+				continue;
+			}
+			ifn(s.sub(0,s.count()-1).is_number())
+			{
+				continue;
+			}
+			v[i].multi+="double";
+			v[i].multi+="(";
+			v[i].multi+=v[i-1].val+"."+s.sub(0,s.count()-1);
+			v[i].multi+=")";
+			v[i].multi+=".";
+			v[i].multi+="tofloat";
+			v[i].val.clear();
+			v[i+1].val.clear();
+			v[i-1].val.clear();
 		}
 		arrange(v);
 	}

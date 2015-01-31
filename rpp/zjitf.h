@@ -149,7 +149,22 @@ struct zjitf
 		*ret=rfile::ftell8(fp);
 	}
 
-	//todo 有待优化
+	//todo 非多线程安全
+	static void* find_dll_q(const char* name)
+	{
+		tsh& sh=*get_psh();
+		if(sh.m_dll_func.exist(name))
+		{
+			return sh.m_dll_func[name];
+		}
+		void* temp=find_dll_full(name);
+		if(temp!=null)
+		{
+			sh.m_dll_func[name]=temp;
+		}
+		return temp;
+	}
+
 	static void* find_dll_full(const char* name)
 	{
 #ifdef _MSC_VER

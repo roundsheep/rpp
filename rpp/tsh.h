@@ -46,6 +46,7 @@ struct tsh
 	rdbint m_db;
 	rset<taddr> m_addr;
 	rclass m_rlib;
+	rdic<void*> m_dll_func;
 
 	enum
 	{

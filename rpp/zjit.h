@@ -381,7 +381,7 @@ struct zjit
 		rppjf("get_hins",zjitf::get_hins);
 		rppjf("set_main_ret",zjitf::set_main_ret);
 		rppjf("find_func",find_func);
-		rppjf("find_dll",zjitf::find_dll_full);
+		rppjf("find_dll",zjitf::find_dll_q);
 		rppjf("utf8_to_gbk",rcode::utf8_to_gbk_c);
 		rppjf("get_cur_func",zjitf::get_cur_func);
 		rppjf("get_vclass",zjitf::get_vclass);
@@ -389,7 +389,7 @@ struct zjit
 		rppjf("eval_vstr",eval_vstr);
 		rppjf("_float_to_double",zjitf::_float_to_double);
 		rppjf("sin",zjitf::sin);
-		rppjf("sin",zjitf::cos);
+		rppjf("cos",zjitf::cos);
 	}
 
 	static rbool eval_vstr(rbuf<rstr>& vstr,tenv env)
