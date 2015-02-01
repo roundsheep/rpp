@@ -7,7 +7,7 @@
 #include <string>
 #pragma comment(lib,"Ws2_32")
 #else
-#include "code.txt"
+#include "gbk.txt"
 #endif
 
 struct rclass//本类用于初始化环境，只能实例化一次（单例模式）

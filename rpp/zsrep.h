@@ -198,6 +198,7 @@ struct zsrep
 			}
 			if(v[i-1]==rppoptr(c_equal)||
 				v[i-1]==rppoptr(c_sbk_l)||
+				v[i-1]==rppoptr(c_mbk_l)||
 				v[i-1]==rppoptr(c_comma)||
 				v[i-1]==rppoptr(c_equalequal)||
 				v[i-1]==rppoptr(c_notequal))

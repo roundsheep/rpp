@@ -246,7 +246,8 @@ struct zctl
 	{
 		return zfind::is_class_t(sh,v.get_bottom().val)||
 			v.get(1)==rppoptr(c_tbk_l)&&
-			zfind::is_classtl(sh,v.get_bottom().val);
+			zfind::is_classtl(sh,v.get_bottom().val)||
+			v.count()==1&&v[0].val.is_number();//todo
 	}
 
 	static void vtl_replace(rbuf<tword>& result,rbuf<ttl>& vtl,

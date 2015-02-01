@@ -390,6 +390,8 @@ struct zjit
 		rppjf("_float_to_double",zjitf::_float_to_double);
 		rppjf("sin",zjitf::sin);
 		rppjf("cos",zjitf::cos);
+		rppjf("sqrt",zjitf::sqrt);
+		rppjf("set_dll_list",zjitf::set_dll_list);
 	}
 
 	static rbool eval_vstr(rbuf<rstr>& vstr,tenv env)

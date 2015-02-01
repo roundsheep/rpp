@@ -1,8 +1,36 @@
-﻿mac FL(a) double(a).tofloat
+﻿
+void init_glut()
+{
+	v=rf.get_param
+	num=v.count
+	rbuf<char*> argv
+	for i=0;i<v.count;i++
+		argv.push(v[i].cstr)
+
+	@glutInit(&num,argv.begin)
+}
+
+mac FL(a) double(a).tofloat
 
 mac D8(a) 
 {
 	*(&(a)).to<int*>,*((&(a)).to<int*>+1)
+}
+
+mac cd_protect
+{
+	push ebx;
+	push esi;
+	push edi;
+}
+
+mac cd_ret
+{
+	pop edi;
+	pop esi;
+	pop ebx;
+	pop ebp;
+	retn;
 }
 
 mac GL_PI 3.1415926
@@ -67,3 +95,35 @@ mac GL_PI 3.1415926
 #define GLUT_FULLY_RETAINED 0x0001
 #define GLUT_PARTIALLY_RETAINED 0x0002
 #define GLUT_FULLY_COVERED 0x0003
+
+#define GL_LIGHT0 0x4000
+#define GL_LIGHT1 0x4001
+#define GL_LIGHT2 0x4002
+#define GL_LIGHT3 0x4003
+#define GL_LIGHT4 0x4004
+#define GL_LIGHT5 0x4005
+#define GL_LIGHT6 0x4006
+#define GL_LIGHT7 0x4007
+
+#define GL_AMBIENT 0x1200
+#define GL_DIFFUSE 0x1201
+#define GL_SPECULAR 0x1202
+#define GL_POSITION 0x1203
+#define GL_SPOT_DIRECTION 0x1204
+#define GL_SPOT_EXPONENT 0x1205
+#define GL_SPOT_CUTOFF 0x1206
+#define GL_CONSTANT_ATTENUATION 0x1207
+#define GL_LINEAR_ATTENUATION 0x1208
+#define GL_QUADRATIC_ATTENUATION 0x1209
+
+#define GL_DEPTH_TEST 0x0B71
+#define GL_LIGHTING 0x0B50
+
+#define GL_FRONT 0x0404
+#define GL_BACK 0x0405
+#define GL_CCW 0x0901
+#define GL_CULL_FACE 0x0B44
+#define GL_LIGHT_MODEL_AMBIENT 0x0B53
+#define GL_COLOR_MATERIAL 0x0B57
+#define GL_AMBIENT_AND_DIFFUSE 0x1602
+#define GL_SHININESS 0x1601

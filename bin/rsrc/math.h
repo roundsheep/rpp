@@ -20,4 +20,14 @@ namespace math
 		calle "cos"
 		add esp,12
 	}
+	
+	double sqrt(double a)
+	{
+		p=&s_ret
+		push p
+		push [ebp+(s_off a+4)]
+		push a
+		calle "sqrt"
+		add esp,12
+	}
 }
