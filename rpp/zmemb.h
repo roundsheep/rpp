@@ -401,6 +401,12 @@ struct zmemb
 			return lambda_a_func_define(sh,item,v);
 		}
 		int start=0;
+		if(v.get(start).val=="macro")
+		{
+			item.is_macro=true;
+			item.is_cfunc=true;
+			start++;
+		}
 		if(v.get(start).val==rppkey(c_cfunc))
 		{
 			item.is_cfunc=true;
@@ -573,6 +579,10 @@ struct zmemb
 			}
 			item.vword=v.sub(left+1,right);
 			tci.vfunc.insert(item);
+			if(item.is_macro)
+			{
+				sh.m_macro[item.name]=tci.vfunc.find(item);
+			}
 			if(!default_param_proc(sh,*tci.vfunc.find(item)))
 			{
 				return false;

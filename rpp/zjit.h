@@ -392,6 +392,12 @@ struct zjit
 		rppjf("cos",zjitf::cos);
 		rppjf("sqrt",zjitf::sqrt);
 		rppjf("set_dll_list",zjitf::set_dll_list);
+		rppjf("find_symm_sbk",_find_symm_sbk);
+		rppjf("get_psh",zjitf::get_psh);
+		
+		//必须在这里注册否则malloc与从DLL中找到的不一致
+		rppjf("malloc",::malloc);
+		rppjf("free",::free);
 	}
 
 	static rbool eval_vstr(rbuf<rstr>& vstr,tenv env)

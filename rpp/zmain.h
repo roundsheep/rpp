@@ -270,4 +270,15 @@ struct zmain
 	}
 };
 
+//todo C++不支持mixin，只能这么写
+rbool _func_to_x86(tsh& sh,tfunc& tfi,tenv env)
+{
+	return zjit::func_to_x86(sh,tfi,env);
+}
+
+int _find_symm_sbk(tsh& sh,const rbuf<tword>& v,int begin)
+{
+	return sh.find_symm_sbk(v,begin);
+}
+
 #endif

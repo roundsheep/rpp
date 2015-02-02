@@ -47,6 +47,7 @@ struct tsh
 	rset<taddr> m_addr;
 	rclass m_rlib;
 	rdic<void*> m_dll_func;
+	rdic<tfunc*> m_macro;
 
 	enum
 	{
@@ -562,5 +563,8 @@ struct tsh
 		rf::printl(e);
 	}
 };
+
+rbool _func_to_x86(tsh& sh,tfunc& tfi,tenv env);
+int _find_symm_sbk(tsh& sh,const rbuf<tword>& v,int begin);
 
 #endif

@@ -364,6 +364,7 @@ struct tclass;
 
 struct tfunc
 {
+	rbool is_macro;
 	rbool is_cfunc;
 	rbool is_dynamic;
 	rbool is_friend;
@@ -404,6 +405,7 @@ struct tfunc
 
 	void clear()
 	{
+		is_macro=false;
 		is_cfunc=false;
 		is_dynamic=false;
 		is_friend=false;

@@ -24,6 +24,8 @@ struct zsent
 			return false;
 		}
 		zctl::sbk_line_proc(sh,tfi.vword);
+		ifn(macro_replace(sh,tfi))
+			return false;
 		if(!zmac::replace(sh,*tfi.ptci,tfi.vword))
 			return false;
 		if(!zftl::ftl_replace(sh,*tfi.ptci,tfi.vword,null))
@@ -113,6 +115,23 @@ struct zsent
 		//再处理一次，获取所有表达式的类型
 		if(!zexp::p_exp_all(sh,tfi,tenv()))
 			return false;
+		return true;
+	}
+
+	static rbool macro_replace(tsh& sh,tfunc& tfi)
+	{
+		rbuf<tword>& v=tfi.vword;
+		for(int i=0;i<v.count();i++)
+		{
+			if(sh.m_macro.exist(v[i].val))
+			{
+				tfunc* ptfi=sh.m_macro[v[i].val];
+				ifn(_func_to_x86(sh,*ptfi,tenv()))
+					return false;
+				((void (__stdcall *)(rbuf<tword>&,int))(ptfi->code))(v,i);
+			}
+		}
+		zpre::arrange(v);
 		return true;
 	}
 
