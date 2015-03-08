@@ -1,3 +1,4 @@
+IMPORT GetCommandLineA
 IMPORT GetTickCount
 IMPORT Sleep
 IMPORT InitializeCriticalSection
